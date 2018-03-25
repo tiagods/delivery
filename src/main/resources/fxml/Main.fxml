@@ -14,7 +14,7 @@
             <JFXButton onAction="#acesso" prefHeight="35.0" prefWidth="73.0" text="Acesso" />
             <JFXButton onAction="#empresa" prefHeight="35.0" prefWidth="87.0" text="Empresa" />
             <JFXButton onAction="#cliente" prefHeight="35.0" prefWidth="74.0" text="Cliente" />
-            <JFXButton layoutX="256.0" layoutY="10.0" onAction="#sobre" prefHeight="35.0" prefWidth="90.0" text="Produto" />
+            <JFXButton layoutX="256.0" layoutY="10.0" onAction="#produto" prefHeight="35.0" prefWidth="90.0" text="Produto" />
             <JFXButton layoutX="78.0" layoutY="10.0" onAction="#sobre" prefHeight="35.0" prefWidth="70.0" text="Sobre" />
             <JFXButton layoutX="165.0" layoutY="10.0" onAction="#sair" prefHeight="35.0" prefWidth="70.0" text="Sair" />
          </items>

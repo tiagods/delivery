@@ -52,12 +52,6 @@ public class MenuController extends UtilsController implements Initializable{
             primaryStage.setTitle("Pesquisa de Clientes");
             //stage.getIcons().add(new Image(estilo.getIcon().toString()));
             primaryStage.show();
-            primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-				@Override
-            	public void handle(WindowEvent event) {
-					System.exit(0);
-				}
-			});
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -85,7 +79,7 @@ public class MenuController extends UtilsController implements Initializable{
         try {
             Stage stage = new Stage();
             final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProdutoPesquisa.fxml"));
-            loader.setController(new EmpresaCadastroController(stage));
+            loader.setController(new ProdutoPesquisaController(stage));
             final Parent root = loader.load();
             final Scene scene = new Scene(root);
             stage.initModality(Modality.APPLICATION_MODAL);

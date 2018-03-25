@@ -1,6 +1,8 @@
 package com.tiagods.delivery.controller;
 
 import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.JFXToggleButton;
+import com.jfoenix.skins.JFXToggleNodeSkin;
 import com.tiagods.delivery.model.Cliente;
 import com.tiagods.delivery.model.Produto;
 import com.tiagods.delivery.repository.helper.ClientesImpl;
@@ -14,8 +16,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -25,16 +29,53 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ProdutoPesquisaController extends UtilsController implements Initializable{
-	private TableView<Produto> tbPrincipal;
+
+	@FXML
+	private JFXToggleButton tgProduto;
+
+	@FXML
+	private JFXToggleButton tgPizza;
+
+	@FXML
+	private JFXToggleButton tgAdicional;
+
+	@FXML
+	private JFXToggleButton tgObservacao;
+
+	@FXML
+	private AnchorPane pnProduto;
+
+	@FXML
+	private TableView<?> tbProduto;
+
+	@FXML
+	private AnchorPane pnPizza;
+
+	@FXML
+	private TableView<?> tbPizza;
+
+	@FXML
+	private AnchorPane pnAdicional;
+
+	@FXML
+	private TableView<?> tbAdicional;
+
+	@FXML
+	private AnchorPane pnObservacao;
+
+	@FXML
+	private TableView<?> tbObservacao;
+	private Stage stage;
+	public ProdutoPesquisaController(Stage stage) {
+		this.stage=stage;
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		tabela();
 		try {
 			super.loadFactory();
-	//		clientes = new ClientesImpl(super.getManager());
-			tbPrincipal.getItems().clear();
-	//		tbPrincipal.getItems().addAll(clientes.getAll());
+			combos();
 		}catch (Exception e) {
 			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", e.getMessage());
 			e.printStackTrace();
@@ -71,13 +112,15 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 	private void cadastrar(ActionEvent event) {
 		abrirCadastro(null);
 	}
-	
+
+	private void combos(){
+		ToggleGroup group = new ToggleGroup();
+		group.getToggles().addAll(tgProduto,tgPizza,tgAdicional,tgObservacao);
+	}
 	private void filtrar() {
 		try {
 			super.loadFactory();
 	//		clientes = new ClientesImpl(super.getManager());
-			tbPrincipal.getItems().clear();
-	//		tbPrincipal.getItems().addAll(clientes.getAll());
 		}catch (Exception e) {
 			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", e.getMessage());
 			e.printStackTrace();
@@ -106,7 +149,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 //				}
 //			}
 //		});
-		tbPrincipal.getColumns().addAll(columnId);
-		tbPrincipal.setTableMenuButtonVisible(true);
+//		tbPrincipal.getColumns().addAll(columnId);
+//		tbPrincipal.setTableMenuButtonVisible(true);
 	}
 }

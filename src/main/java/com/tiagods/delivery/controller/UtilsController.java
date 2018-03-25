@@ -5,9 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import javafx.scene.input.MouseEvent;
-import org.fxutils.maskedtextfield.MaskTextField;
-import org.fxutils.maskedtextfield.MaskedTextField;
-
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
@@ -31,6 +28,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import org.fxutils.maskedtextfield.MaskTextField;
+import org.fxutils.maskedtextfield.MaskedTextField;
 
 public abstract class UtilsController extends PersistenciaController{
 	private JFXButton buttonNovo;

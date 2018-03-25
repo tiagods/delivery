@@ -84,7 +84,7 @@
         <dependency>
 		    <groupId>org.fxutil.maskedtextfield</groupId>
 		    <artifactId>maskedtextfield</artifactId>
-		    <version>1.1</version>
+		    <version>1.2</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/maskedtextfield-1.2.jar</systemPath>
 		</dependency>
@@ -94,20 +94,7 @@
             <artifactId>json</artifactId>
             <version>20151123</version>
         </dependency>
-		<!-- https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api -->
 		<dependency>
-		    <groupId>javax.ws.rs</groupId>
-		    <artifactId>javax.ws.rs-api</artifactId>
-		    <version>2.1</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-client -->
-		<dependency>
-		    <groupId>org.glassfish.jersey.core</groupId>
-		    <artifactId>jersey-client</artifactId>
-		    <version>2.0-m04</version>
-		</dependency>
-				
-        <dependency>
 		    <groupId>javassist</groupId>
 		    <artifactId>javassist</artifactId>
 		    <version>3.8.0.GA</version>
