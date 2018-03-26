@@ -130,13 +130,12 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                     txNumero.setText("");
                     txComplemento.setText(endereco.getComplemento());
                     txBairro.setText(endereco.getBairro());
-                    cbEstado.setValue(endereco.getUf());
                     cidades = new CidadesImpl(super.getManager());
                     cbCidade.getItems().clear();
-                    cbCidade.getItems().addAll(cidades.findByEstado(cbEstado.getValue()));
+                    cbCidade.getItems().addAll(cidades.findByEstado(endereco.getUf()));
                     Cidade cidade = cidades.findByNome(endereco.getLocalidade());
-                    System.out.println(cidade.getNome());
                     cbCidade.setValue(cidade);
+                    cbEstado.setValue(endereco.getUf());
 				}
 				else
 				    super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,
