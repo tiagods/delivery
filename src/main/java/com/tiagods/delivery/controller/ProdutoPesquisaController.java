@@ -1,11 +1,7 @@
 package com.tiagods.delivery.controller;
 
-import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
-import com.jfoenix.skins.JFXToggleNodeSkin;
-import com.tiagods.delivery.model.Cliente;
 import com.tiagods.delivery.model.Produto;
-import com.tiagods.delivery.repository.helper.ClientesImpl;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -84,11 +80,11 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 		}
 	}
 	
-	private	void abrirCadastro(Cliente cliente){
+	private	void abrirCadastro(Object object){
 		try { 	
 			Stage stage = new Stage();
 		    final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ClienteCadastro.fxml"));
-	        loader.setController(new ClienteCadastroController(cliente,stage));
+	        loader.setController(new ClienteCadastroController(null,stage));
 	        final Parent root = loader.load();
 	        final Scene scene = new Scene(root);
 	        stage.initModality(Modality.APPLICATION_MODAL);

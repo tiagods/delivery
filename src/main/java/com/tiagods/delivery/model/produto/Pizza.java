@@ -1,65 +1,91 @@
 package com.tiagods.delivery.model.produto;
 
-import javax.persistence.Embeddable;
-
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import com.tiagods.delivery.model.Produto;
 import com.tiagods.delivery.model.produto.pizza.PizzaFatia;
 import com.tiagods.delivery.model.produto.pizza.PizzaGrande;
 import com.tiagods.delivery.model.produto.pizza.PizzaMedia;
 import com.tiagods.delivery.model.produto.pizza.PizzaPequena;
 
-@Embeddable
-public class Pizza {
+@Entity
+@DiscriminatorValue(value = "pizza")
+public class Pizza extends Produto {
+	private boolean fatiaHabilitada;
+	@Embedded
 	private PizzaFatia fatia;
+	private boolean pequenaHabilitada;
+	@Embedded
 	private PizzaPequena pequena;
+	private boolean mediaHabilitada;
+	@Embedded
 	private PizzaMedia media;
+	private boolean grandeHabilitada;
+	@Embedded
 	private PizzaGrande grande;
-	/**
-	 * @return the fatia
-	 */
+
+	public boolean isFatiaHabilitada() {
+		return fatiaHabilitada;
+	}
+
+	public void setFatiaHabilitada(boolean fatiaHabilitada) {
+		this.fatiaHabilitada = fatiaHabilitada;
+	}
+
 	public PizzaFatia getFatia() {
 		return fatia;
 	}
-	/**
-	 * @param fatia the fatia to set
-	 */
+
 	public void setFatia(PizzaFatia fatia) {
 		this.fatia = fatia;
 	}
-	/**
-	 * @return the pequena
-	 */
+
+	public boolean isPequenaHabilitada() {
+		return pequenaHabilitada;
+	}
+
+	public void setPequenaHabilitada(boolean pequenaHabilitada) {
+		this.pequenaHabilitada = pequenaHabilitada;
+	}
+
 	public PizzaPequena getPequena() {
 		return pequena;
 	}
-	/**
-	 * @param pequena the pequena to set
-	 */
+
 	public void setPequena(PizzaPequena pequena) {
 		this.pequena = pequena;
 	}
-	/**
-	 * @return the media
-	 */
+
+	public boolean isMediaHabilitada() {
+		return mediaHabilitada;
+	}
+
+	public void setMediaHabilitada(boolean mediaHabilitada) {
+		this.mediaHabilitada = mediaHabilitada;
+	}
+
 	public PizzaMedia getMedia() {
 		return media;
 	}
-	/**
-	 * @param media the media to set
-	 */
+
 	public void setMedia(PizzaMedia media) {
 		this.media = media;
 	}
-	/**
-	 * @return the grande
-	 */
+
+	public boolean isGrandeHabilitada() {
+		return grandeHabilitada;
+	}
+
+	public void setGrandeHabilitada(boolean grandeHabilitada) {
+		this.grandeHabilitada = grandeHabilitada;
+	}
+
 	public PizzaGrande getGrande() {
 		return grande;
 	}
-	/**
-	 * @param grande the grande to set
-	 */
+
 	public void setGrande(PizzaGrande grande) {
 		this.grande = grande;
 	}
-	
 }
