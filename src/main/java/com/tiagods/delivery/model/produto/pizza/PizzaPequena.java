@@ -6,9 +6,9 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class PizzaPequena {
-	private BigDecimal custoPequeno;
+	private BigDecimal custoPequeno=new BigDecimal(0.00);
 	private double margemPequeno=0.00;
-	private BigDecimal vendaPequeno;
+	private BigDecimal vendaPequeno=new BigDecimal(0.00);
 
 	public BigDecimal getCustoPequeno() {
 		return custoPequeno;

@@ -13,16 +13,16 @@ import com.tiagods.delivery.model.produto.pizza.PizzaPequena;
 @Entity
 @DiscriminatorValue(value = "pizza")
 public class Pizza extends Produto {
-	private boolean fatiaHabilitada;
+	private boolean fatiaHabilitada=false;
 	@Embedded
 	private PizzaFatia fatia;
-	private boolean pequenaHabilitada;
+	private boolean pequenaHabilitada=false;
 	@Embedded
 	private PizzaPequena pequena;
-	private boolean mediaHabilitada;
+	private boolean mediaHabilitada=false;
 	@Embedded
 	private PizzaMedia media;
-	private boolean grandeHabilitada;
+	private boolean grandeHabilitada=false;
 	@Embedded
 	private PizzaGrande grande;
 

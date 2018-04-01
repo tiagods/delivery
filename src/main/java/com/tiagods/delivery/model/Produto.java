@@ -30,6 +30,7 @@ public class Produto implements AbstractEntity, Serializable{
 	@Enumerated(value=EnumType.STRING)
 	private ProdutoUnidade unidade;
 	private String descricao;
+	private String receita;
 	private String foto;
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data_criacao")
@@ -84,6 +85,13 @@ public class Produto implements AbstractEntity, Serializable{
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	public String getReceita() {
+		return receita;
+	}
+	public void setReceita(String receita) {
+		this.receita = receita;
 	}
 
 	public String getFoto() {
