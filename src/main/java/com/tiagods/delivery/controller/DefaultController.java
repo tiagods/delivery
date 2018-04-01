@@ -14,7 +14,7 @@ import javax.rmi.CORBA.Util;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class InterfaceController extends UtilsController implements Initializable{
+public class DefaultController extends UtilsController implements Initializable{
     JFXButton btnNovo,btnEditar,btnSalvar,btnExcluir,btnCancelar;
     AnchorPane pnCadastro;
     TableView tbPrincipal;
