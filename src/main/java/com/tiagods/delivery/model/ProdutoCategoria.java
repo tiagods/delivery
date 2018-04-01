@@ -1,13 +1,11 @@
 package com.tiagods.delivery.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
+@Table(name = "produto_categoria")
 public class ProdutoCategoria implements AbstractEntity,Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,5 +39,10 @@ public class ProdutoCategoria implements AbstractEntity,Serializable{
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
+	}
+
+	@Override
+	public String toString() {
+		return this.nome;
 	}
 }

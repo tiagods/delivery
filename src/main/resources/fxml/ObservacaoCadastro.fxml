@@ -5,6 +5,7 @@
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -12,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox layoutX="-2.0" layoutY="8.0" prefHeight="600.0" prefWidth="400.0">
          <children>
@@ -32,7 +33,8 @@
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <JFXCheckBox fx:id="ckSelecionarTudo" layoutX="263.0" layoutY="277.0" mnemonicParsing="false" text="Marcar Todos" />
-                                    <VBox fx:id="vboxPanel" layoutX="14.0" layoutY="14.0" prefHeight="250.0" prefWidth="350.0" />
+                                    <VBox fx:id="vboxPanel" layoutX="14.0" layoutY="14.0" prefHeight="250.0" prefWidth="350.0">
+                                    </VBox>
                                  </children>
                               </AnchorPane>
                           </content>

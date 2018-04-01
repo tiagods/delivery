@@ -1,15 +1,20 @@
 package com.tiagods.delivery.model;
 
+import com.tiagods.delivery.model.AbstractEntity;
+import com.tiagods.delivery.model.ProdutoCategoria;
+import com.tiagods.delivery.model.ProdutoUnidade;
+import com.tiagods.delivery.model.Usuario;
 import com.tiagods.delivery.model.produto.Estoque;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Objects;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "produto_type")
-public abstract class Produto implements AbstractEntity, Serializable{
+public class Produto implements AbstractEntity, Serializable{
 	/**
 	 * 
 	 */
@@ -19,7 +24,8 @@ public abstract class Produto implements AbstractEntity, Serializable{
 	private long id;
 	private String personalizado;
 	private String nome;
-	@Enumerated(value=EnumType.STRING)
+	@ManyToOne
+	@JoinColumn(name = "categoria_id")
 	private ProdutoCategoria categoria;
 	@Enumerated(value=EnumType.STRING)
 	private ProdutoUnidade unidade;
@@ -102,5 +108,17 @@ public abstract class Produto implements AbstractEntity, Serializable{
 
 	public void setCriadoPor(Usuario criadoPor) {
 		this.criadoPor = criadoPor;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Produto produto = (Produto) o;
+		return id == produto.id;
+	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.tiagods.delivery.model.Cliente;
 
@@ -17,6 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -24,6 +26,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 
 import javax.rmi.CORBA.Util;
 
@@ -113,7 +116,28 @@ public class ClientePesquisaController extends UtilsController implements Initia
 //				}
 //			}
 //		});
-		tbPrincipal.getColumns().addAll(columnId);
+		TableColumn<Cliente, Number> colunaEditar = new  TableColumn<>("");
+		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaEditar.setCellFactory(param -> new TableCell<Cliente,Number>(){
+			JFXButton button = new JFXButton("Editar");
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					button.setOnAction(event -> {
+                        abrirCadastro(tbPrincipal.getItems().get(getIndex()));
+                    });
+					setGraphic(button);
+				}
+			}
+		});
+
+		tbPrincipal.getColumns().addAll(columnId,colunaEditar);
 		tbPrincipal.setTableMenuButtonVisible(true);
 	}
 }

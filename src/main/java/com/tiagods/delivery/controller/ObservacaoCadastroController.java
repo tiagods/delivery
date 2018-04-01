@@ -7,6 +7,8 @@ import com.tiagods.delivery.model.Observacao;
 import com.tiagods.delivery.model.ProdutoCategoria;
 import com.tiagods.delivery.repository.helper.ObservacaoImpl;
 import com.tiagods.delivery.repository.helper.ProdutosCategoriasImpl;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -50,15 +52,23 @@ public class ObservacaoCadastroController extends UtilsController implements Ini
     public ObservacaoCadastroController(Observacao observacao, Stage stage) {
         this.stage = stage;
         this.observacao = observacao;
-        if(observacao.getId()!=null)
-            preencherFormulario(observacao);
+
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        super.Initializer(new JFXButton(), new JFXButton(), btnSalvar, new JFXButton(), new JFXButton());
+        super.Initializer(new JFXButton(), new JFXButton(), btnSalvar, new JFXButton(), new JFXButton(),new JFXButton());
         combos();
+        if(observacao.getId()!=null)
+            preencherFormulario(observacao);
     }
     private void combos(){
+        vboxPanel.setSpacing(10);
+        ckSelecionarTudo.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            vboxPanel.getChildren().forEach(node->{
+                if(node instanceof JFXCheckBox)
+                    ((JFXCheckBox) node).setSelected(ckSelecionarTudo.isSelected());
+            });
+        });
         try{
             super.loadFactory();
             categorias = new ProdutosCategoriasImpl(super.getManager());
@@ -68,6 +78,8 @@ public class ObservacaoCadastroController extends UtilsController implements Ini
                 checkBox.setId(String.valueOf(c.getId()));
                 vboxPanel.getChildren().add(checkBox);
             });
+            if(observacao.getId()!=null)
+                preencherFormulario(observacao);
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR,"Erro","Erro ao preencher combos","");
         }finally {

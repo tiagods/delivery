@@ -172,7 +172,7 @@ public class EmpresaCadastroController extends UtilsController implements Initia
             empresa = empresas.findById(new Long(1));
             if(empresa!=null)
                 preencherFormulario(empresa);
-            super.Initializer(new JFXButton(), btnEditar, btnSalvar, new JFXButton(), btnCancelar);
+            super.Initializer(new JFXButton(), btnEditar, btnSalvar, new JFXButton(), btnCancelar,new JFXButton());
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registros\n" + e.getMessage());
             e.printStackTrace();

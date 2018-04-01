@@ -1,10 +1,8 @@
 package com.tiagods.delivery.repository.helper;
 
-import com.tiagods.delivery.model.Produto;
 import com.tiagods.delivery.model.produto.Pizza;
 import com.tiagods.delivery.repository.AbstractRepository;
 import com.tiagods.delivery.repository.interfaces.PizzaDAO;
-import com.tiagods.delivery.repository.interfaces.ProdutoDAO;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;

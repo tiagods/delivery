@@ -3,6 +3,7 @@ package com.tiagods.delivery.model.produto;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+
 import com.tiagods.delivery.model.Produto;
 import com.tiagods.delivery.model.produto.pizza.PizzaFatia;
 import com.tiagods.delivery.model.produto.pizza.PizzaGrande;

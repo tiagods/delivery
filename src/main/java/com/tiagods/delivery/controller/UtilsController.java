@@ -37,9 +37,10 @@ public abstract class UtilsController extends PersistenciaController{
 	private JFXButton buttonSalvar;
 	private JFXButton buttonExcluir;
 	private JFXButton buttonCancelar;
+	private JFXButton buttonSair;
 	
 	public void Initializer(JFXButton btnNovo, JFXButton btnEditar, 
-			JFXButton btnSalvar, JFXButton btnExcluir,JFXButton btnCancelar) {
+			JFXButton btnSalvar, JFXButton btnExcluir,JFXButton btnCancelar, JFXButton btnSair) {
 		this.buttonNovo=btnNovo;
 		this.buttonEditar=btnEditar;
 		this.buttonSalvar=btnSalvar;

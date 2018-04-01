@@ -122,9 +122,7 @@ public class ClienteCadastroController extends UtilsController implements Initia
 
 	public ClienteCadastroController(Cliente cliente, Stage stage) {
 		this.stage = stage;
-		if(cliente!=null) {
-			preencherFormulario(cliente);
-		}
+		this.cliente= cliente;
 	}
 	@FXML
 	void bucarCep(ActionEvent event){
@@ -241,7 +239,10 @@ public class ClienteCadastroController extends UtilsController implements Initia
 		try {
 		    super.loadFactory();
             combos();
-            super.Initializer(btnNovo, btnEditar, btnSalvar, btnExcluir, btnCancelar);
+            super.Initializer(btnNovo, btnEditar, btnSalvar, btnExcluir, btnCancelar,new JFXButton());
+            if(cliente!=null) {
+                preencherFormulario(cliente);
+            }
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registros\n" + e.getMessage());
             e.printStackTrace();

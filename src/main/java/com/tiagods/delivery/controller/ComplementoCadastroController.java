@@ -7,10 +7,14 @@ import com.tiagods.delivery.model.Complemento;
 import com.tiagods.delivery.model.ProdutoCategoria;
 import com.tiagods.delivery.repository.helper.ComplementosImpl;
 import com.tiagods.delivery.repository.helper.ProdutosCategoriasImpl;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -51,16 +55,29 @@ public class ComplementoCadastroController extends UtilsController implements In
     public ComplementoCadastroController(Complemento complemento, Stage stage) {
         this.stage = stage;
         this.complemento = complemento;
-        if(complemento.getId()!=null)
-            preencherFormulario(complemento);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        super.Initializer(new JFXButton(), new JFXButton(), btnSalvar, new JFXButton(), new JFXButton());
+        super.Initializer(new JFXButton(), new JFXButton(), btnSalvar, new JFXButton(), new JFXButton(),btnSair);
         combos();
+        if(complemento.getId()!=null)
+            preencherFormulario(complemento);
     }
     private void combos(){
+        vboxPanel.setSpacing(10);
+        ckSelecionarTudo.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                boolean selecionado = ckSelecionarTudo.isSelected();
+
+                ObservableList<Node> nodes = vboxPanel.getChildren();
+                nodes.forEach(node->{
+                    if(node instanceof JFXCheckBox)
+                        ((JFXCheckBox) node).setSelected(selecionado);
+                });
+            }
+        });
         try{
             super.loadFactory();
             categorias = new ProdutosCategoriasImpl(super.getManager());

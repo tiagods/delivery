@@ -1,5 +1,6 @@
 package com.tiagods.delivery.controller;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 import com.tiagods.delivery.model.Complemento;
@@ -19,6 +20,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
@@ -30,7 +32,10 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class ProdutoPesquisaController extends UtilsController implements Initializable{
@@ -82,6 +87,11 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 	private ComplementosImpl complementos;
 	private ObservacaoImpl observacao;
 
+	private String PRODUTO_CADASTRO="ProdutoCadastro";
+    private String COMPLEMENTO_CADASTRO="ComplementoCadastro";
+	private String OBSERVACAO_CADASTRO="ObservacaoCadastro";
+
+
 	public ProdutoPesquisaController(Stage stage) {
 		this.stage=stage;
 	}
@@ -97,9 +107,9 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 			Stage stage = new Stage();
 		    final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/"+fxmlName+".fxml"));
 		    if(object instanceof ProdutoGenerico)
-		    	loader.setController(new ProdutoGenericoCadastroController((ProdutoGenerico)object,stage));
+		    	loader.setController(new ProdutoCadastroController((ProdutoGenerico)object,stage));
 	        else if(object instanceof Pizza)
-	        	loader.setController(new PizzaCadastroController((Pizza) object,stage));
+	        	loader.setController(new ProdutoCadastroController((Pizza) object,stage));
             else if(object instanceof Complemento)
                 loader.setController(new ComplementoCadastroController((Complemento) object, stage));
             else if(object instanceof Observacao)
@@ -123,13 +133,13 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 	@FXML
 	private void cadastrar(ActionEvent event) {
 		if(tgProduto.isSelected())
-			abrirCadastro(new ProdutoGenerico(),"ProdutoGenericoCadastro");
+			abrirCadastro(new ProdutoGenerico(),PRODUTO_CADASTRO);
 		else if(tgPizza.isSelected())
-		    abrirCadastro(new Pizza(), "PizzaCadastro");
+		    abrirCadastro(new Pizza(), PRODUTO_CADASTRO);
         else if(tgComplemento.isSelected())
-            abrirCadastro(new Complemento(), "ComplementoCadastro");
+            abrirCadastro(new Complemento(), COMPLEMENTO_CADASTRO);
         else if(tgObservacao.isSelected())
-            abrirCadastro(new Complemento(),"ObservacaoCadastro");
+            abrirCadastro(new Observacao(),OBSERVACAO_CADASTRO);
     }
 
 	private void combos(){
@@ -173,7 +183,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 		}
 	}
 	@FXML
-	void pesquisar(KeyEvent event) {
+	public void pesquisar(KeyEvent event) {
 		filtrar();
 	}
 
@@ -226,7 +236,54 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 //				}
 //			}
 //		});
-		tbComplemento.getColumns().addAll(columnId);
+		TableColumn<Complemento, BigDecimal> colunaValor = new  TableColumn<>("Valor");
+		colunaValor.setCellValueFactory(new PropertyValueFactory<>("valor"));
+		colunaValor.setCellFactory(param -> new TableCell<Complemento,BigDecimal>(){
+			JFXButton button = new JFXButton("Editar");
+			@Override
+			protected void updateItem(BigDecimal item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+				}
+				else{
+					Locale locale = new Locale("pt", "BR");
+					NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+					setText(currencyFormatter.format(item.doubleValue()));
+				}
+			}
+		});
+		TableColumn<Complemento, Number> colunaEditar = new  TableColumn<>("");
+		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaEditar.setCellFactory(param -> new TableCell<Complemento,Number>(){
+			JFXButton button = new JFXButton("Editar");
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					button.setOnAction(event -> {
+						try {
+							loadFactory();
+							complementos = new ComplementosImpl(getManager());
+							Complemento obs = complementos.findById(tbComplemento.getItems().get(getIndex()).getId().longValue());
+							abrirCadastro(obs, COMPLEMENTO_CADASTRO);
+						} catch (Exception e) {
+							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro \n"+e);
+						} finally {
+							close();
+						}
+					});
+					setGraphic(button);
+				}
+			}
+		});
+		tbComplemento.getColumns().addAll(columnId,colunaValor,colunaEditar);
 		tbComplemento.setTableMenuButtonVisible(true);
 	}
 	private void tabelaObservacao(){
@@ -245,7 +302,36 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 //				}
 //			}
 //		});
-		tbObservacao.getColumns().addAll(columnId);
+		TableColumn<Observacao, Number> colunaEditar = new  TableColumn<>("");
+		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaEditar.setCellFactory(param -> new TableCell<Observacao,Number>(){
+			JFXButton button = new JFXButton("Editar");
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					button.setOnAction(event -> {
+						try {
+							loadFactory();
+							observacao = new ObservacaoImpl(getManager());
+							Observacao obs = observacao.findById(tbObservacao.getItems().get(getIndex()).getId().longValue());
+							abrirCadastro(obs, OBSERVACAO_CADASTRO);
+						} catch (Exception e) {
+							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro \n"+e);
+						} finally {
+							close();
+						}
+					});
+					setGraphic(button);
+				}
+			}
+		});
+		tbObservacao.getColumns().addAll(columnId,colunaEditar);
 		tbObservacao.setTableMenuButtonVisible(true);
 	}
 	private void tabelaPizza() {
@@ -264,7 +350,37 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 //				}
 //			}
 //		});
-		tbPizza.getColumns().addAll(columnId);
+		TableColumn<Pizza, Number> colunaEditar = new  TableColumn<>("");
+		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaEditar.setCellFactory(param -> new TableCell<Pizza,Number>(){
+			JFXButton button = new JFXButton("Editar");
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					button.setOnAction(event -> {
+						try {
+							loadFactory();
+							pizzas = new PizzasImpl(getManager());
+							Pizza obs = pizzas.findById(tbPizza.getItems().get(getIndex()).getId().longValue());
+							abrirCadastro(obs, PRODUTO_CADASTRO);
+						} catch (Exception e) {
+							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro \n"+e);
+						} finally {
+							close();
+						}
+					});
+					setGraphic(button);
+				}
+			}
+		});
+
+		tbPizza.getColumns().addAll(columnId,colunaEditar);
 		tbPizza.setTableMenuButtonVisible(true);
 	}
 
@@ -284,7 +400,36 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 //				}
 //			}
 //		});
-		tbProduto.getColumns().addAll(columnId);
+		TableColumn<ProdutoGenerico, Number> colunaEditar = new  TableColumn<>("");
+		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaEditar.setCellFactory(param -> new TableCell<ProdutoGenerico,Number>(){
+			JFXButton button = new JFXButton("Editar");
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					button.setOnAction(event -> {
+						try {
+							loadFactory();
+							genericos = new ProdutosGenericosImpl(getManager());
+							ProdutoGenerico gen = genericos.findById(tbProduto.getItems().get(getIndex()).getId().longValue());
+							abrirCadastro(gen, PRODUTO_CADASTRO);
+						} catch (Exception e) {
+							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro \n"+e);
+						} finally {
+							close();
+						}
+					});
+					setGraphic(button);
+				}
+			}
+		});
+		tbProduto.getColumns().addAll(columnId,colunaEditar);
 		tbProduto.setTableMenuButtonVisible(true);
 	}
 }

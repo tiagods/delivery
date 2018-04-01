@@ -114,9 +114,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 
 	public UsuarioCadastroController(Usuario usuario, Stage stage) {
 		this.stage = stage;
-		if(usuario!=null) {
-			preencherFormulario(usuario);
-		}
+		this.usuario=usuario;
 	}
 	@FXML
 	void bucarCep(ActionEvent event){
@@ -217,7 +215,10 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 		try {
 		    super.loadFactory();
             combos();
-            super.Initializer(btnNovo, btnEditar, btnSalvar, btnExcluir, btnCancelar);
+            super.Initializer(btnNovo, btnEditar, btnSalvar, btnExcluir, btnCancelar,new JFXButton());
+            if(usuario!=null) {
+                preencherFormulario(usuario);
+            }
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registros\n" + e.getMessage());
             e.printStackTrace();

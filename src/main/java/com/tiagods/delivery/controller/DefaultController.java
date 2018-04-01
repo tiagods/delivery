@@ -37,7 +37,7 @@ public class DefaultController extends UtilsController implements Initializable{
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        super.Initializer(btnNovo, btnEditar, btnSalvar, btnExcluir, btnCancelar);
+        super.Initializer(btnNovo, btnEditar, btnSalvar, btnExcluir, btnCancelar,new JFXButton());
         combos();
     }
     @FXML

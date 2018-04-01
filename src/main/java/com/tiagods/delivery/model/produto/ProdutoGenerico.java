@@ -8,4 +8,5 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue(value="generico")
 public class ProdutoGenerico extends Produto {
+
 }
