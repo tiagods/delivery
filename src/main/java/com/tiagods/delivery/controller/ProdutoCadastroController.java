@@ -366,7 +366,7 @@ public class ProdutoCadastroController extends UtilsController implements Initia
                     pizzaGrande.setVendaGrande(new BigDecimal(String.format("%.2f",vendaG).replace(",",".")));
                 }
 
-                
+
                 ((Pizza) produto).setFatia(pizzaFatia);
                 ((Pizza) produto).setPequena(pizzaPequena);
                 ((Pizza) produto).setMedia(pizzaMedia);
