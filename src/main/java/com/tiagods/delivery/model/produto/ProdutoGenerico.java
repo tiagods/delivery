@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @DiscriminatorValue(value="generico")
 public class ProdutoGenerico extends Produto {
     private BigDecimal custo=new BigDecimal(0.00);
-    private double margem=0.00;
+    private BigDecimal margem=new BigDecimal(0.00);
     private BigDecimal venda=new BigDecimal(0.00);
 
     public BigDecimal getCusto() {
@@ -21,11 +21,11 @@ public class ProdutoGenerico extends Produto {
         this.custo = custo;
     }
 
-    public double getMargem() {
+    public BigDecimal getMargem() {
         return margem;
     }
 
-    public void setMargem(double margem) {
+    public void setMargem(BigDecimal margem) {
         this.margem = margem;
     }
 

@@ -52,7 +52,7 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 		try { 	
 			Stage stage = new Stage();
 		    final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UsuarioCadastro.fxml"));
-	        loader.setController(new UsuarioCadastroController(usuario,stage));
+	        loader.setController(new UsuarioCadastroController(usuario,stage,false));
 	        final Parent root = loader.load();
 	        final Scene scene = new Scene(root);
 	        stage.initModality(Modality.APPLICATION_MODAL);

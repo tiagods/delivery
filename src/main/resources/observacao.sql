@@ -1,0 +1,15 @@
+﻿insert into observacao (nome) values ('Com gelo');
+insert into observacao (nome) values ('Com gelo e laranja');
+insert into observacao (nome) values ('Com gelo e limão');
+insert into observacao (nome) values ('Frio');
+insert into observacao (nome) values ('Mal passada');
+insert into observacao (nome) values ('No ponto');
+insert into observacao (nome) values ('Para viagem');
+insert into observacao (nome) values ('Quente');
+insert into observacao (nome) values ('Retirar no caixa');
+insert into observacao (nome) values ('Sem açúcar');
+insert into observacao (nome) values ('Sem borda');
+insert into observacao (nome) values ('Sem maionese');
+insert into observacao (nome) values ('Sem mostarda');
+insert into observacao (nome) values ('Sem pimenta');
+insert into observacao (nome) values ('Sem tomate');

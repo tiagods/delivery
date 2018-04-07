@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.tiagods.delivery.repository.helper.UsuariosImpl;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -20,27 +21,8 @@ public class MenuController extends UtilsController implements Initializable{
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
 	}
 	@FXML
-    void acesso(ActionEvent event) {
-        try {
-            Stage stage = new Stage();
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UsuarioPesquisa.fxml"));
-            loader.setController(new UsuarioPesquisaController());
-            final Parent root = loader.load();
-            final Scene scene = new Scene(root);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            //stage.initStyle(StageStyle.UNDECORATED);
-            stage.setScene(scene);
-            stage.show();
-        }catch(IOException e) {
-            e.printStackTrace();
-            super.alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", e.getMessage());
-        }
-    }
-
-    @FXML
     void cliente(ActionEvent event) {
     	try {
 			Stage primaryStage = new Stage();
@@ -102,5 +84,21 @@ public class MenuController extends UtilsController implements Initializable{
     void sair(ActionEvent event) {
         System.exit(0);
     }
-
+    @FXML
+    void usuario(ActionEvent event) {
+        try {
+            Stage stage = new Stage();
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UsuarioPesquisa.fxml"));
+            loader.setController(new UsuarioPesquisaController());
+            final Parent root = loader.load();
+            final Scene scene = new Scene(root);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            //stage.initStyle(StageStyle.UNDECORATED);
+            stage.setScene(scene);
+            stage.show();
+        }catch(IOException e) {
+            e.printStackTrace();
+            super.alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", e.getMessage());
+        }
+    }
 }

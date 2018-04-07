@@ -12,14 +12,19 @@ import com.tiagods.delivery.util.EnderecoUtil;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.fxutils.maskedtextfield.MaskedTextField;
 import org.hibernate.PersistentObjectException;
 
@@ -111,10 +116,12 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 	private Stage stage;
 	private CidadesImpl cidades;
 	private UsuariosImpl usuarios;
+	private boolean primeiroUsuario = false;
 
-	public UsuarioCadastroController(Usuario usuario, Stage stage) {
+	public UsuarioCadastroController(Usuario usuario, Stage stage,boolean primeiroUsuario) {
 		this.stage = stage;
 		this.usuario=usuario;
+		this.primeiroUsuario=primeiroUsuario;
 	}
 	@FXML
 	void bucarCep(ActionEvent event){
@@ -159,6 +166,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
         cbCidade.getItems().setAll(cidades.findByEstado(Estado.SP));
         cbCidade.setValue(cidade);
         cbEstado.getItems().addAll(Estado.values());
+        cbEstado.setValue(Estado.SP);
         cbEstado.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
@@ -166,12 +174,15 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                     cidades = new CidadesImpl(getManager());
                     List<Cidade> listCidades = cidades.findByEstado(newValue);
                     cbCidade.getItems().setAll(listCidades);
+                    cbCidade.getSelectionModel().selectFirst();
                 } catch (Exception e) {
                 } finally {
                     close();
                 }
             }
         });
+        cbNivel.getItems().addAll(UsuarioNivel.values());
+        cbNivel.setValue(UsuarioNivel.ADMIN);
         new ComboBoxAutoCompleteUtil<>(cbCidade);
     }
 	@FXML
@@ -236,10 +247,9 @@ public class UsuarioCadastroController extends UtilsController implements Initia
         cbNivel.setValue(usuario.getNivel());
         txLogin.setText(usuario.getLogin());
         PessoaFisica fisica = usuario.getPessoaFisica();
-        txRG.setText(fisica.getRg());
-        txCPF.setPlainText(fisica.getCpf());
-        txDataNascimento.setPlainText(fisica.getAniversario());
-
+        txRG.setText(fisica.getRg()==null?"":fisica.getRg());
+        txCPF.setPlainText(fisica.getCpf()==null?"":fisica.getCpf());
+        txDataNascimento.setPlainText(fisica.getAniversario()==null?"":fisica.getAniversario());
         Pessoa pessoa = usuario.getPessoa();
         txNome.setText(pessoa.getNome());
         txEmail.setText(pessoa.getEmail());
@@ -314,6 +324,27 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                     txSenha.setText("");
                     txConfirmarSenha.setText("");
                     txLogin.setEditable(false);
+                    if(primeiroUsuario) {
+                        UsuarioLogado logado = UsuarioLogado.getInstance();
+                        logado.setUsuario(usuario);
+                        try {
+                            //Icons estilo = Icons.getInstance();
+                            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Main.fxml"));
+                            loader.setController(new MenuController());
+                            Parent root = loader.load();
+                            Scene scene = new Scene(root);
+
+                            stage.setScene(scene);
+                            stage.setTitle("Menu Inicial");
+                            //stage.getIcons().add(new Image(estilo.getIcon().toString()));
+                            stage.show();
+                            stage.setOnCloseRequest(event1 -> System.exit(0));
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    stage.close();
                 } catch (Exception e) {
                     alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro \n"+e.getMessage());
                 }

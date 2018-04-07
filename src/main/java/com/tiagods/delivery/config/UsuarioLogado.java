@@ -7,16 +7,13 @@ public class UsuarioLogado {
     private static Usuario usuario;
 
     public static UsuarioLogado getInstance() {
-        if (instance == null)
-            instance = new UsuarioLogado();
+        if (instance == null) instance = new UsuarioLogado();
         return instance;
     }
 
-    public static Usuario getUsuario() {
+    public Usuario getUsuario() {
         return usuario;
     }
 
-    public static void setUsuario(Usuario usuario) {
-        UsuarioLogado.usuario = usuario;
-    }
+    public void setUsuario(Usuario usuario) { usuario = usuario;}
 }

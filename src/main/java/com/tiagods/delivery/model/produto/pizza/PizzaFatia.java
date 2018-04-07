@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class PizzaFatia {
 	private BigDecimal custoFatia=new BigDecimal(0.00);
-	private double margemFatia=0.00;
+	private BigDecimal margemFatia=new BigDecimal(0.00);
 	private BigDecimal vendaFatia=new BigDecimal(0.00);
 
 	public BigDecimal getCustoFatia() {
@@ -18,11 +18,11 @@ public class PizzaFatia {
 		this.custoFatia = custoFatia;
 	}
 
-	public double getMargemFatia() {
+	public BigDecimal getMargemFatia() {
 		return margemFatia;
 	}
 
-	public void setMargemFatia(double margemFatia) {
+	public void setMargemFatia(BigDecimal margemFatia) {
 		this.margemFatia = margemFatia;
 	}
 

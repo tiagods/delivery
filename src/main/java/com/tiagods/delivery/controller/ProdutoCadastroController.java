@@ -207,6 +207,7 @@ public class ProdutoCadastroController extends UtilsController implements Initia
         if(produto instanceof Pizza) {
             pnPizza.setVisible(true);
             pnComum.setVisible(false);
+
             tgFatia.setSelected(((Pizza) produto).isFatiaHabilitada());
             tgPequena.setSelected(((Pizza) produto).isPequenaHabilitada());
             tgMedia.setSelected(((Pizza) produto).isMediaHabilitada());
@@ -240,14 +241,25 @@ public class ProdutoCadastroController extends UtilsController implements Initia
             txMargem.setText(""+((ProdutoGenerico) produto).getMargem());
             txVenda.setText(((ProdutoGenerico) produto).getVenda().toPlainString().replace(".",","));
         }
-
-
         this.produto = produto;
     }
     @FXML
     void removerFoto(ActionEvent event) {
 
     }
+    private BigDecimal[] prePersistValores(MaskTextField txCusto, MaskTextField txMargem, MaskTextField txVenda){
+        double custo=txCusto.getText().replace(",","").trim().equals("")?
+                0.00:Double.parseDouble(txCusto.getText().replace(",",".").trim());
+        double margem=txMargem.getText().equals("")?0.00:Double.parseDouble(txMargem.getText());
+        double venda=txVenda.getText().replace(",","").trim().equals("")?
+                0.00:Double.parseDouble(txVenda.getText().replace(",",".").trim());
+        BigDecimal[] bigDecimal = new BigDecimal[3];
+        bigDecimal[0]=new BigDecimal(String.format("%.2f",custo).replace(",","."));
+        bigDecimal[1]=new BigDecimal(String.format("%.2f",margem).replace(",","."));
+        bigDecimal[2]=new BigDecimal(String.format("%.2f",venda).replace(",","."));
+        return bigDecimal;
+    }
+
     @FXML
     void salvar(ActionEvent event) {
         try {
@@ -259,24 +271,13 @@ public class ProdutoCadastroController extends UtilsController implements Initia
             cbUnidade.setValue(produto.getUnidade());
             txDescricao.setText(produto.getDescricao());
             txReceita.setText(produto.getReceita());
+            BigDecimal[] bigDecimal = null;
             if(produto instanceof ProdutoGenerico){
-                if(txVenda.getText().replace(",","").trim().equals("")){
-                    super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor da venda é obrigatorio","O valor da venda deve ser informado!");
-                    return;
-                }
-                if(txCusto.getText().replace(",","").trim().equals("")){
-                    super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor do custo é obrigatorio","O valor do custo esta incorreto!");
-                    return;
-                }
-                double custo=txCusto.getText().replace(",","").trim().equals("")?
-                        0.00:Double.parseDouble(txCusto.getText().replace(",",".").trim());
-                double margem=Double.parseDouble(txMargem.getText());
-                double venda=txVenda.getText().replace(",","").trim().equals("")?
-                        0.00:Double.parseDouble(txVenda.getText().replace(",",".").trim());
-                ((ProdutoGenerico) produto).setCusto(new BigDecimal(String.format("%.2f",custo).replace(",",".")));
-                ((ProdutoGenerico) produto).setMargem(Double.parseDouble(String.format("%.2f",margem).replace(",",".")));
-                ((ProdutoGenerico) produto).setVenda(new BigDecimal(String.format("%.2f",venda).replace(",",".")));
-
+                if(!validarDigitacao(txCusto,txVenda)) return;
+                bigDecimal = prePersistValores(txCusto,txMargem,txVenda);
+                ((ProdutoGenerico) produto).setCusto(bigDecimal[0]);
+                ((ProdutoGenerico) produto).setMargem(bigDecimal[1]);
+                ((ProdutoGenerico) produto).setVenda(bigDecimal[2]);
                 genericos = new ProdutosGenericosImpl(super.getManager());
                 genericos.save((ProdutoGenerico)produto);
             }
@@ -287,85 +288,38 @@ public class ProdutoCadastroController extends UtilsController implements Initia
                 PizzaGrande pizzaGrande = new PizzaGrande();
 
                 if(tgFatia.isSelected()){
-                    if(txVendaF.getText().replace(",","").trim().equals("")){
-                        super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor da venda é obrigatorio","O valor da venda deve ser informado!");
-                        return;
-                    }
-                    if(txCustoF.getText().replace(",","").trim().equals("")){
-                        super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor do custo é obrigatorio","O valor do custo esta incorreto!");
-                        return;
-                    }
-                    double custoF=txCustoF.getText().replace(",","").trim().equals("")?
-                            0.00:Double.parseDouble(txCustoF.getText().replace(",",".").trim());
-                    double margemF=Double.parseDouble(txMargemF.getText());
-                    double vendaF=txVendaF.getText().replace(",","").trim().equals("")?
-                            0.00:Double.parseDouble(txVendaF.getText().replace(",",".").trim());
-
-                    pizzaFatia.setCustoFatia(new BigDecimal(String.format("%.2f",custoF).replace(",",".")));
-                    pizzaFatia.setMargemFatia(Double.parseDouble(String.format("%.2f",margemF).replace(",",".")));
-                    pizzaFatia.setVendaFatia(new BigDecimal(String.format("%.2f",vendaF).replace(",",".")));
+                    if(!validarDigitacao(txCustoF,txVendaF)) return;
+                    bigDecimal = prePersistValores(txCustoF,txMargemF,txVendaF);
+                    pizzaFatia.setCustoFatia(bigDecimal[0]);
+                    pizzaFatia.setMargemFatia(bigDecimal[1]);
+                    pizzaFatia.setVendaFatia(bigDecimal[2]);
                 }
                 if (tgPequena.isSelected()) {
-                    if(txVendaP.getText().replace(",","").trim().equals("")){
-                        super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor da venda é obrigatorio","O valor da venda deve ser informado!");
-                        return;
-                    }
-                    if(txCustoP.getText().replace(",","").trim().equals("")){
-                        super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor do custo é obrigatorio","O valor do custo esta incorreto!");
-                        return;
-                    }
-
-                    double custoP=txCustoP.getText().replace(",","").trim().equals("")?
-                            0.00:Double.parseDouble(txCustoP.getText().replace(",",".").trim());
-                    double margemP=Double.parseDouble(txMargemP.getText());
-                    double vendaP=txVendaP.getText().replace(",","").trim().equals("")?
-                            0.00:Double.parseDouble(txVendaP.getText().replace(",",".").trim());
-
-                    pizzaPequena.setCustoPequeno(new BigDecimal(String.format("%.2f",custoP).replace(",",".")));
-                    pizzaPequena.setMargemPequeno(Double.parseDouble(String.format("%.2f",margemP).replace(",",".")));
-                    pizzaPequena.setVendaPequeno(new BigDecimal(String.format("%.2f",vendaP).replace(",",".")));
+                    if(!validarDigitacao(txCustoP,txVendaP)) return;
+                    bigDecimal = prePersistValores(txCustoP,txMargemP,txVendaP);
+                    pizzaPequena.setCustoPequeno(bigDecimal[0]);
+                    pizzaPequena.setMargemPequeno(bigDecimal[1]);
+                    pizzaPequena.setVendaPequeno(bigDecimal[2]);
                 }
                 if (tgMedia.isSelected()) {
-                    if(txVendaM.getText().replace(",","").trim().equals("")){
-                        super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor da venda é obrigatorio","O valor da venda deve ser informado!");
-                        return;
-                    }
-                    if(txCustoM.getText().replace(",","").trim().equals("")){
-                        super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor do custo é obrigatorio","O valor do custo esta incorreto!");
-                        return;
-                    }
-                    double custoM=txCustoM.getText().replace(",","").trim().equals("")?
-                            0.00:Double.parseDouble(txCustoM.getText().replace(",",".").trim());
-                    double margemM=Double.parseDouble(txMargemM.getText());
-                    double vendaM=txVendaM.getText().replace(",","").trim().equals("")?
-                            0.00:Double.parseDouble(txVendaM.getText().replace(",",".").trim());
-
-                    pizzaMedia.setCustoMedia(new BigDecimal(String.format("%.2f",custoM).replace(",",".")));
-                    pizzaMedia.setMargemMedia(Double.parseDouble(String.format("%.2f",margemM).replace(",",".")));
-                    pizzaMedia.setVendaMedia(new BigDecimal(String.format("%.2f",vendaM).replace(",",".")));
+                    if(!validarDigitacao(txCustoM,txVendaM)) return;
+                    bigDecimal = prePersistValores(txCustoM,txMargemM,txVendaM);
+                    pizzaMedia.setCustoMedia(bigDecimal[0]);
+                    pizzaMedia.setMargemMedia(bigDecimal[1]);
+                    pizzaMedia.setVendaMedia(bigDecimal[2]);
                 }
 
                 if (tgGrande.isSelected()) {
-                    if(txVendaG.getText().replace(",","").trim().equals("")){
-                        super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor da venda é obrigatorio","O valor da venda deve ser informado!");
-                        return;
-                    }
-                    if(txCustoG.getText().replace(",","").trim().equals("")){
-                        super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor do custo é obrigatorio","O valor do custo esta incorreto!");
-                        return;
-                    }
-
-                    double custoG=txCustoG.getText().replace(",","").trim().equals("")?
-                            0.00:Double.parseDouble(txCustoG.getText().replace(",",".").trim());
-                    double margemG=Double.parseDouble(txMargemG.getText());
-                    double vendaG=txVendaG.getText().replace(",","").trim().equals("")?
-                            0.00:Double.parseDouble(txVendaG.getText().replace(",",".").trim());
-
-                    pizzaGrande.setCustoGrande(new BigDecimal(String.format("%.2f",custoG).replace(",",".")));
-                    pizzaGrande.setMargemGrande(Double.parseDouble(String.format("%.2f",margemG).replace(",",".")));
-                    pizzaGrande.setVendaGrande(new BigDecimal(String.format("%.2f",vendaG).replace(",",".")));
+                    if(!validarDigitacao(txCustoG,txVendaG)) return;
+                    bigDecimal = prePersistValores(txCustoG,txMargemG,txVendaG);
+                    pizzaGrande.setCustoGrande(bigDecimal[0]);
+                    pizzaGrande.setMargemGrande(bigDecimal[1]);
+                    pizzaGrande.setVendaGrande(bigDecimal[2]);
                 }
-
+                ((Pizza) produto).setFatiaHabilitada(tgFatia.isSelected());
+                ((Pizza) produto).setPequenaHabilitada(tgPequena.isSelected());
+                ((Pizza) produto).setMediaHabilitada(tgMedia.isSelected());
+                ((Pizza) produto).setGrandeHabilitada(tgGrande.isSelected());
 
                 ((Pizza) produto).setFatia(pizzaFatia);
                 ((Pizza) produto).setPequena(pizzaPequena);
@@ -385,8 +339,22 @@ public class ProdutoCadastroController extends UtilsController implements Initia
             super.close();
         }
     }
+
     @FXML
     void sair(ActionEvent event){
         stage.close();
+    }
+
+    boolean validarDigitacao(MaskTextField custo, MaskTextField venda){
+        if(venda.getText().replace(",","").trim().equals("")){
+            super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor da venda é obrigatorio","O valor da venda deve ser informado!");
+            return false;
+        }
+        if(custo.getText().replace(",","").trim().equals("")){
+            super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor do custo é obrigatorio","O valor do custo esta incorreto!");
+            return false;
+        }
+        return true;
+
     }
 }

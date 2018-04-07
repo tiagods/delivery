@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class PizzaMedia {
 	private BigDecimal custoMedia=new BigDecimal(0.00);
-	private double margemMedia=0.00;
+	private BigDecimal margemMedia=new BigDecimal(0.00);
 	private BigDecimal vendaMedia=new BigDecimal(0.00);
 
 	public BigDecimal getCustoMedia() {
@@ -18,11 +18,11 @@ public class PizzaMedia {
 		this.custoMedia = custoMedia;
 	}
 
-	public double getMargemMedia() {
+	public BigDecimal getMargemMedia() {
 		return margemMedia;
 	}
 
-	public void setMargemMedia(double margemMedia) {
+	public void setMargemMedia(BigDecimal margemMedia) {
 		this.margemMedia = margemMedia;
 	}
 
