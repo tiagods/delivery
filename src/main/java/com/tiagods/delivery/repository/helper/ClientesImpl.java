@@ -8,7 +8,7 @@ import com.tiagods.delivery.repository.interfaces.CidadeDAO;
 import com.tiagods.delivery.repository.interfaces.ClienteDAO;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -38,5 +38,17 @@ public class ClientesImpl extends AbstractRepository<Cliente, Long> implements C
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Cliente.class);
 		criteria.add(Restrictions.ilike("nome", nome));
 		return (Cliente) criteria.uniqueResult();
+	}
+	public List<Cliente> filtrar(String nome, String ordem) {
+		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Cliente.class);
+		if (!nome.trim().equals("")) {
+			Criterion criterion = Restrictions.ilike("nome", nome, MatchMode.ANYWHERE);
+			Criterion criterion2 = Restrictions.ilike("pessoa.telefone", nome, MatchMode.ANYWHERE);
+			Criterion criterion3 = Restrictions.ilike("pessoa.celular", nome, MatchMode.ANYWHERE);
+			Criterion c = Restrictions.or(criterion,criterion2,criterion3);
+			criteria.add(c);
+		}
+		criteria.addOrder(Order.asc(ordem));
+		return (List<Cliente>) criteria.list();
 	}
 }

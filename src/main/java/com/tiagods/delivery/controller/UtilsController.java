@@ -1,9 +1,10 @@
 package com.tiagods.delivery.controller;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
@@ -18,16 +19,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.control.Accordion;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -52,19 +48,54 @@ public abstract class UtilsController extends PersistenciaController{
 		this.buttonExcluir.setOnMouseClicked(new Excluir());
 		this.buttonCancelar.setOnMouseClicked(new Cancelar());
 	}
-	public void alert(AlertType alertType, String title, String header, String contentText) {
+	public void alert(AlertType alertType, String title, String header, String contentText,Exception ex) {
 		Alert alert = new Alert(alertType);
 		alert.setTitle(title);
 		alert.setHeaderText(header);
 		alert.setContentText(contentText);
-		alert.show();
-		if(alert.getAlertType()==AlertType.ERROR) {
+		if(alert.getAlertType()==AlertType.ERROR && ex!=null) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			ex.printStackTrace(pw);
+			String exceptionText = sw.toString();
+			Label label = new Label("The exception stacktrace was:");
+			TextArea textArea = new TextArea(exceptionText);
+			textArea.setEditable(false);
+			textArea.setWrapText(true);
+
+			textArea.setMaxWidth(Double.MAX_VALUE);
+			textArea.setMaxHeight(Double.MAX_VALUE);
+			GridPane.setVgrow(textArea, Priority.ALWAYS);
+			GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+			GridPane expContent = new GridPane();
+			expContent.setMaxWidth(Double.MAX_VALUE);
+			expContent.add(label, 0, 0);
+			expContent.add(textArea, 0, 1);
+			// Set expandable Exception into the dialog pane.
+			alert.getDialogPane().setExpandableContent(expContent);
+
 			try {
-				FileWriter fw = new FileWriter(System.getProperty("user.dir"), true);
+				LocalDateTime dateTime = LocalDateTime.now();
+				File log = new File(System.getProperty("user.dir")+"/log/"+
+						dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))+"-erro.txt");
+				if(!log.getParentFile().exists())
+					log.getParentFile().mkdir();
+				FileWriter fw = new FileWriter(log, true);
+				String line = System.getProperty("line.separator");
+				fw.write(
+						dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))+"="+
+								header+":"+
+								contentText+
+								line+
+								exceptionText
+				);
+				fw.close();
 			}catch (IOException e) {
-				// TODO: handle exception
+				e.printStackTrace();
 			}
 		}
+		alert.showAndWait();
 	}
 	public class NovoEditar implements EventHandler<MouseEvent>{
 		@Override

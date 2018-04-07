@@ -1,0 +1,12 @@
+insert into complemento (nome, valor) values ('Bacon',3.50);
+insert into complemento (nome, valor) values ('Borda catupiry',5.00);
+insert into complemento (nome, valor) values ('Borda calabresa',5.50);
+insert into complemento (nome, valor) values ('Champignon',3.00);
+insert into complemento (nome, valor) values ('Chantilly',1.50);
+insert into complemento (nome, valor) values ('Frango desfiado',5.90);
+insert into complemento (nome, valor) values ('Hamburguer',3.00);
+insert into complemento (nome, valor) values ('Molho especial',2.50);
+insert into complemento (nome, valor) values ('Peito de peru',4.00);
+insert into complemento (nome, valor) values ('Queijo',1.50);
+insert into complemento (nome, valor) values ('Sobremesa',6.00);
+insert into complemento (nome, valor) values ('Tomate seco',4.50);

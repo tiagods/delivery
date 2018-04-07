@@ -224,22 +224,15 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 		TableColumn<Complemento, Number> columnId = new  TableColumn<>("*");
 		columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		columnId.setPrefWidth(40);
-//		columnId.setCellFactory((TableColumn<Cliente, PfPj> param) -> new TableCell<Cliente, PfPj>() {
-//			@Override
-//			protected void updateItem(PfPj item, boolean empty) {
-//				super.updateItem(item, empty);
-//				if (item == null) {
-//					setText(null);
-//					setStyle("");
-//				} else {
-//					setText(item.getTelefone());
-//				}
-//			}
-//		});
+
+		TableColumn<Complemento, String> columnNome = new  TableColumn<>("Nome");
+		columnNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+		columnNome.setPrefWidth(250);
+		columnNome.setMaxWidth(320);
+
 		TableColumn<Complemento, BigDecimal> colunaValor = new  TableColumn<>("Valor");
 		colunaValor.setCellValueFactory(new PropertyValueFactory<>("valor"));
 		colunaValor.setCellFactory(param -> new TableCell<Complemento,BigDecimal>(){
-			JFXButton button = new JFXButton("Editar");
 			@Override
 			protected void updateItem(BigDecimal item, boolean empty) {
 				super.updateItem(item, empty);
@@ -283,25 +276,20 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 				}
 			}
 		});
-		tbComplemento.getColumns().addAll(columnId,colunaValor,colunaEditar);
+		tbComplemento.getColumns().addAll(columnId,columnNome,colunaValor,colunaEditar);
 		tbComplemento.setTableMenuButtonVisible(true);
 	}
 	private void tabelaObservacao(){
 		TableColumn<Observacao, Number> columnId = new  TableColumn<>("*");
 		columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		columnId.setPrefWidth(40);
-//		columnId.setCellFactory((TableColumn<Cliente, PfPj> param) -> new TableCell<Cliente, PfPj>() {
-//			@Override
-//			protected void updateItem(PfPj item, boolean empty) {
-//				super.updateItem(item, empty);
-//				if (item == null) {
-//					setText(null);
-//					setStyle("");
-//				} else {
-//					setText(item.getTelefone());
-//				}
-//			}
-//		});
+
+		TableColumn<Observacao, String> columnNome = new  TableColumn<>("Nome");
+		columnNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+		columnNome.setPrefWidth(250);
+		columnNome.setMaxWidth(320);
+
+
 		TableColumn<Observacao, Number> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaEditar.setCellFactory(param -> new TableCell<Observacao,Number>(){
@@ -331,25 +319,19 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 				}
 			}
 		});
-		tbObservacao.getColumns().addAll(columnId,colunaEditar);
+		tbObservacao.getColumns().addAll(columnId,columnNome,colunaEditar);
 		tbObservacao.setTableMenuButtonVisible(true);
 	}
 	private void tabelaPizza() {
 		TableColumn<Pizza, Number> columnId = new  TableColumn<>("*");
 		columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		columnId.setPrefWidth(40);
-//		columnId.setCellFactory((TableColumn<Cliente, PfPj> param) -> new TableCell<Cliente, PfPj>() {
-//			@Override
-//			protected void updateItem(PfPj item, boolean empty) {
-//				super.updateItem(item, empty);
-//				if (item == null) {
-//					setText(null);
-//					setStyle("");
-//				} else {
-//					setText(item.getTelefone());
-//				}
-//			}
-//		});
+
+		TableColumn<Pizza, String> columnNome = new  TableColumn<>("Nome");
+		columnNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+		columnNome.setPrefWidth(250);
+		columnNome.setMaxWidth(320);
+
 		TableColumn<Pizza, Number> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaEditar.setCellFactory(param -> new TableCell<Pizza,Number>(){
@@ -380,7 +362,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 			}
 		});
 
-		tbPizza.getColumns().addAll(columnId,colunaEditar);
+		tbPizza.getColumns().addAll(columnId,columnNome,colunaEditar);
 		tbPizza.setTableMenuButtonVisible(true);
 	}
 
@@ -388,18 +370,13 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 		TableColumn<ProdutoGenerico, Number> columnId = new  TableColumn<>("*");
 		columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		columnId.setPrefWidth(40);
-//		columnId.setCellFactory((TableColumn<Cliente, PfPj> param) -> new TableCell<Cliente, PfPj>() {
-//			@Override
-//			protected void updateItem(PfPj item, boolean empty) {
-//				super.updateItem(item, empty);
-//				if (item == null) {
-//					setText(null);
-//					setStyle("");
-//				} else {
-//					setText(item.getTelefone());
-//				}
-//			}
-//		});
+
+		TableColumn<ProdutoGenerico, String> columnNome = new  TableColumn<>("Nome");
+		columnNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+		columnNome.setPrefWidth(250);
+		columnNome.setMaxWidth(320);
+		columnNome.setMaxWidth(320);
+
 		TableColumn<ProdutoGenerico, Number> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaEditar.setCellFactory(param -> new TableCell<ProdutoGenerico,Number>(){
@@ -429,7 +406,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 				}
 			}
 		});
-		tbProduto.getColumns().addAll(columnId,colunaEditar);
+		tbProduto.getColumns().addAll(columnId,columnNome,colunaEditar);
 		tbProduto.setTableMenuButtonVisible(true);
 	}
 }

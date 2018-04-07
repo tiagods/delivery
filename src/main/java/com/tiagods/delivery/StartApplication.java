@@ -7,11 +7,10 @@ import com.jfoenix.controls.JFXPopup;
 import com.jfoenix.controls.JFXRippler;
 import com.tiagods.delivery.config.JPAConfig;
 import com.tiagods.delivery.config.UsuarioLogado;
-import com.tiagods.delivery.controller.MenuController;
-import com.tiagods.delivery.controller.PersistenciaController;
-import com.tiagods.delivery.controller.UsuarioCadastroController;
-import com.tiagods.delivery.controller.UtilsController;
+import com.tiagods.delivery.controller.*;
+import com.tiagods.delivery.model.Empresa;
 import com.tiagods.delivery.model.Usuario;
+import com.tiagods.delivery.repository.helper.EmpresasImpl;
 import com.tiagods.delivery.repository.helper.UsuariosImpl;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -20,6 +19,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -27,6 +27,7 @@ import javafx.stage.WindowEvent;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
+import java.util.Optional;
 
 public class StartApplication extends Application {
 	@Override
@@ -83,7 +84,6 @@ public class StartApplication extends Application {
                             System.exit(0);
                         }
                     });
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -144,13 +144,13 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 				}
 				else
 				    super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,
-                            "Verifique se o cep informado é valido ou se existe uma conexão com a internet");
+                            "Verifique se o cep informado é valido ou se existe uma conexão com a internet",null);
             }
 			else{
-				super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,"Verifique o cep informado");
+				super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,"Verifique o cep informado",null);
 			}
 		}catch(Exception e){
-            super.alert(Alert.AlertType.ERROR,"Falha na conexão com o banco de dados",null,"Houve uma falha na conexão com o banco de dados");
+            super.alert(Alert.AlertType.ERROR,"Falha na conexão com o banco de dados",null,"Houve uma falha na conexão com o banco de dados",null);
 		}finally {
 		    super.close();
 		}
@@ -210,7 +210,8 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                     super.desbloquear(false,pnCadastro.getChildren());
                     usuario = null;
                 } catch (Exception e) {
-                    super.alert(Alert.AlertType.ERROR,"Erro ao excluir",null,"Falha ao tentar excluir o registro\n"+e.getMessage());
+                    super.alert(Alert.AlertType.ERROR,"Erro ao excluir",null,
+                            "Falha ao tentar excluir o registro do Usuario",e);
                 } finally {
                     close();
                 }
@@ -231,7 +232,8 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                 preencherFormulario(usuario);
             }
         }catch (Exception e){
-            super.alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registros\n" + e.getMessage());
+            super.alert(Alert.AlertType.ERROR, "Erro", null,
+                    "Falha ao listar os registros", e);
             e.printStackTrace();
         }finally {
 		    super.close();
@@ -339,14 +341,13 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                             //stage.getIcons().add(new Image(estilo.getIcon().toString()));
                             stage.show();
                             stage.setOnCloseRequest(event1 -> System.exit(0));
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                     stage.close();
                 } catch (Exception e) {
-                    alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro \n"+e.getMessage());
+                    alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro do Usuario",e);
                 }
             }
         } catch (Exception e) {

@@ -2,12 +2,14 @@ package com.tiagods.delivery.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.tiagods.delivery.model.Cliente;
 
+import com.tiagods.delivery.model.Pessoa;
 import com.tiagods.delivery.repository.helper.ClientesImpl;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -87,7 +89,8 @@ public class ClientePesquisaController extends UtilsController implements Initia
 			super.loadFactory();
 			clientes = new ClientesImpl(super.getManager());
 			tbPrincipal.getItems().clear();
-			tbPrincipal.getItems().addAll(clientes.getAll());
+			List<Cliente> clienteList = clientes.filtrar(txPesquisa.getText().trim(),"nome");
+			tbPrincipal.getItems().addAll(clienteList);
 		}catch (Exception e) {
 			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", e.getMessage());
 			e.printStackTrace();
@@ -116,6 +119,39 @@ public class ClientePesquisaController extends UtilsController implements Initia
 //				}
 //			}
 //		});
+		TableColumn<Cliente, String> columnNome = new  TableColumn<>("Nome");
+		columnNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+		columnNome.setPrefWidth(250);
+		columnNome.setMaxWidth(320);
+
+		TableColumn<Cliente, Pessoa> colunaTelefone = new  TableColumn<>("Telefone");
+		colunaTelefone.setCellValueFactory(new PropertyValueFactory<>("pessoa"));
+		colunaTelefone.setCellFactory((TableColumn<Cliente, Pessoa> param) -> new TableCell<Cliente, Pessoa>() {
+			@Override
+			protected void updateItem(Pessoa item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item == null) {
+					setText(null);
+					setStyle("");
+				} else {
+					setText(item.getTelefone());
+				}
+			}
+		});
+		TableColumn<Cliente, Pessoa> colunaCelular = new  TableColumn<>("Celular");
+		colunaCelular.setCellValueFactory(new PropertyValueFactory<>("pessoa"));
+		colunaCelular.setCellFactory((TableColumn<Cliente, Pessoa> param) -> new TableCell<Cliente, Pessoa>() {
+			@Override
+			protected void updateItem(Pessoa item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item == null) {
+					setText(null);
+					setStyle("");
+				} else {
+					setText(item.getCelular());
+				}
+			}
+		});
 		TableColumn<Cliente, Number> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaEditar.setCellFactory(param -> new TableCell<Cliente,Number>(){
@@ -136,8 +172,38 @@ public class ClientePesquisaController extends UtilsController implements Initia
 				}
 			}
 		});
+		TableColumn<Cliente, Number> colunaExcluir = new  TableColumn<>("");
+		colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaExcluir.setCellFactory(param -> new TableCell<Cliente,Number>(){
+			JFXButton button = new JFXButton("Excluir");
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					button.setOnAction(event -> {
+						try{
+							loadFactory();
+							clientes = new ClientesImpl(getManager());
+							clientes.remove(tbPrincipal.getItems().get(getIndex()));
+							alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!");
+						}catch (Exception e){
+							alert(AlertType.ERROR, "Erro", null, "Erro ao tentar remover!\n"+e.getMessage());
 
-		tbPrincipal.getColumns().addAll(columnId,colunaEditar);
+						}finally {
+							close();
+						}
+					});
+					setGraphic(button);
+				}
+			}
+		});
+
+		tbPrincipal.getColumns().addAll(columnId,columnNome,colunaTelefone,colunaCelular,colunaEditar,colunaExcluir);
 		tbPrincipal.setTableMenuButtonVisible(true);
 	}
 }
