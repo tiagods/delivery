@@ -92,8 +92,10 @@ public class LoginController extends UtilsController implements Initializable{
                     stage1.show();
                     stage.close();
                 }
-                else
-                    super.alert(Alert.AlertType.ERROR,"Erro",null,"usuario ou senha inválidos",null,false);
+                else {
+                    super.alert(Alert.AlertType.ERROR, "Erro", null, "usuario ou senha inválidos", null, false);
+                    txSenha.setText("");
+                }
             }catch(Exception e) {
                 super.alert(Alert.AlertType.ERROR,"Erro",null,"Falha ao buscar usuario",e,true);
                 e.printStackTrace();

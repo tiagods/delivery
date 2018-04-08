@@ -75,7 +75,7 @@ public class ObservacaoCadastroController extends UtilsController implements Ini
             List<ProdutoCategoria> categoriaList = categorias.getAll();
             categoriaList.forEach(c->{
                 JFXCheckBox checkBox = new JFXCheckBox(c.getNome());
-                checkBox.setId(String.valueOf(c.getId()));
+                checkBox.setId(String.valueOf(c.getId().longValue()));
                 vboxPanel.getChildren().add(checkBox);
             });
             if(observacao.getId()!=null)
@@ -93,7 +93,9 @@ public class ObservacaoCadastroController extends UtilsController implements Ini
         observacao.getCategorias().forEach(n->{
             ObservableList nodes = vboxPanel.getChildren();
             Stream<JFXCheckBox> stream = nodes.stream();
-            Optional<JFXCheckBox> result = stream.filter(c->c.getId()==String.valueOf(n.getId())).findFirst();
+            Optional<JFXCheckBox> result = stream.filter(
+                    c->c.getId().equals(String.valueOf(n.getId().longValue())))
+                    .findFirst();
             if(result.isPresent()) result.get().setSelected(true);
         });
         this.observacao = observacao;

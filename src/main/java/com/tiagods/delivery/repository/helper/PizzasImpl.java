@@ -5,6 +5,7 @@ import com.tiagods.delivery.repository.AbstractRepository;
 import com.tiagods.delivery.repository.interfaces.PizzaDAO;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 
@@ -34,7 +35,12 @@ public class PizzasImpl extends AbstractRepository<Pizza, Long> implements Pizza
     @Override
     public List<Pizza> findByNome(String nome) {
         Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Pizza.class);
-        criteria.add(Restrictions.ilike("nome", nome, MatchMode.ANYWHERE));
+        if(nome.length()>0){
+            criteria.createAlias("categoria","cat");
+            Criterion criterion = Restrictions.ilike("nome", nome, MatchMode.ANYWHERE);
+            Criterion criterion2 = Restrictions.ilike("personalizado", nome, MatchMode.ANYWHERE);
+            criteria.add(Restrictions.or(criterion,criterion2));
+        }
         return criteria.list();
     }
 }

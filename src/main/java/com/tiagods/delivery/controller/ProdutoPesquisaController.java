@@ -200,6 +200,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 	}
 	private void filtrar() {
 		try {
+			//limpando tabelas
 			pnTabelas.getChildren().forEach(node->{
 				if(node instanceof AnchorPane) ((AnchorPane) node).getChildren().forEach(n->{
 					if(n instanceof TableView) ((TableView) n).getItems().clear();

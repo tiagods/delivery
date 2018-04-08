@@ -18,7 +18,6 @@ public class Complemento implements AbstractEntity,Serializable{
             joinColumns = { @JoinColumn(name = "complemento_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "categoria_id", referencedColumnName = "id") })
     private Set<ProdutoCategoria> categorias = new HashSet<>();
-
     @Override
     public Number getId() {
         return id;

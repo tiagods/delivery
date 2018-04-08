@@ -59,32 +59,28 @@ public class ComplementoCadastroController extends UtilsController implements In
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        super.Initializer(new JFXButton(), new JFXButton(), btnSalvar, new JFXButton(), new JFXButton(),btnSair);
         combos();
         if(complemento.getId()!=null)
             preencherFormulario(complemento);
     }
     private void combos(){
+        txCusto.setMask("N!,NN");
         vboxPanel.setSpacing(10);
-        ckSelecionarTudo.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                boolean selecionado = ckSelecionarTudo.isSelected();
-
-                ObservableList<Node> nodes = vboxPanel.getChildren();
-                nodes.forEach(node->{
-                    if(node instanceof JFXCheckBox)
-                        ((JFXCheckBox) node).setSelected(selecionado);
-                });
-            }
+        ckSelecionarTudo.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            ObservableList<Node> nodes = vboxPanel.getChildren();
+            nodes.forEach(node->{
+                if(node instanceof JFXCheckBox)
+                    ((JFXCheckBox) node).setSelected(ckSelecionarTudo.isSelected());
+            });
         });
         try{
             super.loadFactory();
             categorias = new ProdutosCategoriasImpl(super.getManager());
             List<ProdutoCategoria> categoriaList = categorias.getAll();
             categoriaList.forEach(c->{
-                JFXCheckBox checkBox = new JFXCheckBox(c.getNome());
-                checkBox.setId(String.valueOf(c.getId()));
+                JFXCheckBox checkBox = new JFXCheckBox();
+                checkBox.setText(c.getNome());
+                checkBox.setId(String.valueOf(c.getId().longValue()));
                 vboxPanel.getChildren().add(checkBox);
             });
         }catch (Exception e){
@@ -97,10 +93,13 @@ public class ComplementoCadastroController extends UtilsController implements In
         txCodigo.setText(String.valueOf(complemento.getId()));
         txNome.setText(complemento.getNome());
         txCusto.setText(complemento.getValor().toString().replace(".",","));
+
         complemento.getCategorias().forEach(n->{
             ObservableList nodes = vboxPanel.getChildren();
             Stream<JFXCheckBox> stream = nodes.stream();
-            Optional<JFXCheckBox> result = stream.filter(c->c.getId()==String.valueOf(n.getId())).findFirst();
+            Optional<JFXCheckBox> result = stream.filter(
+                    c->c.getId().equals(String.valueOf(n.getId().longValue())))
+                    .findFirst();
             if(result.isPresent()) result.get().setSelected(true);
         });
         this.complemento = complemento;
@@ -109,6 +108,10 @@ public class ComplementoCadastroController extends UtilsController implements In
 
     @FXML
     void salvar(ActionEvent event) {
+        if(txCusto.getText().trim().replace(",","").equals("")){
+            super.alert(Alert.AlertType.ERROR, "Erro",null,"Valor informado esta incorreto",null,false);
+            return;
+        }
         try {
             super.loadFactory();
             complementos = new ComplementosImpl(super.getManager());
