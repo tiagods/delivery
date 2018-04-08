@@ -191,7 +191,7 @@ public class ProdutoCadastroController extends UtilsController implements Initia
             cbCategoria.getItems().addAll(categoriaList);
             cbUnidade.getItems().addAll(ProdutoUnidade.values());
         }catch (Exception e){
-            super.alert(Alert.AlertType.ERROR,"Erro","Erro ao preencher combos","");
+            super.alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao preencher combos",e,true);
         }finally {
             super.close();
         }
@@ -333,8 +333,8 @@ public class ProdutoCadastroController extends UtilsController implements Initia
             //super.desbloquear(false, pnCadastro.getChildren());
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR,
-                    "Erro","Erro ao salvar o registro",
-                    "Ocorreu um erro ao tentar salvar o registro"+e.getMessage());
+                    "Erro","Erro",
+                    "Ocorreu um erro ao tentar salvar o registro",e,true);
         }finally {
             super.close();
         }
@@ -347,11 +347,13 @@ public class ProdutoCadastroController extends UtilsController implements Initia
 
     boolean validarDigitacao(MaskTextField custo, MaskTextField venda){
         if(venda.getText().replace(",","").trim().equals("")){
-            super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor da venda é obrigatorio","O valor da venda deve ser informado!");
+            super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor da venda é obrigatorio",
+                    "O valor da venda deve ser informado!",null,false);
             return false;
         }
         if(custo.getText().replace(",","").trim().equals("")){
-            super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor do custo é obrigatorio","O valor do custo esta incorreto!");
+            super.alert(Alert.AlertType.WARNING,"Informação incorreta","Valor do custo é obrigatorio",
+                    "O valor do custo esta incorreto!",null,false);
             return false;
         }
         return true;

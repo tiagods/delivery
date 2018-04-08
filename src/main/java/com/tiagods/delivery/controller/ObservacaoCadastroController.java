@@ -81,7 +81,8 @@ public class ObservacaoCadastroController extends UtilsController implements Ini
             if(observacao.getId()!=null)
                 preencherFormulario(observacao);
         }catch (Exception e){
-            super.alert(Alert.AlertType.ERROR,"Erro","Erro ao preencher combos","");
+            super.alert(Alert.AlertType.ERROR,"Erro",null,
+                    "Erro ao preencher combos",e,true);
         }finally {
             super.close();
         }
@@ -123,7 +124,7 @@ public class ObservacaoCadastroController extends UtilsController implements Ini
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR,
                     "Erro","Erro ao salvar o registro",
-                    "Ocorreu um erro ao tentar salvar o registro"+e.getMessage());
+                    "Ocorreu um erro ao tentar salvar o registro",e,true);
         }finally {
             super.close();
         }

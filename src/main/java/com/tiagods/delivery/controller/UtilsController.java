@@ -48,7 +48,7 @@ public abstract class UtilsController extends PersistenciaController{
 		this.buttonExcluir.setOnMouseClicked(new Excluir());
 		this.buttonCancelar.setOnMouseClicked(new Cancelar());
 	}
-	public void alert(AlertType alertType, String title, String header, String contentText,Exception ex) {
+	public void alert(AlertType alertType, String title, String header, String contentText,Exception ex, boolean print) {
 		Alert alert = new Alert(alertType);
 		alert.setTitle(title);
 		alert.setHeaderText(header);
@@ -75,24 +75,26 @@ public abstract class UtilsController extends PersistenciaController{
 			// Set expandable Exception into the dialog pane.
 			alert.getDialogPane().setExpandableContent(expContent);
 
-			try {
-				LocalDateTime dateTime = LocalDateTime.now();
-				File log = new File(System.getProperty("user.dir")+"/log/"+
-						dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))+"-erro.txt");
-				if(!log.getParentFile().exists())
-					log.getParentFile().mkdir();
-				FileWriter fw = new FileWriter(log, true);
-				String line = System.getProperty("line.separator");
-				fw.write(
-						dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))+"="+
-								header+":"+
-								contentText+
-								line+
-								exceptionText
-				);
-				fw.close();
-			}catch (IOException e) {
-				e.printStackTrace();
+			if(print) {
+				try {
+					LocalDateTime dateTime = LocalDateTime.now();
+					File log = new File(System.getProperty("user.dir") + "/log/" +
+							dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + "-erro.txt");
+					if (!log.getParentFile().exists())
+						log.getParentFile().mkdir();
+					FileWriter fw = new FileWriter(log, true);
+					String line = System.getProperty("line.separator");
+					fw.write(
+							dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")) + "=" +
+									header + ":" +
+									contentText +
+									line +
+									exceptionText
+					);
+					fw.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		alert.showAndWait();

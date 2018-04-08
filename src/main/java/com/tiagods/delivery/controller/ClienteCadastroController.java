@@ -145,13 +145,14 @@ public class ClienteCadastroController extends UtilsController implements Initia
                 }
 				else
 				    super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,
-                            "Verifique se o cep informado é valido ou se existe uma conexão com a internet");
+                            "Verifique se o cep informado é valido ou se existe uma conexão com a internet",null,false);
             }
 			else{
-				super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,"Verifique o cep informado");
+				super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,"Verifique o cep informado",null,false);
 			}
 		}catch(Exception e){
-            super.alert(Alert.AlertType.ERROR,"Falha na conexão com o banco de dados",null,"Houve uma falha na conexão com o banco de dados");
+            super.alert(Alert.AlertType.ERROR,"Falha na conexão com o banco de dados",null,
+                    "Houve uma falha na conexão com o banco de dados",e,true);
 		}finally {
 		    super.close();
 		}
@@ -223,7 +224,8 @@ public class ClienteCadastroController extends UtilsController implements Initia
                     super.desbloquear(false, pnCadastro.getChildren());
                     super.limpar(pnCadastro.getChildren());
                 }catch(Exception e){
-                    super.alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao excluir o registro\n" + e.getMessage());
+                    super.alert(Alert.AlertType.ERROR, "Erro", null,
+                            "Falha ao excluir o registro", e,true);
                 }finally{
                     super.close();
                 }
@@ -244,7 +246,7 @@ public class ClienteCadastroController extends UtilsController implements Initia
                 preencherFormulario(cliente);
             }
         }catch (Exception e){
-            super.alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registros\n" + e.getMessage());
+            super.alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registros",e,true);
             e.printStackTrace();
         }finally {
 		    super.close();
@@ -337,7 +339,7 @@ public class ClienteCadastroController extends UtilsController implements Initia
             preencherFormulario(cliente);
             super.desbloquear(false, pnCadastro.getChildren());
         }catch (PersistentObjectException e){
-            alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro \n"+e.getMessage());
+            alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro",e,true);
         }finally {
             super.close();
         }

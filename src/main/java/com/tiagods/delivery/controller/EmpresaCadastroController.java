@@ -84,14 +84,12 @@ public class EmpresaCadastroController extends UtilsController implements Initia
 
     @FXML
     private JFXTextField txNumero;
-    @FXML
-    private JFXButton btnEditar;
 
     @FXML
     private JFXButton btnSalvar;
 
     @FXML
-    private JFXButton btnCancelar;
+    private JFXButton btnSair;
 
 	private Empresa empresa = null;
 	private Stage stage;
@@ -122,13 +120,14 @@ public class EmpresaCadastroController extends UtilsController implements Initia
 				}
 				else
 				    super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,
-                            "Verifique se o cep informado é valido ou se existe uma conexão com a internet");
+                            "Verifique se o cep informado é valido ou se existe uma conexão com a internet",null, false);
             }
 			else{
-				super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,"Verifique o cep informado");
+				super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,"Verifique o cep informado",null, false);
 			}
 		}catch(Exception e){
-            super.alert(Alert.AlertType.ERROR,"Falha na conexão com o banco de dados",null,"Houve uma falha na conexão com o banco de dados");
+            super.alert(Alert.AlertType.ERROR,"Falha na conexão com o banco de dados",null,
+                    "Houve uma falha na conexão com o banco de dados",e,true);
 		}finally {
 		    super.close();
 		}
@@ -137,12 +136,14 @@ public class EmpresaCadastroController extends UtilsController implements Initia
 	void cancelar(ActionEvent event) {
 		stage.close();
 	}
+
 	private void combos(){
         cidades = new CidadesImpl(getManager());
         Cidade cidade = cidades.findByNome("São Paulo");
         cbCidade.getItems().setAll(cidades.findByEstado(Estado.SP));
         cbCidade.setValue(cidade);
         cbEstado.getItems().addAll(Estado.values());
+        cbEstado.setValue(Estado.SP);
         cbEstado.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
@@ -158,11 +159,6 @@ public class EmpresaCadastroController extends UtilsController implements Initia
         });
         new ComboBoxAutoCompleteUtil<>(cbCidade);
     }
-	@FXML
-	void editar(ActionEvent event) {
-		super.desbloquear(true, pnCadastro.getChildren());
-	}
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
         try {
@@ -172,9 +168,9 @@ public class EmpresaCadastroController extends UtilsController implements Initia
             empresa = empresas.findById(new Long(1));
             if(empresa!=null)
                 preencherFormulario(empresa);
-            super.Initializer(new JFXButton(), btnEditar, btnSalvar, new JFXButton(), btnCancelar,new JFXButton());
         }catch (Exception e){
-            super.alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registros\n" + e.getMessage());
+            super.alert(Alert.AlertType.ERROR, "Erro", null,
+                    "Falha ao listar os registros",e,true);
             e.printStackTrace();
         }finally {
             super.close();
@@ -237,12 +233,17 @@ public class EmpresaCadastroController extends UtilsController implements Initia
             empresas = new EmpresasImpl(getManager());
             empresa = empresas.save(empresa);
             preencherFormulario(empresa);
-            super.desbloquear(false, pnCadastro.getChildren());
+            //super.desbloquear(false, pnCadastro.getChildren());
         }catch (PersistentObjectException e){
-            alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro \n"+e.getMessage());
+            alert(Alert.AlertType.ERROR,"Erro",null,
+                    "Erro ao salvar o registro",e,true);
         }finally {
             super.close();
         }
 	}
+	@FXML
+    void sair(ActionEvent event){
+	    stage.close();
+    }
 
 }

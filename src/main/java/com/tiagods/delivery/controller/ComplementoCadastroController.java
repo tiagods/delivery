@@ -88,7 +88,7 @@ public class ComplementoCadastroController extends UtilsController implements In
                 vboxPanel.getChildren().add(checkBox);
             });
         }catch (Exception e){
-            super.alert(Alert.AlertType.ERROR,"Erro","Erro ao preencher combos","");
+            super.alert(Alert.AlertType.ERROR,"Erro",null, "Erro ao preencher combos",e, true);
         }finally {
             super.close();
         }
@@ -134,7 +134,7 @@ public class ComplementoCadastroController extends UtilsController implements In
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR,
                     "Erro","Erro ao salvar o registro",
-                    "Ocorreu um erro ao tentar salvar o registro"+e.getMessage());
+                    "Ocorreu um erro ao tentar salvar o registro",e,true);
         }finally {
             super.close();
         }

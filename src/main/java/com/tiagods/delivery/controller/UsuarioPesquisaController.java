@@ -44,8 +44,7 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 			tbPrincipal.getItems().clear();
 			tbPrincipal.getItems().addAll(usuarios.getAll());
 		}catch (Exception e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", "Falha ao listar clientes",e);
-			e.printStackTrace();
+			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", "Falha ao listar clientes",e,true);
 		}finally {
 			super.close();
 		}
@@ -71,8 +70,7 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 				}
 			});
 		}catch(IOException e) {
-			e.printStackTrace();
-			alert(AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", "Falha ao abrir cadastro do Usuario",e);
+			alert(AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", "Falha ao abrir cadastro do Usuario",e,true);
 		}
 	}
 	@FXML
@@ -88,7 +86,7 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 			List<Usuario> usuarioList =usuarios.filtrar(txPesquisa.getText().trim(),1,"nome");
 			tbPrincipal.getItems().addAll(usuarioList);
 		}catch (Exception e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", "Falha ao listar clientes",e);
+			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", "Falha ao listar clientes",e,true);
 			e.printStackTrace();
 		}finally {
 			super.close();
@@ -147,9 +145,9 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 							loadFactory();
 							usuarios = new UsuariosImpl(getManager());
 							usuarios.remove(tbPrincipal.getItems().get(getIndex()));
-							alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null);
+							alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null,false);
 						}catch (Exception e){
-							alert(AlertType.ERROR, "Erro",null, "Falha ao remover usuario", e);
+							alert(AlertType.ERROR, "Erro",null, "Falha ao remover usuario", e,true);
 						}finally {
 							close();
 						}

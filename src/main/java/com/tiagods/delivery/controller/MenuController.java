@@ -84,7 +84,7 @@ public class MenuController extends UtilsController implements Initializable{
         }catch(IOException e) {
             e.printStackTrace();
             super.alert(Alert.AlertType.ERROR, "Erro",
-                    "Erro ao abrir o cadastro", "Falha ao localizar o arquivo Empresa.fxml",e);
+                    "Erro ao abrir o cadastro", "Falha ao localizar o arquivo Empresa.fxml",e,true);
         }
     }
     @FXML
@@ -103,7 +103,7 @@ public class MenuController extends UtilsController implements Initializable{
         }catch(IOException e) {
             e.printStackTrace();
             super.alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo ProdutoPesquisa.fxml",e);
+                    "Falha ao localizar o arquivo ProdutoPesquisa.fxml",e,true);
         }
     }
 
@@ -131,8 +131,7 @@ public class MenuController extends UtilsController implements Initializable{
         }catch(IOException e) {
             e.printStackTrace();
             super.alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo Empresa.fxml",e);
+                    "Falha ao localizar o arquivo Empresa.fxml",e,true);
         }
     }
 }
-,

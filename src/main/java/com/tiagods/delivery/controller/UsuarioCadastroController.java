@@ -144,13 +144,13 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 				}
 				else
 				    super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,
-                            "Verifique se o cep informado é valido ou se existe uma conexão com a internet",null);
+                            "Verifique se o cep informado é valido ou se existe uma conexão com a internet",null,false);
             }
 			else{
-				super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,"Verifique o cep informado",null);
+				super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,"Verifique o cep informado",null,false);
 			}
 		}catch(Exception e){
-            super.alert(Alert.AlertType.ERROR,"Falha na conexão com o banco de dados",null,"Houve uma falha na conexão com o banco de dados",null);
+            super.alert(Alert.AlertType.ERROR,"Falha na conexão com o banco de dados",null,"Houve uma falha na conexão com o banco de dados",e,true);
 		}finally {
 		    super.close();
 		}
@@ -211,7 +211,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                     usuario = null;
                 } catch (Exception e) {
                     super.alert(Alert.AlertType.ERROR,"Erro ao excluir",null,
-                            "Falha ao tentar excluir o registro do Usuario",e);
+                            "Falha ao tentar excluir o registro do Usuario",e,true);
                 } finally {
                     close();
                 }
@@ -233,7 +233,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
             }
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR, "Erro", null,
-                    "Falha ao listar os registros", e);
+                    "Falha ao listar os registros", e,true);
             e.printStackTrace();
         }finally {
 		    super.close();
@@ -347,7 +347,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                     }
                     stage.close();
                 } catch (Exception e) {
-                    alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro do Usuario",e);
+                    alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro do Usuario",e,true);
                 }
             }
         } catch (Exception e) {

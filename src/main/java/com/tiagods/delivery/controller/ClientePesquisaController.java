@@ -48,7 +48,7 @@ public class ClientePesquisaController extends UtilsController implements Initia
 			tbPrincipal.getItems().clear();
 			tbPrincipal.getItems().addAll(clientes.getAll());
 		}catch (Exception e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", e.getMessage());
+			alert(AlertType.ERROR, "Erro", null, "Erro ao lista clientes", e, true);
 			e.printStackTrace();
 		}finally {
 			super.close();
@@ -76,7 +76,7 @@ public class ClientePesquisaController extends UtilsController implements Initia
 			});
 		}catch(IOException e) {
 			e.printStackTrace();
-			alert(AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", e.getMessage());
+			alert(AlertType.ERROR, "Erro", null, "Erro ao abrir o cadastro", e,true);
 		}
 	}
 	@FXML
@@ -92,7 +92,7 @@ public class ClientePesquisaController extends UtilsController implements Initia
 			List<Cliente> clienteList = clientes.filtrar(txPesquisa.getText().trim(),"nome");
 			tbPrincipal.getItems().addAll(clienteList);
 		}catch (Exception e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", e.getMessage());
+			alert(AlertType.ERROR, "Erro", null, "Erro ao lista clientes", e, true);
 			e.printStackTrace();
 		}finally {
 			super.close();
@@ -190,9 +190,9 @@ public class ClientePesquisaController extends UtilsController implements Initia
 							loadFactory();
 							clientes = new ClientesImpl(getManager());
 							clientes.remove(tbPrincipal.getItems().get(getIndex()));
-							alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!");
+							alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
 						}catch (Exception e){
-							alert(AlertType.ERROR, "Erro", null, "Erro ao tentar remover!\n"+e.getMessage());
+							alert(AlertType.ERROR, "Erro", null, "Erro ao tentar remover!",e,true);
 
 						}finally {
 							close();

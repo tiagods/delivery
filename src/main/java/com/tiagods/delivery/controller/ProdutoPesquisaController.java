@@ -127,7 +127,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
             });
 		}catch(IOException e) {
 			e.printStackTrace();
-			alert(AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", e.getMessage());
+			alert(AlertType.ERROR, "Erro", null, "Erro ao abrir o cadastro", e,true);
 		}
 	}
 	@FXML
@@ -176,7 +176,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 				tbObservacao.getItems().addAll(observacao.findByNome(txPesquisa.getText()));
 			}
 		}catch (Exception e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao listar", e.getMessage());
+			alert(AlertType.ERROR, "Erro", null, "Erro ao listar produtos", e, true);
 			e.printStackTrace();
 		}finally {
 			super.close();
@@ -261,13 +261,14 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 				}
 				else{
 					button.setOnAction(event -> {
+						long product = tbComplemento.getItems().get(getIndex()).getId().longValue();
 						try {
 							loadFactory();
 							complementos = new ComplementosImpl(getManager());
-							Complemento obs = complementos.findById(tbComplemento.getItems().get(getIndex()).getId().longValue());
+							Complemento obs = complementos.findById(product);
 							abrirCadastro(obs, COMPLEMENTO_CADASTRO);
 						} catch (Exception e) {
-							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro \n"+e);
+							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro Complemento>"+product,e,true);
 						} finally {
 							close();
 						}
@@ -304,13 +305,14 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 				}
 				else{
 					button.setOnAction(event -> {
+						long product = tbObservacao.getItems().get(getIndex()).getId().longValue();
 						try {
 							loadFactory();
 							observacao = new ObservacaoImpl(getManager());
-							Observacao obs = observacao.findById(tbObservacao.getItems().get(getIndex()).getId().longValue());
+							Observacao obs = observacao.findById(product);
 							abrirCadastro(obs, OBSERVACAO_CADASTRO);
 						} catch (Exception e) {
-							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro \n"+e);
+							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro Observacao>"+product,e,true);
 						} finally {
 							close();
 						}
@@ -346,13 +348,14 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 				}
 				else{
 					button.setOnAction(event -> {
+						long product = tbPizza.getItems().get(getIndex()).getId().longValue();
 						try {
 							loadFactory();
 							pizzas = new PizzasImpl(getManager());
-							Pizza obs = pizzas.findById(tbPizza.getItems().get(getIndex()).getId().longValue());
+							Pizza obs = pizzas.findById(product);
 							abrirCadastro(obs, PRODUTO_CADASTRO);
 						} catch (Exception e) {
-							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro \n"+e);
+							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro Pizza>"+product,e,true);
 						} finally {
 							close();
 						}
@@ -391,13 +394,14 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 				}
 				else{
 					button.setOnAction(event -> {
+						long product = tbProduto.getItems().get(getIndex()).getId().longValue();
 						try {
 							loadFactory();
 							genericos = new ProdutosGenericosImpl(getManager());
-							ProdutoGenerico gen = genericos.findById(tbProduto.getItems().get(getIndex()).getId().longValue());
+							ProdutoGenerico gen = genericos.findById(product);
 							abrirCadastro(gen, PRODUTO_CADASTRO);
 						} catch (Exception e) {
-							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro \n"+e);
+							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro ProdutoGenerico>"+product,e,true);
 						} finally {
 							close();
 						}
