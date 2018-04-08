@@ -137,27 +137,15 @@
             </AnchorPane>
             <HBox alignment="CENTER_RIGHT" prefHeight="78.0" prefWidth="900.0">
                <children>
-                  <JFXButton fx:id="btnNovo" mnemonicParsing="false" onAction="#novo" prefHeight="30.0" prefWidth="73.0" styleClass="btJFXDefault" text="Novo">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin></JFXButton>
-                  <JFXButton fx:id="btnEditar" mnemonicParsing="false" onAction="#editar" prefHeight="30.0" prefWidth="70.0" styleClass="btJFXDefault" text="Editar">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin></JFXButton>
                   <JFXButton fx:id="btnSalvar" mnemonicParsing="false" onAction="#salvar" prefHeight="30.0" prefWidth="70.0" styleClass="btJFXDefault" text="Salvar">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin></JFXButton>
-                  <JFXButton fx:id="btnCancelar" mnemonicParsing="false" onAction="#cancelar" prefHeight="30.0" prefWidth="70.0" styleClass="btJFXDefault" text="Cancelar">
+                  <JFXButton fx:id="btnSair" mnemonicParsing="false" onAction="#sair" prefHeight="30.0" prefWidth="70.0" styleClass="btJFXDefault" text="Sair">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </JFXButton>
-                  <JFXButton fx:id="btnExcluir" mnemonicParsing="false" onAction="#excluir" prefHeight="30.0" prefWidth="70.0" styleClass="btJFXDefault" text="Excluir">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin></JFXButton>
                </children>
             </HBox>
          </children>

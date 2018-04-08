@@ -67,7 +67,7 @@ public class UsuariosImpl extends AbstractRepository<Usuario, Long> implements U
 	public List<Usuario> filtrar(String nome, int ativo, String ordem) {
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
 		if (!nome.trim().equals("")) {
-			Criterion criterion = Restrictions.ilike("nome", nome, MatchMode.ANYWHERE);
+			Criterion criterion = Restrictions.ilike("pessoa.nome", nome, MatchMode.ANYWHERE);
 			Criterion criterion2 = Restrictions.ilike("pessoa.telefone", nome, MatchMode.ANYWHERE);
 			Criterion criterion3 = Restrictions.ilike("pessoa.celular", nome, MatchMode.ANYWHERE);
 			Criterion c = Restrictions.or(criterion,criterion2,criterion3);

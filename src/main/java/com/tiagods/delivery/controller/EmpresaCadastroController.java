@@ -132,11 +132,6 @@ public class EmpresaCadastroController extends UtilsController implements Initia
 		    super.close();
 		}
 	}
-	@FXML
-	void cancelar(ActionEvent event) {
-		stage.close();
-	}
-
 	private void combos(){
         cidades = new CidadesImpl(getManager());
         Cidade cidade = cidades.findByNome("São Paulo");
@@ -209,7 +204,6 @@ public class EmpresaCadastroController extends UtilsController implements Initia
             }
             else
                 pessoa = empresa.getPessoa();
-
             PessoaJuridica pessoaJuridica = new PessoaJuridica();
             pessoaJuridica.setRazao(txRazao.getText());
             pessoaJuridica.setCnpj(txCnpj.getPlainText());

@@ -3,6 +3,7 @@ package com.tiagods.delivery.controller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.tiagods.delivery.model.Cliente;
+import com.tiagods.delivery.model.Pessoa;
 import com.tiagods.delivery.model.Usuario;
 import com.tiagods.delivery.repository.helper.ClientesImpl;
 import com.tiagods.delivery.repository.helper.UsuariosImpl;
@@ -13,10 +14,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
@@ -26,6 +25,7 @@ import javafx.stage.WindowEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class UsuarioPesquisaController extends UtilsController implements Initializable{
@@ -61,14 +61,7 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 	        //stage.initStyle(StageStyle.UNDECORATED);
 	        stage.setScene(scene);
 	        stage.show();
-	        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-				@Override
-				public void handle(WindowEvent event) {
-					if(event.getEventType()==WindowEvent.WINDOW_CLOSE_REQUEST) {
-						filtrar();
-					}
-				}
-			});
+			stage.setOnHiding(event -> filtrar());
 		}catch(IOException e) {
 			alert(AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", "Falha ao abrir cadastro do Usuario",e,true);
 		}
@@ -77,13 +70,40 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 	private void cadastrar(ActionEvent event) {
 		abrirCadastro(null);
 	}
-	
+
+	boolean excluir(Usuario usuario) {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		alert.setTitle("Exclusão...");
+		alert.setHeaderText(null);
+		alert.setAlertType(Alert.AlertType.CONFIRMATION);
+		alert.setContentText("Tem certeza disso?");
+		Optional<ButtonType> optional = alert.showAndWait();
+		if (optional.get() == ButtonType.OK) {
+			try {
+				super.loadFactory();
+				usuarios = new UsuariosImpl(super.getManager());
+				Usuario u = usuarios.findById(usuario.getId().longValue());
+				usuarios.remove(u);
+				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
+				return true;
+			} catch (Exception e) {
+				super.alert(Alert.AlertType.ERROR,"Erro ao excluir",null,
+						"Falha ao tentar excluir o registro do Usuario",e,true);
+				return false;
+			} finally {
+				close();
+			}
+		}
+		else return false;
+
+	}
+
 	private void filtrar() {
 		try {
 			super.loadFactory();
 			usuarios = new UsuariosImpl(super.getManager());
 			tbPrincipal.getItems().clear();
-			List<Usuario> usuarioList =usuarios.filtrar(txPesquisa.getText().trim(),1,"nome");
+			List<Usuario> usuarioList = usuarios.filtrar(txPesquisa.getText().trim(),1,"pessoa.nome");
 			tbPrincipal.getItems().addAll(usuarioList);
 		}catch (Exception e) {
 			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", "Falha ao listar clientes",e,true);
@@ -102,8 +122,22 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 		columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		columnId.setPrefWidth(40);
 
-		TableColumn<Usuario, String> columnNome = new  TableColumn<>("Nome");
-		columnNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+		TableColumn<Usuario, Pessoa> columnNome = new  TableColumn<>("Nome");
+		columnNome.setCellValueFactory(new PropertyValueFactory<>("pessoa"));
+		columnNome.setCellFactory(param -> new TableCell<Usuario,Pessoa>(){
+			@Override
+			protected void updateItem(Pessoa item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					setText(item.getNome());
+				}
+			}
+		});
 		columnNome.setPrefWidth(250);
 		columnNome.setMaxWidth(320);
 
@@ -141,16 +175,8 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 				}
 				else{
 					button.setOnAction(event -> {
-						try{
-							loadFactory();
-							usuarios = new UsuariosImpl(getManager());
-							usuarios.remove(tbPrincipal.getItems().get(getIndex()));
-							alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null,false);
-						}catch (Exception e){
-							alert(AlertType.ERROR, "Erro",null, "Falha ao remover usuario", e,true);
-						}finally {
-							close();
-						}
+						boolean removed = excluir(tbPrincipal.getItems().get(getIndex()));
+						if(removed) tbPrincipal.getItems().remove(getIndex());
 					});
 					setGraphic(button);
 				}

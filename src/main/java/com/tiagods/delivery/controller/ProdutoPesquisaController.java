@@ -5,8 +5,14 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 import com.tiagods.delivery.model.Complemento;
 import com.tiagods.delivery.model.Observacao;
+import com.tiagods.delivery.model.Produto;
+import com.tiagods.delivery.model.ProdutoCategoria;
 import com.tiagods.delivery.model.produto.Pizza;
 import com.tiagods.delivery.model.produto.ProdutoGenerico;
+import com.tiagods.delivery.model.produto.pizza.PizzaFatia;
+import com.tiagods.delivery.model.produto.pizza.PizzaGrande;
+import com.tiagods.delivery.model.produto.pizza.PizzaMedia;
+import com.tiagods.delivery.model.produto.pizza.PizzaPequena;
 import com.tiagods.delivery.repository.helper.ComplementosImpl;
 import com.tiagods.delivery.repository.helper.ObservacaoImpl;
 import com.tiagods.delivery.repository.helper.PizzasImpl;
@@ -19,11 +25,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -36,6 +39,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ProdutoPesquisaController extends UtilsController implements Initializable{
@@ -102,8 +106,8 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 		tabelaAtivar();
 	}
 	
-	private	void abrirCadastro(Object object,String fxmlName){
-		try { 	
+	private	void abrirCadastro(long id, Object object,String fxmlName){
+		try {
 			Stage stage = new Stage();
 		    final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/"+fxmlName+".fxml"));
 		    if(object instanceof ProdutoGenerico)
@@ -120,26 +124,22 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 	        //stage.initStyle(StageStyle.UNDECORATED);
 	        stage.setScene(scene);
 	        stage.show();
-	        stage.setOnCloseRequest(event -> {
-                if(event.getEventType()==WindowEvent.WINDOW_CLOSE_REQUEST) {
-                    filtrar();
-                }
-            });
+			stage.setOnHiding(event -> filtrar());
 		}catch(IOException e) {
 			e.printStackTrace();
-			alert(AlertType.ERROR, "Erro", null, "Erro ao abrir o cadastro", e,true);
+			alert(AlertType.ERROR, "Erro", null, "Erro ao abrir o cadastro>"+fxmlName+">"+id,e,true);
 		}
 	}
 	@FXML
 	private void cadastrar(ActionEvent event) {
 		if(tgProduto.isSelected())
-			abrirCadastro(new ProdutoGenerico(),PRODUTO_CADASTRO);
+			abrirCadastro(-1,new ProdutoGenerico(),PRODUTO_CADASTRO);
 		else if(tgPizza.isSelected())
-		    abrirCadastro(new Pizza(), PRODUTO_CADASTRO);
+		    abrirCadastro(-1,new Pizza(), PRODUTO_CADASTRO);
         else if(tgComplemento.isSelected())
-            abrirCadastro(new Complemento(), COMPLEMENTO_CADASTRO);
+            abrirCadastro(-1,new Complemento(), COMPLEMENTO_CADASTRO);
         else if(tgObservacao.isSelected())
-            abrirCadastro(new Observacao(),OBSERVACAO_CADASTRO);
+            abrirCadastro(-1,new Observacao(),OBSERVACAO_CADASTRO);
     }
 
 	private void combos(){
@@ -156,8 +156,55 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 		tgObservacao.selectedProperty().addListener(changeListener);
 
 	}
+	boolean excluir(Object object) {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		alert.setTitle("Exclusão...");
+		alert.setHeaderText(null);
+		alert.setAlertType(Alert.AlertType.CONFIRMATION);
+		alert.setContentText("Tem certeza disso?");
+		Optional<ButtonType> optional = alert.showAndWait();
+		if (optional.get() == ButtonType.OK) {
+			try{
+				super.loadFactory();
+				if(object instanceof Complemento){
+					complementos = new ComplementosImpl(super.getManager());
+					Complemento c = complementos.findById(((Complemento) object).getId().longValue());
+					complementos.remove(c);
+				}
+				else if(object instanceof Observacao){
+					observacao = new ObservacaoImpl(super.getManager());
+					Observacao o = observacao.findById(((Complemento) object).getId().longValue());
+					observacao.remove(o);
+				}
+				else if(object instanceof Pizza) {
+					pizzas = new PizzasImpl(super.getManager());
+					Pizza p = pizzas.findById(((Pizza) object).getId().longValue());
+					pizzas.remove(p);
+				}
+				else if(object instanceof ProdutoGenerico){
+					genericos = new ProdutosGenericosImpl(super.getManager());
+					ProdutoGenerico pg = genericos.findById(((ProdutoGenerico) object).getId().longValue());
+					genericos.remove(pg);
+				}
+				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
+				return true;
+			}catch(Exception e){
+				super.alert(Alert.AlertType.ERROR, "Erro", null,
+						"Falha ao excluir o registro", e,true);
+				return false;
+			}finally{
+				super.close();
+			}
+		}
+		else return false;
+	}
 	private void filtrar() {
 		try {
+			pnTabelas.getChildren().forEach(node->{
+				if(node instanceof AnchorPane) ((AnchorPane) node).getChildren().forEach(n->{
+					if(n instanceof TableView) ((TableView) n).getItems().clear();
+				});
+			});
 			super.loadFactory();
 			if(tgProduto.isSelected()){
 				genericos = new ProdutosGenericosImpl(super.getManager());
@@ -266,7 +313,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 							loadFactory();
 							complementos = new ComplementosImpl(getManager());
 							Complemento obs = complementos.findById(product);
-							abrirCadastro(obs, COMPLEMENTO_CADASTRO);
+							abrirCadastro(obs.getId().longValue(), obs, COMPLEMENTO_CADASTRO);
 						} catch (Exception e) {
 							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro Complemento>"+product,e,true);
 						} finally {
@@ -277,7 +324,28 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 				}
 			}
 		});
-		tbComplemento.getColumns().addAll(columnId,columnNome,colunaValor,colunaEditar);
+		TableColumn<Complemento, Number> colunaExcluir = new  TableColumn<>("");
+		colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaExcluir.setCellFactory(param -> new TableCell<Complemento,Number>(){
+			JFXButton button = new JFXButton("Excluir");
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					button.setOnAction(event -> {
+						boolean removed = excluir(tbComplemento.getItems().get(getIndex()));
+						if(removed) tbComplemento.getItems().remove(getIndex());
+					});
+					setGraphic(button);
+				}
+			}
+		});
+		tbComplemento.getColumns().addAll(columnId,columnNome,colunaValor,colunaEditar,colunaExcluir);
 		tbComplemento.setTableMenuButtonVisible(true);
 	}
 	private void tabelaObservacao(){
@@ -310,7 +378,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 							loadFactory();
 							observacao = new ObservacaoImpl(getManager());
 							Observacao obs = observacao.findById(product);
-							abrirCadastro(obs, OBSERVACAO_CADASTRO);
+							abrirCadastro(obs.getId().longValue(),obs, OBSERVACAO_CADASTRO);
 						} catch (Exception e) {
 							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro Observacao>"+product,e,true);
 						} finally {
@@ -321,7 +389,28 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 				}
 			}
 		});
-		tbObservacao.getColumns().addAll(columnId,columnNome,colunaEditar);
+		TableColumn<Observacao, Number> colunaExcluir = new  TableColumn<>("");
+		colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaExcluir.setCellFactory(param -> new TableCell<Observacao,Number>(){
+			JFXButton button = new JFXButton("Excluir");
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					button.setOnAction(event -> {
+						boolean removed = excluir(tbObservacao.getItems().get(getIndex()));
+						if(removed) tbObservacao.getItems().remove(getIndex());
+					});
+					setGraphic(button);
+				}
+			}
+		});
+		tbObservacao.getColumns().addAll(columnId,columnNome,colunaEditar,colunaExcluir);
 		tbObservacao.setTableMenuButtonVisible(true);
 	}
 	private void tabelaPizza() {
@@ -334,6 +423,86 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 		columnNome.setPrefWidth(250);
 		columnNome.setMaxWidth(320);
 
+		TableColumn<Pizza, PizzaFatia> colunaValorFatia = new  TableColumn<>("Fatia");
+		colunaValorFatia.setCellValueFactory(new PropertyValueFactory<>("fatia"));
+		colunaValorFatia.setCellFactory(param -> new TableCell<Pizza,PizzaFatia>(){
+			@Override
+			protected void updateItem(PizzaFatia item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+				}
+				else{
+					Pizza pizza = tbPizza.getItems().get(getIndex());
+					if(pizza.isFatiaHabilitada()) {
+						Locale locale = new Locale("pt", "BR");
+						NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+						setText(currencyFormatter.format(item.getVendaFatia().doubleValue()));
+					}
+				}
+			}
+		});
+		TableColumn<Pizza, PizzaPequena> colunaValorPequena = new  TableColumn<>("Pequena");
+		colunaValorPequena.setCellValueFactory(new PropertyValueFactory<>("pequena"));
+		colunaValorPequena.setCellFactory(param -> new TableCell<Pizza,PizzaPequena>(){
+			@Override
+			protected void updateItem(PizzaPequena item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+				}
+				else{
+					Pizza pizza = tbPizza.getItems().get(getIndex());
+					if(pizza.isPequenaHabilitada()) {
+						Locale locale = new Locale("pt", "BR");
+						NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+						setText(currencyFormatter.format(item.getVendaPequeno().doubleValue()));
+					}
+				}
+			}
+		});
+		TableColumn<Pizza, PizzaMedia> colunaValorMedia = new  TableColumn<>("Media");
+		colunaValorMedia.setCellValueFactory(new PropertyValueFactory<>("media"));
+		colunaValorMedia.setCellFactory(param -> new TableCell<Pizza,PizzaMedia>(){
+			@Override
+			protected void updateItem(PizzaMedia item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+				}
+				else{
+					Pizza pizza = tbPizza.getItems().get(getIndex());
+					if(pizza.isMediaHabilitada()) {
+						Locale locale = new Locale("pt", "BR");
+						NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+						setText(currencyFormatter.format(item.getVendaMedia().doubleValue()));
+					}
+				}
+			}
+		});
+		TableColumn<Pizza, PizzaGrande> colunaValorGrande = new  TableColumn<>("Grande");
+		colunaValorGrande.setCellValueFactory(new PropertyValueFactory<>("grande"));
+		colunaValorGrande.setCellFactory(param -> new TableCell<Pizza,PizzaGrande>(){
+			@Override
+			protected void updateItem(PizzaGrande item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+				}
+				else{
+					Pizza pizza = tbPizza.getItems().get(getIndex());
+					if(pizza.isGrandeHabilitada()) {
+						Locale locale = new Locale("pt", "BR");
+						NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+						setText(currencyFormatter.format(item.getVendaGrande().doubleValue()));
+					}
+				}
+			}
+		});
 		TableColumn<Pizza, Number> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaEditar.setCellFactory(param -> new TableCell<Pizza,Number>(){
@@ -353,7 +522,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 							loadFactory();
 							pizzas = new PizzasImpl(getManager());
 							Pizza obs = pizzas.findById(product);
-							abrirCadastro(obs, PRODUTO_CADASTRO);
+							abrirCadastro(obs.getId().longValue(),obs, PRODUTO_CADASTRO);
 						} catch (Exception e) {
 							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro Pizza>"+product,e,true);
 						} finally {
@@ -364,15 +533,39 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 				}
 			}
 		});
-
-		tbPizza.getColumns().addAll(columnId,columnNome,colunaEditar);
+		TableColumn<Pizza, Number> colunaExcluir = new  TableColumn<>("");
+		colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaExcluir.setCellFactory(param -> new TableCell<Pizza,Number>(){
+			JFXButton button = new JFXButton("Excluir");
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					button.setOnAction(event -> {
+						boolean removed = excluir(tbPizza.getItems().get(getIndex()));
+						if(removed) tbPizza.getItems().remove(getIndex());
+					});
+					setGraphic(button);
+				}
+			}
+		});
+		tbPizza.getColumns().addAll(
+				columnId,columnNome,colunaValorFatia,colunaValorPequena,colunaValorMedia,colunaValorGrande,colunaEditar,colunaExcluir
+		);
 		tbPizza.setTableMenuButtonVisible(true);
 	}
-
 	private void tabelaProduto() {
 		TableColumn<ProdutoGenerico, Number> columnId = new  TableColumn<>("*");
 		columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		columnId.setPrefWidth(40);
+
+		TableColumn<ProdutoGenerico, ProdutoCategoria> columnCategoria = new  TableColumn<>("Categoria");
+		columnCategoria.setCellValueFactory(new PropertyValueFactory<>("categoria"));
 
 		TableColumn<ProdutoGenerico, String> columnNome = new  TableColumn<>("Nome");
 		columnNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
@@ -380,6 +573,40 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 		columnNome.setMaxWidth(320);
 		columnNome.setMaxWidth(320);
 
+		TableColumn<ProdutoGenerico, BigDecimal> colunaCusto = new  TableColumn<>("Custo");
+		colunaCusto.setCellValueFactory(new PropertyValueFactory<>("custo"));
+		colunaCusto.setCellFactory(param -> new TableCell<ProdutoGenerico,BigDecimal>(){
+			@Override
+			protected void updateItem(BigDecimal item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+				}
+				else{
+					Locale locale = new Locale("pt", "BR");
+					NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+					setText(currencyFormatter.format(item.doubleValue()));
+				}
+			}
+		});
+		TableColumn<ProdutoGenerico, BigDecimal> colunaValor = new  TableColumn<>("Valor");
+		colunaValor.setCellValueFactory(new PropertyValueFactory<>("venda"));
+		colunaValor.setCellFactory(param -> new TableCell<ProdutoGenerico,BigDecimal>(){
+			@Override
+			protected void updateItem(BigDecimal item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+				}
+				else{
+					Locale locale = new Locale("pt", "BR");
+					NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+					setText(currencyFormatter.format(item.doubleValue()));
+				}
+			}
+		});
 		TableColumn<ProdutoGenerico, Number> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaEditar.setCellFactory(param -> new TableCell<ProdutoGenerico,Number>(){
@@ -399,7 +626,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 							loadFactory();
 							genericos = new ProdutosGenericosImpl(getManager());
 							ProdutoGenerico gen = genericos.findById(product);
-							abrirCadastro(gen, PRODUTO_CADASTRO);
+							abrirCadastro(gen.getId().longValue(),gen, PRODUTO_CADASTRO);
 						} catch (Exception e) {
 							alert(AlertType.ERROR, "Erro","","Erro ao abrir registro ProdutoGenerico>"+product,e,true);
 						} finally {
@@ -410,7 +637,28 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 				}
 			}
 		});
-		tbProduto.getColumns().addAll(columnId,columnNome,colunaEditar);
+		TableColumn<ProdutoGenerico, Number> colunaExcluir = new  TableColumn<>("");
+		colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaExcluir.setCellFactory(param -> new TableCell<ProdutoGenerico,Number>(){
+			JFXButton button = new JFXButton("Excluir");
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					button.setOnAction(event -> {
+						boolean removed = excluir(tbProduto.getItems().get(getIndex()));
+						if(removed) tbProduto.getItems().remove(getIndex());
+					});
+					setGraphic(button);
+				}
+			}
+		});
+		tbProduto.getColumns().addAll(columnId,columnCategoria,columnNome,colunaCusto,colunaValor,colunaEditar,colunaExcluir);
 		tbProduto.setTableMenuButtonVisible(true);
 	}
 }

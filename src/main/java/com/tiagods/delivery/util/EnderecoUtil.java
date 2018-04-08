@@ -2,14 +2,12 @@ package com.tiagods.delivery.util;
 
 import com.tiagods.delivery.model.Endereco;
 import com.tiagods.delivery.model.Estado;
-import jdk.nashorn.internal.parser.JSONParser;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
 
 public class EnderecoUtil {
     private static EnderecoUtil instance;
@@ -34,8 +32,13 @@ public class EnderecoUtil {
         //String url = "https://www.catho.com.br/profissoes/abastecedor-de-maquinas/";
         String cep ="05765200";
         String url = "http://viacep.com.br/ws/"+ cep +"/json";
-        JSONObject payload = util.getJSONFromUrl(url);
-        payload.keySet().forEach(System.out::println);
+        JSONObject payload = null;
+
+        try {
+            payload = util.getJSONFromUrl(url);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
         if(payload!=null){
             Endereco e = util.getEndereco(payload);
             System.out.println(e.getLogradouro());
@@ -63,16 +66,20 @@ public class EnderecoUtil {
         }
     }
     private Endereco getEndereco(JSONObject payload){
-        Endereco endereco = new Endereco();
-        endereco.setCep(payload.get("cep").toString());
-        endereco.setLogradouro(payload.get("logradouro").toString());
-        endereco.setComplemento(payload.get("complemento").toString());
-        endereco.setBairro(payload.get("bairro").toString());
-        endereco.setLocalidade(payload.get("localidade").toString());
-        endereco.setUf(Estado.valueOf(payload.get("uf").toString()));
-        endereco.setUnidade(payload.get("unidade").toString());
-        endereco.setIbge(payload.get("ibge").toString());
-        endereco.setGia(payload.get("gia").toString());
-        return endereco;
+        try {
+            Endereco endereco = new Endereco();
+            endereco.setCep(payload.get("cep").toString());
+            endereco.setLogradouro(payload.get("logradouro").toString());
+            endereco.setComplemento(payload.get("complemento").toString());
+            endereco.setBairro(payload.get("bairro").toString());
+            endereco.setLocalidade(payload.get("localidade").toString());
+            endereco.setUf(Estado.valueOf(payload.get("uf").toString()));
+            endereco.setUnidade(payload.get("unidade").toString());
+            endereco.setIbge(payload.get("ibge").toString());
+            endereco.setGia(payload.get("gia").toString());
+            return endereco;
+        }catch (JSONException e){
+            return null;
+        }
     }
 }

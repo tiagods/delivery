@@ -14,7 +14,7 @@
          <children>
             <AnchorPane prefHeight="123.0" prefWidth="900.0">
                <children>
-                  <JFXButton layoutX="766.0" layoutY="14.0" onAction="#cadastrar" prefHeight="32.0" prefWidth="114.0" text="Cadastrar Novo" />
+                  <JFXButton layoutX="766.0" layoutY="14.0" onAction="#cadastrar" prefHeight="32.0" prefWidth="114.0" text="Novo" />
                   <JFXTextField fx:id="txPesquisa" layoutX="14.0" layoutY="12.0" onKeyTyped="#pesquisar" prefHeight="26.0" prefWidth="197.0" promptText="Digite um texto para pesquisar" />
                   <ButtonBar layoutX="13.0" layoutY="49.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="63.0" prefWidth="770.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="77.0" AnchorPane.topAnchor="50.0">
                      <buttons>

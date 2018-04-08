@@ -97,21 +97,11 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 
     @FXML
     private JFXComboBox<UsuarioNivel> cbNivel;
-
-    @FXML
-    private JFXButton btnNovo;
-
-    @FXML
-    private JFXButton btnEditar;
-
     @FXML
     private JFXButton btnSalvar;
-
     @FXML
-    private JFXButton btnCancelar;
+    private JFXButton btnSair;
 
-    @FXML
-    private JFXButton btnExcluir;
 	private Usuario usuario = null;
 	private Stage stage;
 	private CidadesImpl cidades;
@@ -155,11 +145,6 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 		    super.close();
 		}
 	}
-	@FXML
-	void cancelar(ActionEvent event) {
-		stage.close();
-	}
-
 	private void combos(){
         cidades = new CidadesImpl(getManager());
         Cidade cidade = cidades.findByNome("São Paulo");
@@ -185,49 +170,12 @@ public class UsuarioCadastroController extends UtilsController implements Initia
         cbNivel.setValue(UsuarioNivel.ADMIN);
         new ComboBoxAutoCompleteUtil<>(cbCidade);
     }
-	@FXML
-	void editar(ActionEvent event) {
-		super.desbloquear(true, pnCadastro.getChildren());
-	}
-	@FXML
-	void excluir(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Exclusão...");
-        alert.setHeaderText(null);
-        if (!txCodigo.getText().equals("")) {
-            alert.setAlertType(Alert.AlertType.CONFIRMATION);
-            alert.setContentText("Tem certeza disso?");
-            Optional<ButtonType> optional = alert.showAndWait();
-            if (optional.get() == ButtonType.OK) {
-                try {
-                    super.loadFactory();
-                    usuarios = new UsuariosImpl(super.getManager());
-                    usuario = usuarios.findById(Long.parseLong(txCodigo.getText()));
-                    alert.setAlertType(Alert.AlertType.INFORMATION);
-                    alert.setContentText("Registro excluido com sucesso!");
-                    alert.showAndWait();
-                    super.limpar(pnCadastro.getChildren());
-                    super.desbloquear(false,pnCadastro.getChildren());
-                    usuario = null;
-                } catch (Exception e) {
-                    super.alert(Alert.AlertType.ERROR,"Erro ao excluir",null,
-                            "Falha ao tentar excluir o registro do Usuario",e,true);
-                } finally {
-                    close();
-                }
-            }
-        } else {
-            alert.setAlertType(Alert.AlertType.ERROR);
-            alert.setContentText("Nenhum registro selecionado!");
-            alert.showAndWait();
-        }
-	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
 		    super.loadFactory();
             combos();
-            super.Initializer(btnNovo, btnEditar, btnSalvar, btnExcluir, btnCancelar,new JFXButton());
             if(usuario!=null) {
                 preencherFormulario(usuario);
             }
@@ -239,15 +187,11 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 		    super.close();
         }
     }
-	@FXML
-	void novo(ActionEvent event) {
-		super.desbloquear(true, pnCadastro.getChildren());
-        super.limpar(pnCadastro.getChildren());
-	}
 	void preencherFormulario(Usuario usuario) {
         txCodigo.setText(String.valueOf(usuario.getId()));
         cbNivel.setValue(usuario.getNivel());
         txLogin.setText(usuario.getLogin());
+        txLogin.setEditable(false);
         PessoaFisica fisica = usuario.getPessoaFisica();
         txRG.setText(fisica.getRg()==null?"":fisica.getRg());
         txCPF.setPlainText(fisica.getCpf()==null?"":fisica.getCpf());
@@ -268,8 +212,12 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 	}
 	@FXML
 	void salvar(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
         boolean validarLogin = false;
+        if(txLogin.getText().trim().equals("")){
+            super.alert(Alert.AlertType.ERROR, "Login Invalido", null, "Login não informado",null, false);
+            return;
+        }
+
         try {
             super.loadFactory();
             usuarios = new UsuariosImpl(getManager());
@@ -310,8 +258,9 @@ public class UsuarioCadastroController extends UtilsController implements Initia
             pessoa.setComplemento(txComplemento.getText());
             pessoa.setEstado(cbEstado.getValue());
             pessoa.setCidade(cbCidade.getValue());
+            usuario.setLogin(txLogin.getText());
             usuario.setPessoa(pessoa);
-            super.desbloquear(false, pnCadastro.getChildren());
+            //super.desbloquear(false, pnCadastro.getChildren());
             if (validarLogin) {
                 if (!txSenha.getText().trim().equals("")) {
                     CriptografiaUtil cripto = new CriptografiaUtil();
@@ -322,32 +271,29 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                     usuarios = new UsuariosImpl(getManager());
                     usuario = usuarios.save(usuario);
                     preencherFormulario(usuario);
-                    super.desbloquear(false,pnCadastro.getChildren());
                     txSenha.setText("");
                     txConfirmarSenha.setText("");
-                    txLogin.setEditable(false);
                     if(primeiroUsuario) {
-                        UsuarioLogado logado = UsuarioLogado.getInstance();
-                        logado.setUsuario(usuario);
+                        UsuarioLogado.getInstance().setUsuario(usuario);
                         try {
                             //Icons estilo = Icons.getInstance();
                             final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Main.fxml"));
                             loader.setController(new MenuController());
                             Parent root = loader.load();
                             Scene scene = new Scene(root);
-
-                            stage.setScene(scene);
-                            stage.setTitle("Menu Inicial");
+                            Stage stage1 = new Stage();
+                            stage1.setScene(scene);
+                            stage1.setTitle("Menu Inicial");
                             //stage.getIcons().add(new Image(estilo.getIcon().toString()));
-                            stage.show();
-                            stage.setOnCloseRequest(event1 -> System.exit(0));
+                            stage1.show();
+                            stage.setOnHiding(null);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                     stage.close();
                 } catch (Exception e) {
-                    alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro do Usuario",e,true);
+                    super.alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro do Usuario",e,true);
                 }
             }
         } catch (Exception e) {
@@ -356,36 +302,33 @@ public class UsuarioCadastroController extends UtilsController implements Initia
             super.close();
         }
 	}
+	@FXML
+    void sair(ActionEvent event){
+	    stage.close();
+    }
     private boolean validarLogin(String login){
         Usuario u = usuarios.findByLogin(login);
         if(u!=null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Informação incompleta");
-            alert.setHeaderText("Já existe alguem usando esse login");
-            alert.setContentText(u.getPessoa().getNome()+" já utiliza esse login");
-            alert.showAndWait();
+            super.alert(Alert.AlertType.ERROR,"Informação incompleta!","Login inválido!",
+                    u.getPessoa().getNome()+" já esta usando esse login",null,false);
             return false;
         }
         else
             return true;
     }
     private boolean validarSenha() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Informação incompleta");
-        alert.setContentText(null);
         if (txSenha.getText().trim().equals("")) {
-            alert.setHeaderText("Senha não informada!");
-            alert.showAndWait();
+            super.alert(Alert.AlertType.ERROR,"Informação incompleta!","Senhas em branco ou não conferem",
+                    "Por favor verifique se a senha esta correta",null,false);
             return false;
         } else {
             if (txSenha.getText().trim().equals(txConfirmarSenha.getText().trim()))
                 return true;
             else {
-                alert.setHeaderText("Senhas não conferem!");
-                alert.showAndWait();
+                super.alert(Alert.AlertType.ERROR,"Informação incompleta!","Senhas em branco ou não conferem",
+                        "Por favor verifique se a senha esta correta",null,false);
                 return false;
             }
         }
     }
-
 }

@@ -36,7 +36,7 @@ public class ProdutosGenericosImpl extends AbstractRepository<ProdutoGenerico, L
     @Override
     public List<ProdutoGenerico> findByNome(String nome) {
         Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(ProdutoGenerico.class);
-        criteria.add(Restrictions.ilike("nome", nome, MatchMode.ANYWHERE));
+        if(nome.length()>0) criteria.add(Restrictions.ilike("nome", nome, MatchMode.ANYWHERE));
         return criteria.list();
     }
 }

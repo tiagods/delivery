@@ -41,14 +41,14 @@ public class ClientesImpl extends AbstractRepository<Cliente, Long> implements C
 	}
 	public List<Cliente> filtrar(String nome, String ordem) {
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Cliente.class);
-		if (!nome.trim().equals("")) {
-			Criterion criterion = Restrictions.ilike("nome", nome, MatchMode.ANYWHERE);
+		if (nome.length()>0) {
+			Criterion criterion = Restrictions.ilike("pessoa.nome", nome, MatchMode.ANYWHERE);
 			Criterion criterion2 = Restrictions.ilike("pessoa.telefone", nome, MatchMode.ANYWHERE);
 			Criterion criterion3 = Restrictions.ilike("pessoa.celular", nome, MatchMode.ANYWHERE);
 			Criterion c = Restrictions.or(criterion,criterion2,criterion3);
 			criteria.add(c);
 		}
-		criteria.addOrder(Order.asc(ordem));
+		criteria.addOrder(Order.asc("pessoa."+ordem));
 		return (List<Cliente>) criteria.list();
 	}
 }

@@ -1,6 +1,7 @@
 package com.tiagods.delivery.controller;
 
 import com.jfoenix.controls.*;
+import com.tiagods.delivery.config.UsuarioLogado;
 import com.tiagods.delivery.model.Produto;
 import com.tiagods.delivery.model.ProdutoCategoria;
 import com.tiagods.delivery.model.ProdutoUnidade;
@@ -29,9 +30,7 @@ import org.fxutils.maskedtextfield.MaskTextField;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.NumberFormat;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ProdutoCadastroController extends UtilsController implements Initializable{
     @FXML
@@ -147,9 +146,8 @@ public class ProdutoCadastroController extends UtilsController implements Initia
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        super.Initializer(new JFXButton(), new JFXButton(), btnSalvar, new JFXButton(), new JFXButton(),btnSair);
         combos();
-        if(produto.getId()!=null)
+        if(produto.getId().longValue()!=0)
             preencherFormulario(produto);
     }
 
@@ -158,43 +156,73 @@ public class ProdutoCadastroController extends UtilsController implements Initia
 
     }
     private void combos(){
-        txMargemF.setDisable(true);
-        txMargemP.setDisable(true);
-        txMargemM.setDisable(true);
-        txMargemG.setDisable(true);
-
+        cbUnidade.getItems().addAll(ProdutoUnidade.values());
         ChangeListener<Boolean> changeListener = (observable, oldValue, newValue) -> {
-            txCustoF.setDisable(!tgFatia.isSelected());
-//            txMargemF.setDisable(!tgFatia.isSelected());
-            txVendaF.setDisable(!tgFatia.isSelected());
-
-            txCustoP.setDisable(!tgPequena.isSelected());
-//            txMargemP.setDisable(!tgPequena.isSelected());
-            txVendaP.setDisable(!tgPequena.isSelected());
-
-            txCustoM.setDisable(!tgMedia.isSelected());
-//            txMargemM.setDisable(!tgMedia.isSelected());
-            txVendaM.setDisable(!tgMedia.isSelected());
-
-            txCustoG.setDisable(!tgGrande.isSelected());
-//            txMargemG.setDisable(!tgGrande.isSelected());
-            txVendaG.setDisable(!tgGrande.isSelected());
+            combosTG();
         };
         tgFatia.selectedProperty().addListener(changeListener);
         tgPequena.selectedProperty().addListener(changeListener);
         tgMedia.selectedProperty().addListener(changeListener);
         tgGrande.selectedProperty().addListener(changeListener);
+        txMargemF.setDisable(true);
+        txMargemP.setDisable(true);
+        txMargemM.setDisable(true);
+        txMargemG.setDisable(true);
+        txMargem.setDisable(true);
+
+        combosTG();
+
         try{
             super.loadFactory();
             categorias = new ProdutosCategoriasImpl(super.getManager());
             List<ProdutoCategoria> categoriaList = categorias.getAll();
             cbCategoria.getItems().addAll(categoriaList);
-            cbUnidade.getItems().addAll(ProdutoUnidade.values());
+
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao preencher combos",e,true);
         }finally {
             super.close();
         }
+        if(produto instanceof Pizza) {
+            pnPizza.setVisible(true);
+            pnComum.setVisible(false);
+
+            pnPizza.getChildren().forEach(node->{
+                if(node instanceof MaskTextField){
+                    ((MaskTextField) node).setText("0,00");
+                    ((MaskTextField) node).setMask("N!,NN");
+                }
+            });
+            Optional<ProdutoCategoria> cat = cbCategoria.getItems().stream().filter(c->c.getNome().equals("Pizzas")).findAny();
+            if(cat.isPresent()) cbCategoria.setValue(cat.get());
+        }
+        else if(produto instanceof ProdutoGenerico){
+            pnPizza.setVisible(false);
+            pnComum.setVisible(true);
+            pnComum.getChildren().forEach(node->{
+                if(node instanceof MaskTextField){
+                    ((MaskTextField) node).setText("0,00");
+                    ((MaskTextField) node).setMask("N!,NN");
+                }
+            });
+        }
+    }
+    private void combosTG(){
+        txCustoF.setDisable(!tgFatia.isSelected());
+//            txMargemF.setDisable(!tgFatia.isSelected());
+        txVendaF.setDisable(!tgFatia.isSelected());
+
+        txCustoP.setDisable(!tgPequena.isSelected());
+//            txMargemP.setDisable(!tgPequena.isSelected());
+        txVendaP.setDisable(!tgPequena.isSelected());
+
+        txCustoM.setDisable(!tgMedia.isSelected());
+//            txMargemM.setDisable(!tgMedia.isSelected());
+        txVendaM.setDisable(!tgMedia.isSelected());
+
+        txCustoG.setDisable(!tgGrande.isSelected());
+//            txMargemG.setDisable(!tgGrande.isSelected());
+        txVendaG.setDisable(!tgGrande.isSelected());
     }
     private void preencherFormulario(Produto produto) {
         txCodigo.setText(String.valueOf(produto.getId()));
@@ -204,6 +232,7 @@ public class ProdutoCadastroController extends UtilsController implements Initia
         cbUnidade.setValue(produto.getUnidade());
         txDescricao.setText(produto.getDescricao());
         txReceita.setText(produto.getReceita());
+
         if(produto instanceof Pizza) {
             pnPizza.setVisible(true);
             pnComum.setVisible(false);
@@ -250,7 +279,8 @@ public class ProdutoCadastroController extends UtilsController implements Initia
     private BigDecimal[] prePersistValores(MaskTextField txCusto, MaskTextField txMargem, MaskTextField txVenda){
         double custo=txCusto.getText().replace(",","").trim().equals("")?
                 0.00:Double.parseDouble(txCusto.getText().replace(",",".").trim());
-        double margem=txMargem.getText().equals("")?0.00:Double.parseDouble(txMargem.getText());
+        double margem=txMargem.getText().replace(",","").trim().equals("")?
+                0.00:Double.parseDouble(txMargem.getText().replace(",",".").trim());
         double venda=txVenda.getText().replace(",","").trim().equals("")?
                 0.00:Double.parseDouble(txVenda.getText().replace(",",".").trim());
         BigDecimal[] bigDecimal = new BigDecimal[3];
@@ -264,13 +294,19 @@ public class ProdutoCadastroController extends UtilsController implements Initia
     void salvar(ActionEvent event) {
         try {
             super.loadFactory();
-            txCodigo.setText(String.valueOf(produto.getId()));
-            txNome.setText(produto.getNome());
-            txPersonalizado.setText(produto.getPersonalizado());
-            cbCategoria.setValue(produto.getCategoria());
-            cbUnidade.setValue(produto.getUnidade());
-            txDescricao.setText(produto.getDescricao());
-            txReceita.setText(produto.getReceita());
+            if(!txCodigo.getText().equals(""))
+                produto.setId(Long.parseLong(txCodigo.getText()));
+            else{
+                produto.setCriadoEm(Calendar.getInstance());
+                produto.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+            }
+            produto.setNome(txNome.getText());
+            produto.setPersonalizado(txPersonalizado.getText());
+            produto.setCategoria(cbCategoria.getValue());
+            produto.setUnidade(cbUnidade.getValue());
+            produto.setDescricao(txDescricao.getText());
+            produto.setReceita(txReceita.getText());
+
             BigDecimal[] bigDecimal = null;
             if(produto instanceof ProdutoGenerico){
                 if(!validarDigitacao(txCusto,txVenda)) return;
@@ -278,6 +314,7 @@ public class ProdutoCadastroController extends UtilsController implements Initia
                 ((ProdutoGenerico) produto).setCusto(bigDecimal[0]);
                 ((ProdutoGenerico) produto).setMargem(bigDecimal[1]);
                 ((ProdutoGenerico) produto).setVenda(bigDecimal[2]);
+
                 genericos = new ProdutosGenericosImpl(super.getManager());
                 genericos.save((ProdutoGenerico)produto);
             }

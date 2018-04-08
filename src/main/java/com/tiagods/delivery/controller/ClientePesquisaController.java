@@ -3,6 +3,7 @@ package com.tiagods.delivery.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.jfoenix.controls.JFXButton;
@@ -18,11 +19,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
@@ -66,14 +64,7 @@ public class ClientePesquisaController extends UtilsController implements Initia
 	        //stage.initStyle(StageStyle.UNDECORATED);
 	        stage.setScene(scene);
 	        stage.show();
-	        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-				@Override
-				public void handle(WindowEvent event) {
-					if(event.getEventType()==WindowEvent.WINDOW_CLOSE_REQUEST) {
-						filtrar();
-					}
-				}
-			});
+	        stage.setOnHiding(event -> filtrar());
 		}catch(IOException e) {
 			e.printStackTrace();
 			alert(AlertType.ERROR, "Erro", null, "Erro ao abrir o cadastro", e,true);
@@ -83,7 +74,32 @@ public class ClientePesquisaController extends UtilsController implements Initia
 	private void cadastrar(ActionEvent event) {
 		abrirCadastro(null);
 	}
-	
+
+	boolean excluir(Cliente cliente) {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		alert.setTitle("Exclusão...");
+		alert.setHeaderText(null);
+		alert.setAlertType(Alert.AlertType.CONFIRMATION);
+		alert.setContentText("Tem certeza disso?");
+		Optional<ButtonType> optional = alert.showAndWait();
+		if (optional.get() == ButtonType.OK) {
+			try{
+				super.loadFactory();
+				clientes = new ClientesImpl(getManager());
+				Cliente cli = clientes.findById(cliente.getId().longValue());
+				clientes.remove(cli);
+				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
+				return true;
+			}catch(Exception e){
+				super.alert(Alert.AlertType.ERROR, "Erro", null,
+						"Falha ao excluir o registro", e,true);
+				return false;
+			}finally{
+				super.close();
+			}
+		}
+		else return false;
+	}
 	private void filtrar() {
 		try {
 			super.loadFactory();
@@ -119,10 +135,22 @@ public class ClientePesquisaController extends UtilsController implements Initia
 //				}
 //			}
 //		});
-		TableColumn<Cliente, String> columnNome = new  TableColumn<>("Nome");
-		columnNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+		TableColumn<Cliente, Pessoa> columnNome = new  TableColumn<>("Nome");
+		columnNome.setCellValueFactory(new PropertyValueFactory<>("pessoa"));
 		columnNome.setPrefWidth(250);
 		columnNome.setMaxWidth(320);
+		columnNome.setCellFactory((TableColumn<Cliente, Pessoa> param) -> new TableCell<Cliente, Pessoa>() {
+			@Override
+			protected void updateItem(Pessoa item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item == null) {
+					setText(null);
+					setStyle("");
+				} else {
+					setText(item.getNome());
+				}
+			}
+		});
 
 		TableColumn<Cliente, Pessoa> colunaTelefone = new  TableColumn<>("Telefone");
 		colunaTelefone.setCellValueFactory(new PropertyValueFactory<>("pessoa"));
@@ -166,7 +194,7 @@ public class ClientePesquisaController extends UtilsController implements Initia
 				}
 				else{
 					button.setOnAction(event -> {
-                        abrirCadastro(tbPrincipal.getItems().get(getIndex()));
+						abrirCadastro(tbPrincipal.getItems().get(getIndex()));
                     });
 					setGraphic(button);
 				}
@@ -186,17 +214,8 @@ public class ClientePesquisaController extends UtilsController implements Initia
 				}
 				else{
 					button.setOnAction(event -> {
-						try{
-							loadFactory();
-							clientes = new ClientesImpl(getManager());
-							clientes.remove(tbPrincipal.getItems().get(getIndex()));
-							alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
-						}catch (Exception e){
-							alert(AlertType.ERROR, "Erro", null, "Erro ao tentar remover!",e,true);
-
-						}finally {
-							close();
-						}
+						boolean removed = excluir(tbPrincipal.getItems().get(getIndex()));
+						if(removed) tbPrincipal.getItems().remove(getIndex());
 					});
 					setGraphic(button);
 				}

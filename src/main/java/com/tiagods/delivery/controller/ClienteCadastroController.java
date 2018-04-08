@@ -98,18 +98,10 @@ public class ClienteCadastroController extends UtilsController implements Initia
 	private JFXComboBox<Cidade> cbCidade;
 
 	@FXML
-	private JFXButton btnNovo;
-
-	@FXML
-	private JFXButton btnEditar;
-
-	@FXML
 	private JFXButton btnSalvar;
 
 	@FXML
-	private JFXButton btnExcluir;
-	@FXML
-	private JFXButton btnCancelar;
+	private JFXButton btnSair;
 	@FXML
     private JFXRadioButton rbEmpresa;
 	@FXML
@@ -157,10 +149,6 @@ public class ClienteCadastroController extends UtilsController implements Initia
 		    super.close();
 		}
 	}
-	@FXML
-	void cancelar(ActionEvent event) {
-		stage.close();
-	}
 	private void combos(){
         ToggleGroup group = new ToggleGroup();
         group.getToggles().addAll(rbEmpresa,rbPessoa);
@@ -188,6 +176,7 @@ public class ClienteCadastroController extends UtilsController implements Initia
         cbCidade.getItems().setAll(cidades.findByEstado(Estado.SP));
         cbCidade.setValue(cidade);
         cbEstado.getItems().addAll(Estado.values());
+        cbEstado.setValue(Estado.SP);
         cbEstado.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
@@ -203,45 +192,11 @@ public class ClienteCadastroController extends UtilsController implements Initia
         });
         new ComboBoxAutoCompleteUtil<>(cbCidade);
     }
-	@FXML
-	void editar(ActionEvent event) {
-		super.desbloquear(true, pnCadastro.getChildren());
-	}
-	@FXML
-	void excluir(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Exclusão...");
-        alert.setHeaderText(null);
-        if (!txCodigo.getText().equals("")) {
-            alert.setAlertType(Alert.AlertType.CONFIRMATION);
-            alert.setContentText("Tem certeza disso?");
-            Optional<ButtonType> optional = alert.showAndWait();
-            if (optional.get() == ButtonType.OK) {
-                try{
-                    super.loadFactory();
-                    clientes = new ClientesImpl(getManager());
-                    clientes.remove(cliente);
-                    super.desbloquear(false, pnCadastro.getChildren());
-                    super.limpar(pnCadastro.getChildren());
-                }catch(Exception e){
-                    super.alert(Alert.AlertType.ERROR, "Erro", null,
-                            "Falha ao excluir o registro", e,true);
-                }finally{
-                    super.close();
-                }
-            }
-        }else {
-            alert.setAlertType(Alert.AlertType.ERROR);
-            alert.setContentText("Nenhum registro selecionado!");
-            alert.showAndWait();
-        }
-	}
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
 		    super.loadFactory();
             combos();
-            super.Initializer(btnNovo, btnEditar, btnSalvar, btnExcluir, btnCancelar,new JFXButton());
             if(cliente!=null) {
                 preencherFormulario(cliente);
             }
@@ -252,11 +207,7 @@ public class ClienteCadastroController extends UtilsController implements Initia
 		    super.close();
         }
     }
-	@FXML
-	void novo(ActionEvent event) {
-		super.desbloquear(true, pnCadastro.getChildren());
-        super.limpar(pnCadastro.getChildren());
-	}
+
 	void preencherFormulario(Cliente cliente) {
         txCodigo.setText(String.valueOf(cliente.getId()));
         ClienteTipo tipo = cliente.getTipo();
@@ -344,5 +295,9 @@ public class ClienteCadastroController extends UtilsController implements Initia
             super.close();
         }
 	}
+	@FXML
+    void sair(ActionEvent event){
+	    stage.close();
+    }
 
 }

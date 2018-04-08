@@ -10,10 +10,13 @@ public class UsuarioLogado {
         if (instance == null) instance = new UsuarioLogado();
         return instance;
     }
+    private UsuarioLogado(){
 
-    public Usuario getUsuario() {
+    }
+
+    public static Usuario getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(Usuario usuario) { usuario = usuario;}
+    public static void setUsuario(Usuario usuario) { usuario = usuario;}
 }

@@ -50,6 +50,8 @@ public abstract class UtilsController extends PersistenciaController{
 	}
 	public void alert(AlertType alertType, String title, String header, String contentText,Exception ex, boolean print) {
 		Alert alert = new Alert(alertType);
+		alert.getDialogPane().setExpanded(true);
+		alert.getDialogPane().setMinSize(400,150);
 		alert.setTitle(title);
 		alert.setHeaderText(header);
 		alert.setContentText(contentText);
