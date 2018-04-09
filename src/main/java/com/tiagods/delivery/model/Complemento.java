@@ -14,6 +14,7 @@ public class Complemento implements AbstractEntity,Serializable{
     private String nome;
     private BigDecimal valor;
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+
     @JoinTable(name="complemento_categoria",
             joinColumns = { @JoinColumn(name = "complemento_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "categoria_id", referencedColumnName = "id") })

@@ -11,6 +11,7 @@ import com.tiagods.delivery.config.UsuarioLogado;
 import com.tiagods.delivery.controller.*;
 import com.tiagods.delivery.model.Empresa;
 import com.tiagods.delivery.model.Usuario;
+import com.tiagods.delivery.model.UsuarioNivel;
 import com.tiagods.delivery.repository.helper.EmpresasImpl;
 import com.tiagods.delivery.repository.helper.UsuariosImpl;
 import javafx.application.Application;
