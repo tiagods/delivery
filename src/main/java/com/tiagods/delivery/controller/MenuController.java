@@ -114,10 +114,29 @@ public class MenuController extends UtilsController implements Initializable{
         }
     }
     @FXML
-    void delivery(ActionEvent event){
+    void pedidoCaixa(ActionEvent event){
         try {
             Stage stage = new Stage();
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DeliveryPesquisa.fxml"));
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PedidoCaixaPesquisa.fxml"));
+            loader.setController(new PedidoCaixaPesquisaController(stage));
+            final Parent root = loader.load();
+            final Scene scene = new Scene(root);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            //stage.initStyle(StageStyle.UNDECORATED);
+            stage.setScene(scene);
+            stage.show();
+
+        }catch(IOException e) {
+            e.printStackTrace();
+            super.alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                    "Falha ao localizar o arquivo ProdutoPesquisa.fxml",e,true);
+        }
+    }
+    @FXML
+    void pedidoDelivery(ActionEvent event){
+        try {
+            Stage stage = new Stage();
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PedidoDeliveryPesquisa.fxml"));
             loader.setController(new PedidoDeliveryPesquisaController(stage));
             final Parent root = loader.load();
             final Scene scene = new Scene(root);
