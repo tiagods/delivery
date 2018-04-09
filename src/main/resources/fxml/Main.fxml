@@ -7,11 +7,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="202.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
   <children>
       <ToolBar prefHeight="36.0" prefWidth="640.0">
          <items>
+            <JFXButton fx:id="btnCaixa" layoutX="10.0" layoutY="10.0" onAction="#caixa" prefHeight="35.0" prefWidth="74.0" text="Caixa" />
             <JFXButton onAction="#cliente" prefHeight="35.0" prefWidth="74.0" text="Cliente" />
+            <JFXButton layoutX="88.0" layoutY="10.0" onAction="#delivery" prefHeight="35.0" prefWidth="87.0" text="Delivery" />
             <JFXButton onAction="#empresa" prefHeight="35.0" prefWidth="87.0" text="Empresa" />
             <JFXButton layoutX="256.0" layoutY="10.0" onAction="#produto" prefHeight="35.0" prefWidth="90.0" text="Produto" />
             <JFXButton layoutX="78.0" layoutY="10.0" onAction="#sobre" prefHeight="35.0" prefWidth="70.0" text="Sobre" />
@@ -21,7 +23,7 @@
       </ToolBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-        <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" text="Drag components from Library here…" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
+        <Label alignment="CENTER" layoutX="203.0" layoutY="78.0" style="&#10;" text="Drag components from Library here…" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
           <font>
             <Font size="18.0" />
           </font>

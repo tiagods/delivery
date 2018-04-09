@@ -1,8 +1,7 @@
-package com.tiagods.delivery.model;
+package com.tiagods.delivery.model.pedido;
 
-import com.tiagods.delivery.model.pedido.PedidoPagamento;
-import com.tiagods.delivery.model.pedido.PedidoProdutoItem;
-import com.tiagods.delivery.model.pedido.PedidoStatus;
+import com.tiagods.delivery.model.AbstractEntity;
+import com.tiagods.delivery.model.Usuario;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,7 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Pedido implements AbstractEntity,Serializable{
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "pedido_type")
+public abstract class Pedido implements AbstractEntity,Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,19 +22,12 @@ public class Pedido implements AbstractEntity,Serializable{
     @ManyToOne
     @JoinColumn(name = "criado_por_id")
     private Usuario criadoPor;
-    @ManyToOne
-    @JoinColumn(name = "entregador_id")
-    private Entregador entregador;
     private BigDecimal taxa;
     private BigDecimal total;
     private BigDecimal desconto;
-    @Enumerated(value = EnumType.STRING)
-    private PedidoStatus status;
-
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "pedido_id")
     private Set<PedidoProdutoItem> produtos = new HashSet<>();
-
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name="pedido_id")
     private Set<PedidoPagamento> pagamentos = new HashSet<>();
@@ -44,14 +38,6 @@ public class Pedido implements AbstractEntity,Serializable{
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Entregador getEntregador() {
-        return entregador;
-    }
-
-    public void setEntregador(Entregador entregador) {
-        this.entregador = entregador;
     }
 
     public BigDecimal getTaxa() {
@@ -76,14 +62,6 @@ public class Pedido implements AbstractEntity,Serializable{
 
     public void setDesconto(BigDecimal desconto) {
         this.desconto = desconto;
-    }
-
-    public PedidoStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(PedidoStatus status) {
-        this.status = status;
     }
 
     public Set<PedidoProdutoItem> getProdutos() {

@@ -1,15 +1,10 @@
 package com.tiagods.delivery.model.pedido;
 
-import com.tiagods.delivery.model.Complemento;
-import com.tiagods.delivery.model.Observacao;
-import com.tiagods.delivery.model.Pedido;
 import com.tiagods.delivery.model.Produto;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 
 @Embeddable
 public abstract class PedidoProduto implements Serializable {

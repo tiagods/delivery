@@ -5,11 +5,10 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import com.jfoenix.controls.JFXButton;
 import com.tiagods.delivery.model.Empresa;
 import com.tiagods.delivery.repository.helper.EmpresasImpl;
-import com.tiagods.delivery.repository.helper.UsuariosImpl;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -19,15 +18,18 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 public class MenuController extends UtilsController implements Initializable{
-	private EmpresasImpl empresas;
+	@FXML
+    private JFXButton btnCaixa;
+
+    private EmpresasImpl empresas;
     private Stage stage;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-        try{
+        btnCaixa.setDisable(true);
+	    try{
             super.loadFactory();
             empresas = new EmpresasImpl(super.getManager());
             Empresa empresa = empresas.findById(new Long(1));
@@ -52,6 +54,10 @@ public class MenuController extends UtilsController implements Initializable{
         }catch (Exception e){
         }
 	}
+	@FXML
+    void caixa(ActionEvent event){
+
+    }
 	@FXML
     void cliente(ActionEvent event) {
     	try {
@@ -107,7 +113,25 @@ public class MenuController extends UtilsController implements Initializable{
                     "Falha ao localizar o arquivo ProdutoPesquisa.fxml",e,true);
         }
     }
+    @FXML
+    void delivery(ActionEvent event){
+        try {
+            Stage stage = new Stage();
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DeliveryPesquisa.fxml"));
+            loader.setController(new PedidoDeliveryPesquisaController(stage));
+            final Parent root = loader.load();
+            final Scene scene = new Scene(root);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            //stage.initStyle(StageStyle.UNDECORATED);
+            stage.setScene(scene);
+            stage.show();
 
+        }catch(IOException e) {
+            e.printStackTrace();
+            super.alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                    "Falha ao localizar o arquivo ProdutoPesquisa.fxml",e,true);
+        }
+    }
     @FXML
     void sobre(ActionEvent event) {
 

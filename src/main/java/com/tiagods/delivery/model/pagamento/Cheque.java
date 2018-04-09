@@ -1,6 +1,6 @@
 package com.tiagods.delivery.model.pagamento;
 
-import com.tiagods.delivery.model.Pagamento;
+import com.tiagods.delivery.model.pedido.Pagamento;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
