@@ -36,6 +36,10 @@ public class ClientePesquisaController extends UtilsController implements Initia
 	@FXML
 	private TableView<Cliente> tbPrincipal;
 	private ClientesImpl clientes;
+	private Stage stage;
+	public ClientePesquisaController(Stage stage) {
+		this.stage =stage;
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -224,5 +228,9 @@ public class ClientePesquisaController extends UtilsController implements Initia
 
 		tbPrincipal.getColumns().addAll(columnId,columnNome,colunaTelefone,colunaCelular,colunaEditar,colunaExcluir);
 		tbPrincipal.setTableMenuButtonVisible(true);
+	}
+	@FXML
+	void sair(ActionEvent event){
+		stage.close();
 	}
 }

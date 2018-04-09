@@ -58,6 +58,7 @@ public class MenuController extends UtilsController implements Initializable{
 			Stage primaryStage = new Stage();
         	//Icons estilo = Icons.getInstance();
             final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ClientePesquisa.fxml"));
+            loader.setController(new ClientePesquisaController(stage));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
@@ -121,7 +122,7 @@ public class MenuController extends UtilsController implements Initializable{
         try {
             Stage stage = new Stage();
             final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UsuarioPesquisa.fxml"));
-            loader.setController(new UsuarioPesquisaController());
+            loader.setController(new UsuarioPesquisaController(stage));
             final Parent root = loader.load();
             final Scene scene = new Scene(root);
             stage.initModality(Modality.APPLICATION_MODAL);

@@ -662,4 +662,8 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 		tbProduto.getColumns().addAll(columnId,columnCategoria,columnNome,colunaCusto,colunaValor,colunaEditar,colunaExcluir);
 		tbProduto.setTableMenuButtonVisible(true);
 	}
+	@FXML
+	void sair(ActionEvent event){
+		stage.close();
+	}
 }

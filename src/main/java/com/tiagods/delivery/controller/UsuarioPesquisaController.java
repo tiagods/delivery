@@ -34,6 +34,11 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 	@FXML
 	private TableView<Usuario> tbPrincipal;
 	private UsuariosImpl usuarios;
+	private Stage stage;
+
+	public UsuarioPesquisaController(Stage stage) {
+		this.stage = stage;
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -184,5 +189,9 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 		});
 		tbPrincipal.getColumns().addAll(columnId,columnNome,colunaEditar,colunaExcluir);
 		tbPrincipal.setTableMenuButtonVisible(true);
+	}
+	@FXML
+	void sair(ActionEvent event){
+		stage.close();
 	}
 }
