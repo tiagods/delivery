@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -18,13 +19,15 @@ public abstract class Pedido implements AbstractEntity,Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Temporal(value = TemporalType.TIMESTAMP)
+
     private Calendar criadoEm;
     @ManyToOne
     @JoinColumn(name = "criado_por_id")
     private Usuario criadoPor;
-    private BigDecimal taxa;
+
     private BigDecimal total;
     private BigDecimal desconto;
+    private BigDecimal servico;
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "pedido_id")
     private Set<PedidoProdutoItem> produtos = new HashSet<>();
@@ -40,14 +43,21 @@ public abstract class Pedido implements AbstractEntity,Serializable{
         this.id = id;
     }
 
-    public BigDecimal getTaxa() {
-        return taxa;
+    public Calendar getCriadoEm() {
+        return criadoEm;
     }
 
-    public void setTaxa(BigDecimal taxa) {
-        this.taxa = taxa;
+    public void setCriadoEm(Calendar criadoEm) {
+        this.criadoEm = criadoEm;
     }
 
+    public Usuario getCriadoPor() {
+        return criadoPor;
+    }
+
+    public void setCriadoPor(Usuario criadoPor) {
+        this.criadoPor = criadoPor;
+    }
     public BigDecimal getTotal() {
         return total;
     }
@@ -64,6 +74,14 @@ public abstract class Pedido implements AbstractEntity,Serializable{
         this.desconto = desconto;
     }
 
+    public BigDecimal getServico() {
+        return servico;
+    }
+
+    public void setServico(BigDecimal servico) {
+        this.servico = servico;
+    }
+
     public Set<PedidoProdutoItem> getProdutos() {
         return produtos;
     }
@@ -78,5 +96,19 @@ public abstract class Pedido implements AbstractEntity,Serializable{
 
     public void setPagamentos(Set<PedidoPagamento> pagamentos) {
         this.pagamentos = pagamentos;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pedido pedido = (Pedido) o;
+        return Objects.equals(id, pedido.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

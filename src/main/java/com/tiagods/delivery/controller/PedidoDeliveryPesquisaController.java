@@ -2,9 +2,9 @@ package com.tiagods.delivery.controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
-import com.tiagods.delivery.model.Pessoa;
-import com.tiagods.delivery.model.Usuario;
-import com.tiagods.delivery.repository.helper.UsuariosImpl;
+import com.tiagods.delivery.model.pedido.Pedido;
+import com.tiagods.delivery.model.pedido.PedidoDelivery;
+import com.tiagods.delivery.repository.helper.PedidosDeliveryImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,7 +20,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -28,21 +27,21 @@ public class PedidoDeliveryPesquisaController extends UtilsController implements
 	@FXML
 	private JFXTextField txPesquisa;
 	@FXML
-	private TableView<Usuario> tbPrincipal;
+	private TableView<PedidoDelivery> tbPrincipal;
 	private Stage stage;
+	private PedidosDeliveryImpl pedidos;
 
 	public PedidoDeliveryPesquisaController(Stage stage) {
 		this.stage = stage;
 	}
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		tabela();
 		try {
 			super.loadFactory();
-			usuarios = new UsuariosImpl(super.getManager());
+			pedidos = new PedidosDeliveryImpl(super.getManager());
 			tbPrincipal.getItems().clear();
-			tbPrincipal.getItems().addAll(usuarios.getAll());
+			tbPrincipal.getItems().addAll(pedidos.getAll());
 		}catch (Exception e) {
 			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", "Falha ao listar clientes",e,true);
 		}finally {
@@ -50,11 +49,11 @@ public class PedidoDeliveryPesquisaController extends UtilsController implements
 		}
 	}
 
-	private	void abrirCadastro(Usuario usuario){
+	private	void abrirCadastro(PedidoDelivery pedidoDelivery){
 		try {
 			Stage stage = new Stage();
-		    final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UsuarioCadastro.fxml"));
-	        loader.setController(new UsuarioCadastroController(usuario,stage,false));
+		    final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PedidoDeliveryCadastro.fxml"));
+	        loader.setController(new PedidoDeliveryCadastroController(pedidoDelivery,stage));
 	        final Parent root = loader.load();
 	        final Scene scene = new Scene(root);
 	        stage.initModality(Modality.APPLICATION_MODAL);
@@ -63,7 +62,7 @@ public class PedidoDeliveryPesquisaController extends UtilsController implements
 	        stage.show();
 			stage.setOnHiding(event -> filtrar());
 		}catch(IOException e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", "Falha ao abrir cadastro do Usuario",e,true);
+			alert(AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", "Falha ao abrir cadastro do Delivery",e,true);
 		}
 	}
 	@FXML
@@ -71,7 +70,7 @@ public class PedidoDeliveryPesquisaController extends UtilsController implements
 		abrirCadastro(null);
 	}
 
-	boolean excluir(Usuario usuario) {
+	boolean excluir(PedidoDelivery pedidoDelivery) {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Exclusão...");
 		alert.setHeaderText(null);
@@ -81,14 +80,14 @@ public class PedidoDeliveryPesquisaController extends UtilsController implements
 		if (optional.get() == ButtonType.OK) {
 			try {
 				super.loadFactory();
-				usuarios = new UsuariosImpl(super.getManager());
-				Usuario u = usuarios.findById(usuario.getId().longValue());
-				usuarios.remove(u);
+				pedidos = new PedidosDeliveryImpl(super.getManager());
+				PedidoDelivery u = pedidos.findById(pedidoDelivery.getId().longValue());
+				pedidos.remove(u);
 				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
 				return true;
 			} catch (Exception e) {
 				super.alert(AlertType.ERROR,"Erro ao excluir",null,
-						"Falha ao tentar excluir o registro do Usuario",e,true);
+						"Falha ao tentar excluir o registro do Delivery",e,true);
 				return false;
 			} finally {
 				close();
@@ -101,12 +100,12 @@ public class PedidoDeliveryPesquisaController extends UtilsController implements
 	private void filtrar() {
 		try {
 			super.loadFactory();
-			usuarios = new UsuariosImpl(super.getManager());
+			pedidos = new PedidosDeliveryImpl(super.getManager());
 			tbPrincipal.getItems().clear();
-			List<Usuario> usuarioList = usuarios.filtrar(txPesquisa.getText().trim(),1,"pessoa.nome");
-			tbPrincipal.getItems().addAll(usuarioList);
+			//List<PedidoDelivery> pedidosDelivery = pedidos.filtrar(txPesquisa.getText().trim(),1,"pessoa.nome");
+			tbPrincipal.getItems().addAll(pedidos.getAll());
 		}catch (Exception e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", "Falha ao listar clientes",e,true);
+			alert(AlertType.ERROR, "Erro", "Erro ao lista pedidos", "Falha ao listar pedidos",e,true);
 			e.printStackTrace();
 		}finally {
 			super.close();
@@ -118,32 +117,32 @@ public class PedidoDeliveryPesquisaController extends UtilsController implements
 	}
 	@SuppressWarnings("unchecked")
 	private void tabela() {
-		TableColumn<Usuario, Number> columnId = new  TableColumn<>("*");
+		TableColumn<PedidoDelivery, Number> columnId = new  TableColumn<>("*");
 		columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		columnId.setPrefWidth(40);
 
-		TableColumn<Usuario, Pessoa> columnNome = new  TableColumn<>("Nome");
-		columnNome.setCellValueFactory(new PropertyValueFactory<>("pessoa"));
-		columnNome.setCellFactory(param -> new TableCell<Usuario,Pessoa>(){
-			@Override
-			protected void updateItem(Pessoa item, boolean empty) {
-				super.updateItem(item, empty);
-				if(item==null){
-					setStyle("");
-					setText("");
-					setGraphic(null);
-				}
-				else{
-					setText(item.getNome());
-				}
-			}
-		});
-		columnNome.setPrefWidth(250);
-		columnNome.setMaxWidth(320);
+//		TableColumn<PedidoDelivery, Pessoa> columnNome = new  TableColumn<>("Nome");
+//		columnNome.setCellValueFactory(new PropertyValueFactory<>("pessoa"));
+//		columnNome.setCellFactory(param -> new TableCell<Usuario,Pessoa>(){
+//			@Override
+//			protected void updateItem(Pessoa item, boolean empty) {
+//				super.updateItem(item, empty);
+//				if(item==null){
+//					setStyle("");
+//					setText("");
+//					setGraphic(null);
+//				}
+//				else{
+//					setText(item.getNome());
+//				}
+//			}
+//		});
+//		columnNome.setPrefWidth(250);
+//		columnNome.setMaxWidth(320);
 
-		TableColumn<Usuario, Number> colunaEditar = new  TableColumn<>("");
+		TableColumn<PedidoDelivery, Number> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
-		colunaEditar.setCellFactory(param -> new TableCell<Usuario,Number>(){
+		colunaEditar.setCellFactory(param -> new TableCell<PedidoDelivery,Number>(){
 			JFXButton button = new JFXButton("Editar");
 			@Override
 			protected void updateItem(Number item, boolean empty) {
@@ -161,9 +160,9 @@ public class PedidoDeliveryPesquisaController extends UtilsController implements
 				}
 			}
 		});
-		TableColumn<Usuario, Number> colunaExcluir = new  TableColumn<>("");
+		TableColumn<PedidoDelivery, Number> colunaExcluir = new  TableColumn<>("");
 		colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
-		colunaExcluir.setCellFactory(param -> new TableCell<Usuario,Number>(){
+		colunaExcluir.setCellFactory(param -> new TableCell<PedidoDelivery,Number>(){
 			JFXButton button = new JFXButton("Excluir");
 			@Override
 			protected void updateItem(Number item, boolean empty) {
@@ -182,7 +181,7 @@ public class PedidoDeliveryPesquisaController extends UtilsController implements
 				}
 			}
 		});
-		tbPrincipal.getColumns().addAll(columnId,columnNome,colunaEditar,colunaExcluir);
+		tbPrincipal.getColumns().addAll(columnId,colunaEditar,colunaExcluir);
 		tbPrincipal.setTableMenuButtonVisible(true);
 	}
 	@FXML

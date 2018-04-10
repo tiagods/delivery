@@ -12,7 +12,7 @@ public class Entregador implements AbstractEntity,Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String nome;
     private boolean ativo;
 
     public Number getId() {
@@ -23,12 +23,12 @@ public class Entregador implements AbstractEntity,Serializable{
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getNome() {
+        return nome;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public boolean isAtivo() {
@@ -50,5 +50,10 @@ public class Entregador implements AbstractEntity,Serializable{
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return this.nome;
     }
 }

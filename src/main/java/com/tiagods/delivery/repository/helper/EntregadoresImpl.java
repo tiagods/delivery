@@ -41,6 +41,15 @@ public class EntregadoresImpl extends AbstractRepository<Entregador, Long> imple
         return criteria.list();
     }
     @Override
+    public List<Entregador> filtrarAtivos() {
+        Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Entregador.class);
+        criteria.add(Restrictions.eq("ativo", true));
+        criteria.addOrder(Order.asc("nome"));
+        return criteria.list();
+    }
+
+
+    @Override
     public List<Entregador> getAll() {
         Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Entregador.class);
         criteria.addOrder(Order.asc("nome"));

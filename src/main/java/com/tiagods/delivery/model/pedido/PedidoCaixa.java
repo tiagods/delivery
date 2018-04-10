@@ -6,7 +6,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue(value = "delivery")
+@DiscriminatorValue(value = "caixa")
 public class PedidoCaixa extends Pedido{
 
 }

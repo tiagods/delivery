@@ -8,6 +8,7 @@ public interface EntregadorDAO {
     Entregador save(Entregador c);
     void remove(Entregador c);
     List<Entregador> findByNome(String nome);
+    List<Entregador> filtrarAtivos();
     List<Entregador> getAll();
     Entregador findById(Long id);
 }

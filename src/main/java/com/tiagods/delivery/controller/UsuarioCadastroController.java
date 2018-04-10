@@ -157,8 +157,9 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                 try {
                     loadFactory();
                     cidades = new CidadesImpl(getManager());
+                    cbCidade.getItems().clear();
                     List<Cidade> listCidades = cidades.findByEstado(newValue);
-                    cbCidade.getItems().setAll(listCidades);
+                    cbCidade.getItems().addAll(listCidades);
                     cbCidade.getSelectionModel().selectFirst();
                 } catch (Exception e) {
                 } finally {

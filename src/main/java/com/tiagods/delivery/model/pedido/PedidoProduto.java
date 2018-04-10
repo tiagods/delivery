@@ -14,6 +14,7 @@ public abstract class PedidoProduto implements Serializable {
     private Produto produto;
     private int quantidade;
     private BigDecimal valor;
+    private BigDecimal total;
     @ManyToOne
     @JoinColumn(name = "pedido_id")
     private Pedido pedido;
@@ -40,6 +41,7 @@ public abstract class PedidoProduto implements Serializable {
 
     public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
+        this.total = BigDecimal.valueOf(this.quantidade*this.valor.doubleValue());
     }
 
     public BigDecimal getValor() {
@@ -48,7 +50,12 @@ public abstract class PedidoProduto implements Serializable {
 
     public void setValor(BigDecimal valor) {
         this.valor = valor;
+        this.total = BigDecimal.valueOf(this.quantidade*this.valor.doubleValue());
     }
+
+    public BigDecimal getTotal() {return total;}
+
+    public void setTotal(BigDecimal total) {this.total = total;}
 
     public Pedido getPedido() {
         return pedido;
