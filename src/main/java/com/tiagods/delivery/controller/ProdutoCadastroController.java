@@ -4,7 +4,6 @@ import com.jfoenix.controls.*;
 import com.tiagods.delivery.config.UsuarioLogado;
 import com.tiagods.delivery.model.Produto;
 import com.tiagods.delivery.model.ProdutoCategoria;
-import com.tiagods.delivery.model.ProdutoUnidade;
 import com.tiagods.delivery.model.produto.Pizza;
 import com.tiagods.delivery.model.produto.ProdutoGenerico;
 import com.tiagods.delivery.model.produto.pizza.PizzaFatia;
@@ -15,7 +14,6 @@ import com.tiagods.delivery.repository.helper.PizzasImpl;
 import com.tiagods.delivery.repository.helper.ProdutosCategoriasImpl;
 import com.tiagods.delivery.repository.helper.ProdutosGenericosImpl;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -121,7 +119,7 @@ public class ProdutoCadastroController extends UtilsController implements Initia
     private JFXComboBox<ProdutoCategoria> cbCategoria;
 
     @FXML
-    private JFXComboBox<ProdutoUnidade> cbUnidade;
+    private JFXComboBox<Produto.ProdutoUnidade> cbUnidade;
 
     @FXML
     private ImageView photoView;
@@ -156,7 +154,7 @@ public class ProdutoCadastroController extends UtilsController implements Initia
 
     }
     private void combos(){
-        cbUnidade.getItems().addAll(ProdutoUnidade.values());
+        cbUnidade.getItems().addAll(Produto.ProdutoUnidade.values());
         ChangeListener<Boolean> changeListener = (observable, oldValue, newValue) -> {
             combosTG();
         };

@@ -1,6 +1,6 @@
 package com.tiagods.delivery.model.pedido;
 
-import com.tiagods.delivery.model.pedido.Pedido;
+import com.tiagods.delivery.model.Pedido;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;

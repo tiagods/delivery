@@ -1,37 +1,31 @@
 package com.tiagods.delivery.controller;
 
-import com.jfoenix.controls.*;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXTextField;
 import com.tiagods.delivery.config.UsuarioLogado;
 import com.tiagods.delivery.model.*;
 import com.tiagods.delivery.repository.helper.CidadesImpl;
-import com.tiagods.delivery.repository.helper.ClientesImpl;
 import com.tiagods.delivery.repository.helper.UsuariosImpl;
 import com.tiagods.delivery.util.ComboBoxAutoCompleteUtil;
 import com.tiagods.delivery.util.CriptografiaUtil;
 import com.tiagods.delivery.util.EnderecoUtil;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import org.fxutils.maskedtextfield.MaskedTextField;
-import org.hibernate.PersistentObjectException;
 
 import java.net.URL;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class UsuarioCadastroController extends UtilsController implements Initializable {
@@ -72,7 +66,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
     private JFXTextField txComplemento;
 
     @FXML
-    private JFXComboBox<Estado> cbEstado;
+    private JFXComboBox<Cidade.Estado> cbEstado;
 
     @FXML
     private JFXComboBox<Cidade> cbCidade;
@@ -96,7 +90,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
     private JFXPasswordField txConfirmarSenha;
 
     @FXML
-    private JFXComboBox<UsuarioNivel> cbNivel;
+    private JFXComboBox<Usuario.UsuarioNivel> cbNivel;
     @FXML
     private JFXButton btnSalvar;
     @FXML
@@ -148,10 +142,10 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 	private void combos(){
         cidades = new CidadesImpl(getManager());
         Cidade cidade = cidades.findByNome("São Paulo");
-        cbCidade.getItems().setAll(cidades.findByEstado(Estado.SP));
+        cbCidade.getItems().setAll(cidades.findByEstado(Cidade.Estado.SP));
         cbCidade.setValue(cidade);
-        cbEstado.getItems().addAll(Estado.values());
-        cbEstado.setValue(Estado.SP);
+        cbEstado.getItems().addAll(Cidade.Estado.values());
+        cbEstado.setValue(Cidade.Estado.SP);
         cbEstado.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
@@ -167,8 +161,8 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                 }
             }
         });
-        cbNivel.getItems().addAll(UsuarioNivel.values());
-        cbNivel.setValue(UsuarioNivel.ADMIN);
+        cbNivel.getItems().addAll(Usuario.UsuarioNivel.values());
+        cbNivel.setValue(Usuario.UsuarioNivel.ADMIN);
         new ComboBoxAutoCompleteUtil<>(cbCidade);
     }
 

@@ -6,7 +6,7 @@ public class Endereco {
     private String complemento;
     private String bairro;
     private String localidade;
-    private Estado uf;
+    private Cidade.Estado uf;
     private String unidade;
     private String ibge;
     private String gia;
@@ -51,11 +51,11 @@ public class Endereco {
         this.localidade = localidade;
     }
 
-    public Estado getUf() {
+    public Cidade.Estado getUf() {
         return uf;
     }
 
-    public void setUf(Estado uf) {
+    public void setUf(Cidade.Estado uf) {
         this.uf = uf;
     }
 

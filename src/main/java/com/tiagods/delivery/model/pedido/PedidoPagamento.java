@@ -1,6 +1,8 @@
 package com.tiagods.delivery.model.pedido;
 
 import com.tiagods.delivery.model.AbstractEntity;
+import com.tiagods.delivery.model.pagamento.CartaoBandeira;
+import com.tiagods.delivery.model.pagamento.ModalidadePagamento;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,10 +15,12 @@ public class PedidoPagamento implements AbstractEntity, Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "pagamento_id")
-    private Pagamento pagamento;
     private BigDecimal valor;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "tipo_pagamento")
+    private ModalidadePagamento modalidadePagamento;
+    @Enumerated(value = EnumType.STRING)
+    private CartaoBandeira bandeira;
     @Override
     public Long getId() {
         return id;
@@ -24,14 +28,6 @@ public class PedidoPagamento implements AbstractEntity, Serializable{
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Pagamento getPagamento() {
-        return pagamento;
-    }
-
-    public void setPagamento(Pagamento pagamento) {
-        this.pagamento = pagamento;
     }
 
     public BigDecimal getValor() {

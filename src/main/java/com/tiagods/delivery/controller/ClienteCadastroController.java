@@ -1,13 +1,9 @@
 package com.tiagods.delivery.controller;
 
-import java.net.URL;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
-
-import com.jfoenix.controls.*;
-import com.jfoenix.skins.JFXToggleNodeSkin;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXRadioButton;
+import com.jfoenix.controls.JFXTextField;
 import com.tiagods.delivery.config.UsuarioLogado;
 import com.tiagods.delivery.model.*;
 import com.tiagods.delivery.repository.helper.CidadesImpl;
@@ -16,19 +12,21 @@ import com.tiagods.delivery.util.ComboBoxAutoCompleteUtil;
 import com.tiagods.delivery.util.EnderecoUtil;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
-import org.fxutils.maskedtextfield.MaskedTextField;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.fxutils.maskedtextfield.MaskedTextField;
 import org.hibernate.PersistentObjectException;
+
+import java.net.URL;
+import java.util.Calendar;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class ClienteCadastroController extends UtilsController implements Initializable {
 	@FXML
@@ -92,7 +90,7 @@ public class ClienteCadastroController extends UtilsController implements Initia
 	private JFXTextField txComplemento;
 
 	@FXML
-	private JFXComboBox<Estado> cbEstado;
+	private JFXComboBox<Cidade.Estado> cbEstado;
 
 	@FXML
 	private JFXComboBox<Cidade> cbCidade;
@@ -173,10 +171,10 @@ public class ClienteCadastroController extends UtilsController implements Initia
 
         cidades = new CidadesImpl(getManager());
         Cidade cidade = cidades.findByNome("São Paulo");
-        cbCidade.getItems().setAll(cidades.findByEstado(Estado.SP));
+        cbCidade.getItems().setAll(cidades.findByEstado(Cidade.Estado.SP));
         cbCidade.setValue(cidade);
-        cbEstado.getItems().addAll(Estado.values());
-        cbEstado.setValue(Estado.SP);
+        cbEstado.getItems().addAll(Cidade.Estado.values());
+        cbEstado.setValue(Cidade.Estado.SP);
         cbEstado.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
@@ -212,8 +210,8 @@ public class ClienteCadastroController extends UtilsController implements Initia
 
 	void preencherFormulario(Cliente cliente) {
         txCodigo.setText(String.valueOf(cliente.getId()));
-        ClienteTipo tipo = cliente.getTipo();
-        if(tipo==ClienteTipo.PESSOA){
+        Cliente.ClienteTipo tipo = cliente.getTipo();
+        if(tipo.equals(Cliente.ClienteTipo.PESSOA)){
             rbPessoa.setSelected(true);
             PessoaFisica fisica = cliente.getFisico();
             txRG.setText(fisica.getRg());
@@ -255,9 +253,9 @@ public class ClienteCadastroController extends UtilsController implements Initia
                 pessoa = cliente.getPessoa();
 
             }
-            ClienteTipo tipo = rbEmpresa.isSelected()?ClienteTipo.EMPRESA:ClienteTipo.PESSOA;
+            Cliente.ClienteTipo tipo = rbEmpresa.isSelected()?Cliente.ClienteTipo.EMPRESA:Cliente.ClienteTipo.PESSOA;
             cliente.setTipo(tipo);
-            if(tipo==ClienteTipo.PESSOA){
+            if(tipo.equals(Cliente.ClienteTipo.PESSOA)){
                 PessoaFisica pessoaFisica = new PessoaFisica();
                 pessoaFisica.setRg(txRG.getText().trim());
                 pessoaFisica.setCpf(txCPF.getPlainText());

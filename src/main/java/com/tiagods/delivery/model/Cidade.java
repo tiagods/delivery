@@ -13,12 +13,16 @@ import javax.persistence.Id;
 
 @Entity
 public class Cidade implements AbstractEntity,Serializable{
+	public enum Estado {
+		AC, AL, AM, AP, BA, CE, DF, ES, GO, MA, MG, MS, MT,
+		PA, PB, PE, PI, PR, RJ, RN, RO, RR, RS, SC, SE, SP, TO;
+	}
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String nome;
-	@Enumerated(EnumType.STRING)
+	@Enumerated(value = EnumType.STRING)
 	@Column(length=2)
 	private Estado estado;
 	@Column(name="cod_extra")
@@ -42,13 +46,13 @@ public class Cidade implements AbstractEntity,Serializable{
 	/**
 	 * @return the estado
 	 */
-	public Estado getEstado() {
+	public Cidade.Estado getEstado() {
 		return estado;
 	}
 	/**
 	 * @param estado the estado to set
 	 */
-	public void setEstado(Estado estado) {
+	public void setEstado(Cidade.Estado estado) {
 		this.estado = estado;
 	}
 	/**

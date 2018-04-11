@@ -4,14 +4,11 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
-import com.tiagods.delivery.config.UsuarioLogado;
 import com.tiagods.delivery.model.Cidade;
 import com.tiagods.delivery.model.Endereco;
 import com.tiagods.delivery.model.Entregador;
-import com.tiagods.delivery.model.Estado;
 import com.tiagods.delivery.model.pedido.PedidoDelivery;
 import com.tiagods.delivery.model.pedido.PedidoProdutoItem;
-import com.tiagods.delivery.model.pedido.PedidoStatus;
 import com.tiagods.delivery.model.pedido.PedidoTaxa;
 import com.tiagods.delivery.repository.helper.CidadesImpl;
 import com.tiagods.delivery.repository.helper.EntregadoresImpl;
@@ -74,7 +71,7 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
     private JFXComboBox<Cidade> cbCidade;
 
     @FXML
-    private JFXComboBox<Estado> cbEstado;
+    private JFXComboBox<Cidade.Estado> cbEstado;
 
     @FXML
     private TableView<PedidoProdutoItem> tbPrincipal;
@@ -189,10 +186,10 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
 
         cidades = new CidadesImpl(getManager());
         Cidade cidade = cidades.findByNome("São Paulo");
-        cbCidade.getItems().setAll(cidades.findByEstado(Estado.SP));
+        cbCidade.getItems().setAll(cidades.findByEstado(Cidade.Estado.SP));
         cbCidade.setValue(cidade);
-        cbEstado.getItems().addAll(Estado.values());
-        cbEstado.setValue(Estado.SP);
+        cbEstado.getItems().addAll(Cidade.Estado.values());
+        cbEstado.setValue(Cidade.Estado.SP);
         cbEstado.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
@@ -279,7 +276,7 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
 
     }
     void preencherFormulario(PedidoDelivery delivery){
-        if(delivery.getStatus()!=PedidoStatus.ENTREGUE)
+        if(delivery.getStatus().equals(PedidoDelivery.PedidoStatus.ENTREGUE))
             calculateTime(delivery.getCriadoEm());
         txCodigo.setText(String.valueOf(delivery.getId()));
         //endereco
@@ -288,11 +285,11 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
         tbPrincipal.getItems().addAll(delivery.getProdutos());
 
         cbEntregador.setValue(delivery.getEntregador());
-        if(delivery.getStatus()==PedidoStatus.INICIADO)
+        if(delivery.getStatus().equals(PedidoDelivery.PedidoStatus.INICIADO))
             tgIniciado.setSelected(true);
-        else if(delivery.getStatus()==PedidoStatus.AGUARDANDO)
+        else if(delivery.getStatus().equals(PedidoDelivery.PedidoStatus.AGUARDANDO))
             tgEspera.setSelected(true);
-        else if(delivery.getStatus()==PedidoStatus.ANDAMENTO)
+        else if(delivery.getStatus().equals(PedidoDelivery.PedidoStatus.ANDAMENTO))
             tgAndamento.setSelected(true);
         else tgEntregue.setSelected(true);
 

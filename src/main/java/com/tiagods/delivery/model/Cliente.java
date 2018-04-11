@@ -12,9 +12,9 @@ import javax.persistence.Id;
 
 @Entity
 public class Cliente implements AbstractEntity,Serializable{
-	/**
-	 * 
-	 */
+	public enum ClienteTipo {
+		EMPRESA, PESSOA
+	}
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

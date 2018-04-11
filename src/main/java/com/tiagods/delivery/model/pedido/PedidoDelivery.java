@@ -1,8 +1,7 @@
 package com.tiagods.delivery.model.pedido;
 
 import com.tiagods.delivery.model.Entregador;
-import com.tiagods.delivery.model.pedido.Pedido;
-import com.tiagods.delivery.model.pedido.PedidoStatus;
+import com.tiagods.delivery.model.Pedido;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -11,6 +10,18 @@ import java.util.Calendar;
 @Entity
 @DiscriminatorValue(value = "delivery")
 public class PedidoDelivery extends Pedido {
+    public enum PedidoStatus {
+        INICIADO("Iniciado"), AGUARDANDO("Aguardardando"), ANDAMENTO("Em andamento"), ENTREGUE("ENTREGUE");
+        private String descricao;
+        PedidoStatus(String descricao){this.descricao = descricao;}
+        public String getDescricao() {
+            return descricao;
+        }
+        @Override
+        public String toString() {
+            return super.toString();
+        }
+    }
     @ManyToOne
     @JoinColumn(name = "entregador_id")
     private Entregador entregador;
@@ -47,22 +58,18 @@ public class PedidoDelivery extends Pedido {
         this.fimEntrega = fimEntrega;
     }
 
-    @Override
     public PedidoTaxa getTaxa() {
         return taxa;
     }
 
-    @Override
     public void setTaxa(PedidoTaxa taxa) {
         this.taxa = taxa;
     }
 
-    @Override
     public BigDecimal getValorTaxa() {
         return valorTaxa;
     }
 
-    @Override
     public void setValorTaxa(BigDecimal valorTaxa) {
         this.valorTaxa = valorTaxa;
     }

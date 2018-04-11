@@ -1,13 +1,22 @@
 package com.tiagods.delivery.model.pedido;
 
+import com.tiagods.delivery.model.Pedido;
 import com.tiagods.delivery.model.Produto;
+import com.tiagods.delivery.model.Usuario;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Calendar;
 
 @Embeddable
 public abstract class PedidoProduto implements Serializable {
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "data_criacao")
+    private Calendar criadoEm;
+    @ManyToOne
+    @JoinColumn(name = "criado_por_id")
+    private Usuario criadoPor;
     private String nome;
     @ManyToOne
     @JoinColumn(name = "produto_id")
@@ -63,5 +72,21 @@ public abstract class PedidoProduto implements Serializable {
 
     public void setPedido(Pedido pedido) {
         this.pedido = pedido;
+    }
+
+    public Calendar getCriadoEm() {
+        return criadoEm;
+    }
+
+    public void setCriadoEm(Calendar criadoEm) {
+        this.criadoEm = criadoEm;
+    }
+
+    public Usuario getCriadoPor() {
+        return criadoPor;
+    }
+
+    public void setCriadoPor(Usuario criadoPor) {
+        this.criadoPor = criadoPor;
     }
 }

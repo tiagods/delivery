@@ -16,13 +16,25 @@ import javax.persistence.TemporalType;
 
 @Entity
 public class Usuario implements AbstractEntity, Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	/**
-	 *
-	 */
+	public enum UsuarioNivel {
+		ADMIN("Admin","O administrador é tem permissão sobre todo o sistema"),
+		GERENTE("Gerente","O gerente tem permissão para excluir e alterar registros, cadastrar usuários, relatórios de vendas"),
+		OPERADOR("Operador","O operador não pode: excluir registros, criar ou alterar contas, ver relatórios financeiros");
+		private String descricao;
+		private String nome;
+		UsuarioNivel(String nome,String descricao) {
+			this.nome = nome;
+			this.descricao = descricao;
+		}
+		public String getDescricao() {
+			return this.descricao;
+		}
+		public String getNome() {return nome;}
+		@Override
+		public String toString() {
+			return this.nome;
+		}
+	}
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;

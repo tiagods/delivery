@@ -2,7 +2,6 @@ package com.tiagods.delivery.controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
-import com.tiagods.delivery.model.pedido.Pedido;
 import com.tiagods.delivery.model.pedido.PedidoDelivery;
 import com.tiagods.delivery.repository.helper.PedidosDeliveryImpl;
 import javafx.event.ActionEvent;

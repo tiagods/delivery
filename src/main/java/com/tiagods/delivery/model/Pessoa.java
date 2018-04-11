@@ -25,7 +25,7 @@ public class Pessoa implements Serializable{
 	@JoinColumn(name="cidade_id")
 	private Cidade cidade;
 	@Enumerated(value =EnumType.STRING)
-	private Estado estado;
+	private Cidade.Estado estado;
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data_criacao")
 	private Calendar criadoEm;
@@ -113,11 +113,11 @@ public class Pessoa implements Serializable{
 		this.cidade = cidade;
 	}
 
-	public Estado getEstado() {
+	public Cidade.Estado getEstado() {
 		return estado;
 	}
 
-	public void setEstado(Estado estado) {
+	public void setEstado(Cidade.Estado estado) {
 		this.estado = estado;
 	}
 

@@ -1,11 +1,5 @@
 package com.tiagods.delivery.model;
 
-import com.tiagods.delivery.model.AbstractEntity;
-import com.tiagods.delivery.model.ProdutoCategoria;
-import com.tiagods.delivery.model.ProdutoUnidade;
-import com.tiagods.delivery.model.Usuario;
-import com.tiagods.delivery.model.produto.Estoque;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Calendar;
@@ -15,9 +9,27 @@ import java.util.Objects;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "produto_type")
 public class Produto implements AbstractEntity, Serializable{
-	/**
-	 * 
-	 */
+	public enum ProdutoUnidade {
+		DUZIA("Dúzia(s)"), GRAMA("Grama(s)"),
+		LITRO("Litro"),METRO("Metros(s)"),METROS_CUBICOS("Metro(s) Cúbico(s)"),
+		METROS_QUADRADOS("Metro(s) Quadrados(s)"),MILHEIRO("Milheiro"),
+		PECA("Peça"),QUILOGRAMA("Quilograma"),TONELADA("Tonelada"),UNIDADE("Unidade");
+
+		private String descricao;
+
+		ProdutoUnidade(String descricao) {
+			this.descricao=descricao;
+		}
+		public String getDescricao() {
+			return descricao;
+		}
+
+		@Override
+		public String toString() {
+			return getDescricao();
+		}
+	}
+
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

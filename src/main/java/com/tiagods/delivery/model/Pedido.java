@@ -1,7 +1,7 @@
-package com.tiagods.delivery.model.pedido;
+package com.tiagods.delivery.model;
 
-import com.tiagods.delivery.model.AbstractEntity;
-import com.tiagods.delivery.model.Usuario;
+import com.tiagods.delivery.model.pedido.PedidoPagamento;
+import com.tiagods.delivery.model.pedido.PedidoProdutoItem;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,13 +18,12 @@ public abstract class Pedido implements AbstractEntity,Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Temporal(value = TemporalType.TIMESTAMP)
-
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "data_criacao")
     private Calendar criadoEm;
     @ManyToOne
     @JoinColumn(name = "criado_por_id")
     private Usuario criadoPor;
-
     private BigDecimal total;
     private BigDecimal desconto;
     private BigDecimal servico;

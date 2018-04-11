@@ -5,7 +5,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import com.tiagods.delivery.model.Cidade;
-import com.tiagods.delivery.model.Estado;
 import com.tiagods.delivery.repository.AbstractRepository;
 import com.tiagods.delivery.repository.interfaces.CidadeDAO;
 import org.hibernate.Criteria;
@@ -25,7 +24,7 @@ public class CidadesImpl extends AbstractRepository<Cidade, Long> implements Cid
 	}
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Cidade> findByEstado(Estado estado) {
+	public List<Cidade> findByEstado(Cidade.Estado estado) {
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Cidade.class);
 		criteria.add(Restrictions.eq("estado", estado));
 		return (List<Cidade>)criteria.list();

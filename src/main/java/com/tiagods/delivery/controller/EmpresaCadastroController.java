@@ -71,7 +71,7 @@ public class EmpresaCadastroController extends UtilsController implements Initia
     private JFXTextField txComplemento;
 
     @FXML
-    private JFXComboBox<Estado> cbEstado;
+    private JFXComboBox<Cidade.Estado> cbEstado;
 
     @FXML
     private JFXComboBox<Cidade> cbCidade;
@@ -135,10 +135,10 @@ public class EmpresaCadastroController extends UtilsController implements Initia
 	private void combos(){
         cidades = new CidadesImpl(getManager());
         Cidade cidade = cidades.findByNome("São Paulo");
-        cbCidade.getItems().setAll(cidades.findByEstado(Estado.SP));
+        cbCidade.getItems().setAll(cidades.findByEstado(Cidade.Estado.SP));
         cbCidade.setValue(cidade);
-        cbEstado.getItems().addAll(Estado.values());
-        cbEstado.setValue(Estado.SP);
+        cbEstado.getItems().addAll(Cidade.Estado.values());
+        cbEstado.setValue(Cidade.Estado.SP);
         cbEstado.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
