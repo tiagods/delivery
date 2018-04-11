@@ -27,6 +27,7 @@ public abstract class Pedido implements AbstractEntity,Serializable{
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
+    private BigDecimal subTotal;
     private BigDecimal total;
     private BigDecimal desconto;
     private BigDecimal servico;
@@ -67,6 +68,14 @@ public abstract class Pedido implements AbstractEntity,Serializable{
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+    }
+
+    public BigDecimal getSubTotal() {
+        return subTotal;
+    }
+
+    public void setSubTotal(BigDecimal subTotal) {
+        this.subTotal = subTotal;
     }
 
     public BigDecimal getTotal() {

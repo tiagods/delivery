@@ -78,7 +78,7 @@
                               <HBox layoutX="10.0" layoutY="124.0" prefHeight="100.0" prefWidth="0.0">
                                  <children>
                                     <Label minWidth="65.0" prefHeight="30.0" text="CEP:" />
-                                    <MaskedTextField fx:id="txCEP" prefHeight="26.0" prefWidth="125.0" />
+                                    <MaskedTextField fx:id="txCEP" mask="#####-###" prefHeight="26.0" prefWidth="125.0" />
                                     <JFXButton onAction="#buscarCep" prefHeight="30.0" text="Buscar" />
                                  </children>
                               </HBox>

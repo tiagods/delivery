@@ -51,4 +51,14 @@ public class ClientesImpl extends AbstractRepository<Cliente, Long> implements C
 		criteria.addOrder(Order.asc(ordem));
 		return (List<Cliente>) criteria.list();
 	}
+	public Cliente procurarTelefone(String telefone) {
+		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Cliente.class);
+		if (telefone.length()>0) {
+			Criterion criterion2 = Restrictions.eq("telefone", telefone);
+			Criterion criterion3 = Restrictions.eq("celular", telefone);
+			Criterion c = Restrictions.or(criterion2,criterion3);
+			criteria.add(c);
+		}
+		return (Cliente)criteria.uniqueResult();
+	}
 }

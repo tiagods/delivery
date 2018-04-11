@@ -35,10 +35,10 @@ public class EntregadoresImpl extends AbstractRepository<Entregador, Long> imple
         getEntityManager().getTransaction().commit();
     }
     @Override
-    public List<Entregador> findByNome(String nome) {
+    public Entregador findByNome(String nome) {
         Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Entregador.class);
-        criteria.add(Restrictions.ilike("nome", nome, MatchMode.ANYWHERE));
-        return criteria.list();
+        criteria.add(Restrictions.ilike("nome", nome));
+        return (Entregador)criteria.uniqueResult();
     }
     @Override
     public List<Entregador> filtrarAtivos() {

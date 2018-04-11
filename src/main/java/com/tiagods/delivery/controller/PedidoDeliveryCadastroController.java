@@ -4,27 +4,33 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
-import com.tiagods.delivery.model.Cidade;
-import com.tiagods.delivery.model.Endereco;
-import com.tiagods.delivery.model.Entregador;
+import com.tiagods.delivery.config.UsuarioLogado;
+import com.tiagods.delivery.controller.pedido.PedidoPagamentoTaxaDescontoController;
+import com.tiagods.delivery.model.*;
 import com.tiagods.delivery.model.pedido.PedidoDelivery;
 import com.tiagods.delivery.model.pedido.PedidoProdutoItem;
 import com.tiagods.delivery.model.pedido.PedidoTaxa;
-import com.tiagods.delivery.repository.helper.CidadesImpl;
-import com.tiagods.delivery.repository.helper.EntregadoresImpl;
-import com.tiagods.delivery.repository.helper.PedidosDeliveryImpl;
+import com.tiagods.delivery.model.produto.Pizza;
+import com.tiagods.delivery.repository.helper.*;
 import com.tiagods.delivery.util.ComboBoxAutoCompleteUtil;
 import com.tiagods.delivery.util.EnderecoUtil;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.NumberFormat;
@@ -113,23 +119,72 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
     private PedidosDeliveryImpl pedidos;
     private CidadesImpl cidades;
     private EntregadoresImpl entregadores;
+    private PedidosTaxasImpl pedidosTaxas;
     private Stage stage;
+    private Cliente cliente;
     Locale locale = new Locale("pt", "BR");
     NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+    private ClientesImpl clientes;
 
 
-    public PedidoDeliveryCadastroController(PedidoDelivery pedidoDelivery, Stage stage) {
+    public PedidoDeliveryCadastroController(PedidoDelivery pedidoDelivery, Cliente cliente, Stage stage) {
         this.delivery= pedidoDelivery;
+        this.cliente=cliente;
         this.stage = stage;
     }
     @FXML
     void adicionarEntregador(ActionEvent event) {
-
+        Optional<String> result = cadastroRapido();
+        if(result.isPresent()){
+            if(result.get().trim().equals("")){
+                super.alert(Alert.AlertType.ERROR,"Erro","Nome inválido",
+                        "Informe um nome válido",null,false);
+            }
+            else{
+                try{
+                    super.loadFactory();
+                    entregadores = new EntregadoresImpl(super.getManager());
+                    Entregador entregador = entregadores.findByNome(result.get().trim());
+                    if(entregador==null){
+                        Entregador en = new Entregador();
+                        en.setNome(result.get().trim());
+                        en.setAtivo(true);
+                        entregadores.save(en);
+                        List<Entregador> entregadorList = entregadores.getAll();
+                        Entregador etemp = cbEntregador.getValue();
+                        cbEntregador.getItems().clear();
+                        cbEntregador.getItems().setAll(entregadorList);
+                        if(etemp!=null)
+                            cbEntregador.setValue(etemp);
+                    }
+                    else{
+                        super.alert(Alert.AlertType.ERROR,"Duplicado",null,
+                                "Já existe um cadastro com o nome indicado!",null,false);
+                    }
+                }catch (Exception e){
+                    super.alert(Alert.AlertType.ERROR,"Erro",
+                            null,"Ocorreu um erro ao salvar o registro", e, true);
+                }finally {
+                    super.close();
+                }
+            }
+        }
     }
 
     @FXML
     void adicionarProduto(ActionEvent event) {
+        Produto produto = new Pizza();
+        produto.setNome("Calabresa");
 
+        PedidoProdutoItem item = new PedidoProdutoItem();
+
+        if(produto instanceof Pizza) {
+            item.setNome("Pizza " + produto.getNome());
+            item.setValor(new BigDecimal(18.00));
+            item.setQuantidade(2);
+        }
+        item.setProduto(produto);
+        tbPrincipal.getItems().add(item);
     }
 
     @FXML
@@ -173,8 +228,35 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
 
     @FXML
     void buscarClienteTelefone(ActionEvent event) {
-
+        if(!txTelefoneBusca.getText().trim().equals("")
+                ||txTelefoneBusca.getText().trim().length()==10
+                ||txTelefoneBusca.getText().trim().length()==11)
+            buscarClientePeloTelefone(txTelefoneBusca.getText());
+        else{
+            super.alert(Alert.AlertType.ERROR, "Erro", null,
+                    "Informe um telefone inválido",null, false);
+        }
     }
+    public void buscarClientePeloTelefone(String telefone){
+        txTelefoneBusca.setText(telefone);
+        try{
+            super.loadFactory();
+            clientes = new ClientesImpl(super.getManager());
+            Cliente c = clientes.procurarTelefone(txTelefoneBusca.getText());
+            if(c!=null){
+                preencherEndereco(c);
+            }
+            else{
+                txContato.setText("Não Cadastrado");
+                txContato.setStyle("-fx-text-fill: red;");
+            }
+        }catch (Exception e){
+            super.alert(Alert.AlertType.ERROR,"Erro", null,"Erro ao pesquisar cliente",e,true);
+        }finally {
+            super.close();
+        }
+    }
+
     void calculateTime(Calendar calendar){
 
     }
@@ -212,11 +294,21 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
         cbEntregador.getSelectionModel().selectFirst();
 
         new ComboBoxAutoCompleteUtil<>(cbEntregador);
+
+        pedidosTaxas = new PedidosTaxasImpl(super.getManager());
+
+        cbTaxa.getItems().add(null);
+        cbTaxa.getItems().addAll(pedidosTaxas.getAll());
+        cbTaxa.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue!=oldValue){
+                txTaxa.setText(currencyFormatter.format(cbTaxa.getValue().getValor()));
+                salvar();
+            }
+        });
     }
     @FXML
     void desconto(ActionEvent event) {
-
-
+        taxaServicoDesconto();
     }
 
     @FXML
@@ -249,38 +341,72 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        txTemporizador.setVisible(false);
         tabela();
         try{
             super.loadFactory();
             combos();
             pedidos = new PedidosDeliveryImpl(super.getManager());
             if(delivery!=null){
+                this.delivery = pedidos.findById(delivery.getId().longValue());
                 preencherFormulario(this.delivery);
             }
             else{
-//                delivery = new PedidoDelivery();
-//                delivery = pedidos.save(delivery);
-//                preencherFormulario(delivery);
+                delivery = new PedidoDelivery();
+                if(cliente!=null)
+                    delivery.setCliente(this.cliente);
+                delivery.setStatus(PedidoDelivery.PedidoStatus.INICIADO);
+                delivery.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+                delivery.setCriadoEm(Calendar.getInstance());
+                delivery.setEntregador(cbEntregador.getValue());
+                delivery.setSubTotal(new BigDecimal(0.00));
+                delivery.setDesconto(new BigDecimal(0.00));
+                delivery.setServico(new BigDecimal(0.00));
+                delivery.setTaxa(cbTaxa.getValue());
+                delivery.setValorTaxa(new BigDecimal(0.00));
+                delivery.setTotal(new BigDecimal(0.00));
+                delivery = pedidos.save(delivery);
+                preencherFormulario(delivery);
             }
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR,"Erro", null,"Erro ao criar Pedido Delivery",e, true);
         }finally {
             super.close();
         }
-
-
     }
-
     @FXML
-    void pagamento(ActionEvent event) {
+    private void pagamento(ActionEvent event) {
 
     }
+    void preencherEndereco(Cliente cliente){
+        txTelefoneBusca.setText(cliente.getTelefone());
+        if (cliente instanceof ClienteRegistrado) {
+            txContato.setText("Cadastrado");
+            txContato.setStyle("-fx-text-fill: blue;");
+        } else {
+            txContato.setText("Não Cadastrado");
+            txContato.setStyle("-fx-text-fill: red;");
+        }
+        txTelefone.setText(cliente.getTelefone());
+        txCelular.setText(cliente.getCelular());
+        txCEP.setPlainText(cliente.getCep());
+        txLogradouro.setText(cliente.getEndereco());
+        txNumero.setText(cliente.getNumero());
+        txBairro.setText(cliente.getBairro());
+        txComplemento.setText(cliente.getComplemento());
+        cbEstado.setValue(cliente.getEstado());
+        cbCidade.setValue(cliente.getCidade());
+    }
+
     void preencherFormulario(PedidoDelivery delivery){
-        if(delivery.getStatus().equals(PedidoDelivery.PedidoStatus.ENTREGUE))
-            calculateTime(delivery.getCriadoEm());
+//        if(delivery.getStatus().equals(PedidoDelivery.PedidoStatus.ENTREGUE))
+//            calculateTime(delivery.getCriadoEm());
         txCodigo.setText(String.valueOf(delivery.getId()));
         //endereco
-
+        Cliente cliente = delivery.getCliente();
+        if(cliente != null) {
+            preencherEndereco(cliente);
+        }
         tbPrincipal.getItems().clear();
         tbPrincipal.getItems().addAll(delivery.getProdutos());
 
@@ -293,11 +419,11 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
             tgAndamento.setSelected(true);
         else tgEntregue.setSelected(true);
 
-        txSubTotal.setText(currencyFormatter.format(delivery.getTotal().doubleValue()));
+        txSubTotal.setText(currencyFormatter.format(delivery.getSubTotal().doubleValue()));
         txDesconto.setText(currencyFormatter.format(delivery.getDesconto().doubleValue()));
         txServico.setText(currencyFormatter.format(delivery.getServico().doubleValue()));
         cbTaxa.setValue(delivery.getTaxa());
-        txServico.setText(currencyFormatter.format(delivery.getValorTaxa().doubleValue()));
+        txTotal.setText(currencyFormatter.format(delivery.getTotal().doubleValue()));
 
     }
     void tabela(){
@@ -319,13 +445,13 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
                 }
                 else{
                     area.setText(item);
-                    area.setPrefColumnCount(200);
                     area.setWrapText(true);
+                    area.setEditable(false);
                     setGraphic(area);
                 }
             }
         });
-        colunaNome.setPrefWidth(250);
+        colunaNome.setMinWidth(150);
         colunaNome.setMaxWidth(320);
 
         TableColumn<PedidoProdutoItem, Number> columnQtd = new  TableColumn<>("Qtde");
@@ -397,18 +523,54 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
                 }
                 else{
                     button.setOnAction(event -> {
-                        //boolean removed = excluirProduto(tbPrincipal.getItems().get(getIndex()));
-                        //if(removed) tbPrincipal.getItems().remove(getIndex());
+                        tbPrincipal.getItems().remove(getIndex());
+                        salvar();
                     });
                     setGraphic(button);
                 }
             }
         });
-        tbPrincipal.getColumns().addAll(columnId,colunaNome,columnQtd,colunaValor,colunaTotal,colunaEditar,colunaExcluir);
+        tbPrincipal.getColumns().addAll(colunaNome,columnQtd,colunaValor,colunaTotal,colunaEditar,colunaExcluir);
         tbPrincipal.setTableMenuButtonVisible(true);
-        tbPrincipal.prefHeight(40);
+        tbPrincipal.setFixedCellSize(50);
     }
+
     public void salvar(){
+        if(cliente==null){
+            //super.alert(Alert.AlertType.ERROR, "Erro",null,"");
+            return;
+        }
+        //tabela
+        Set<PedidoProdutoItem> produtoItems = new HashSet<>();
+        produtoItems.addAll(tbPrincipal.getItems());
+        delivery.setProdutos(produtoItems);
+
+        delivery.setEntregador(cbEntregador.getValue());
+        if(tgIniciado.isSelected())
+            delivery.setStatus(PedidoDelivery.PedidoStatus.INICIADO);
+        else if(tgEspera.isSelected())
+            delivery.setStatus(PedidoDelivery.PedidoStatus.AGUARDANDO);
+        else if(tgAndamento.isSelected())
+            delivery.setStatus(PedidoDelivery.PedidoStatus.ANDAMENTO);
+        else delivery.setStatus(PedidoDelivery.PedidoStatus.ENTREGUE);
+
+        BigDecimal subSaldo = produtoItems.stream()
+                .map(item-> item.getTotal())
+                .reduce(BigDecimal.ZERO,BigDecimal::add);
+        delivery.setSubTotal(subSaldo);
+        if(cbTaxa.getValue()==null || cbTaxa.getValue().getId().longValue()==-1){
+            delivery.setTaxa(cbTaxa.getValue());
+        }
+        try{
+            super.loadFactory();
+            pedidos = new PedidosDeliveryImpl(super.getManager());
+            this.delivery = pedidos.save(delivery);
+            preencherFormulario(this.delivery);
+        }catch (Exception e){
+            super.alert(Alert.AlertType.ERROR,"Erro", null, "Erro ao salvar", e, true);
+        }finally {
+            super.close();
+        }
 
     }
     @FXML
@@ -418,8 +580,36 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
 
     @FXML
     void servico(ActionEvent event) {
-
+        taxaServicoDesconto();
     }
 
-
+    void taxaServicoDesconto(){
+        try {
+            Stage stage = new Stage();
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PedidoPagamentoTaxaDesconto.fxml"));
+            loader.setController(new PedidoPagamentoTaxaDescontoController(delivery,stage));
+            final Parent root = loader.load();
+            final Scene scene = new Scene(root);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            //stage.initStyle(StageStyle.UNDECORATED);
+            stage.setScene(scene);
+            stage.show();
+            stage.setOnHiding(windowEvent ->{
+                try {
+                    super.loadFactory();
+                    pedidos = new PedidosDeliveryImpl(super.getManager());
+                    PedidoDelivery u = pedidos.findById(delivery.getId().longValue());
+                    preencherFormulario(u);
+                } catch (Exception e) {
+                    super.alert(Alert.AlertType.ERROR,"Erro ao lista",null,
+                            "Falha ao tentar recuperar o registro do Delivery",e,true);
+                } finally {
+                    super.close();
+                }
+            });
+        }catch(IOException e) {
+            e.printStackTrace();
+            alert(Alert.AlertType.ERROR, "Erro", null, "Erro ao abrir o cadastro", e,true);
+        }
+    }
 }

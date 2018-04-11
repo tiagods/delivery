@@ -11,7 +11,7 @@ import java.util.Calendar;
 @DiscriminatorValue(value = "delivery")
 public class PedidoDelivery extends Pedido {
     public enum PedidoStatus {
-        INICIADO("Iniciado"), AGUARDANDO("Aguardardando"), ANDAMENTO("Em andamento"), ENTREGUE("ENTREGUE");
+        INICIADO("Iniciado"), AGUARDANDO("Aguardardando"), ANDAMENTO("Em Andamento"), ENTREGUE("Entregue");
         private String descricao;
         PedidoStatus(String descricao){this.descricao = descricao;}
         public String getDescricao() {
@@ -28,6 +28,7 @@ public class PedidoDelivery extends Pedido {
     @Enumerated(value = EnumType.STRING)
     private PedidoStatus status;
     @Temporal(value = TemporalType.TIMESTAMP)
+    @Column(name = "data_entrega")
     private Calendar fimEntrega;
     @ManyToOne
     @JoinColumn(name = "taxa_id")

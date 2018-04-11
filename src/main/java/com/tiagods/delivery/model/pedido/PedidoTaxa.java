@@ -5,6 +5,8 @@ import com.tiagods.delivery.model.AbstractEntity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /*
     Taxa de entrega por distancia percorrida
@@ -18,6 +20,8 @@ public class PedidoTaxa  implements AbstractEntity,Serializable{
     private String nome;
     private BigDecimal valor;
 
+    Locale locale = new Locale("pt", "BR");
+    NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
     @Override
     public Number getId() {
         return this.id;
@@ -41,5 +45,10 @@ public class PedidoTaxa  implements AbstractEntity,Serializable{
 
     public void setValor(BigDecimal valor) {
         this.valor = valor;
+    }
+
+    @Override
+    public String toString() {
+        return this.nome+" ("+currencyFormatter.format(valor.doubleValue())+")";
     }
 }

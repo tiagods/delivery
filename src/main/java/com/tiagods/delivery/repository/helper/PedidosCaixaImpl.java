@@ -20,7 +20,7 @@ public class PedidosCaixaImpl extends AbstractRepository<PedidoCaixa, Long> impl
     @Override
     public PedidoCaixa findById(Long id) {
         Query query = getEntityManager().createQuery("from PedidoCaixa as a "
-                + "LEFT JOIN FETCH a.produtos, LEFT JOIN FETCH a.pagamentos "
+                + "LEFT JOIN FETCH a.produtos LEFT JOIN FETCH a.pagamentos "
                 + "where a.id=:id");
         query.setParameter("id", id);
         PedidoCaixa a = (PedidoCaixa)query.getSingleResult();

@@ -20,7 +20,7 @@ public class PedidosDeliveryImpl extends AbstractRepository<PedidoDelivery, Long
     @Override
     public PedidoDelivery findById(Long id) {
         Query query = getEntityManager().createQuery("from PedidoDelivery as a "
-                + "LEFT JOIN FETCH a.produtos, LEFT JOIN FETCH a.pagamentos "
+                + "LEFT JOIN FETCH a.produtos LEFT JOIN FETCH a.pagamentos "
                 + "where a.id=:id");
         query.setParameter("id", id);
         PedidoDelivery a = (PedidoDelivery)query.getSingleResult();

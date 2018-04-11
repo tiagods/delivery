@@ -18,12 +18,12 @@ public class PedidoProdutoItem extends PedidoProduto implements AbstractEntity,S
     private Long id;
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinTable(name="ped_pro_item_complemento",
-            joinColumns = { @JoinColumn(name = "per_prod_item_id", referencedColumnName = "id") },
+            joinColumns = { @JoinColumn(name = "ped_prod_item_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "complemento_id", referencedColumnName = "id") })
     private Set<Complemento> complementos = new HashSet<>();
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinTable(name="ped_pro_item_observacao",
-            joinColumns = { @JoinColumn(name = "per_prod_item_id", referencedColumnName = "id") },
+            joinColumns = { @JoinColumn(name = "ped_prod_item_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "observacao_id", referencedColumnName = "id") })
     private Set<Observacao> observacoes = new HashSet<>();
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

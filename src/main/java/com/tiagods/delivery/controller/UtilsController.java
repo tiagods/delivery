@@ -3,6 +3,7 @@ package com.tiagods.delivery.controller;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -100,6 +101,13 @@ public abstract class UtilsController extends PersistenciaController{
 			}
 		}
 		alert.showAndWait();
+	}
+	public Optional<String> cadastroRapido(){
+		TextInputDialog dialog = new TextInputDialog("");
+		dialog.setTitle("Cadastro rapido");
+		dialog.setHeaderText("Crie um novo registro:");
+		dialog.setContentText("Por favor entre com um novo nome");
+		return dialog.showAndWait();
 	}
 	public class NovoEditar implements EventHandler<MouseEvent>{
 		@Override

@@ -14,9 +14,9 @@ public class UsuarioLogado {
 
     }
 
-    public static Usuario getUsuario() {
+    public Usuario getUsuario() {
         return usuario;
     }
 
-    public static void setUsuario(Usuario usuario) { usuario = usuario;}
+    public void setUsuario(Usuario usuario) { usuario = usuario;}
 }
