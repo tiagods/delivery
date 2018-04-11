@@ -10,8 +10,9 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.tiagods.delivery.model.Cliente;
 
-import com.tiagods.delivery.model.Pessoa;
+import com.tiagods.delivery.model.ClienteRegistrado;
 import com.tiagods.delivery.repository.helper.ClientesImpl;
+import com.tiagods.delivery.repository.helper.ClientesRegistradosImpl;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,10 +24,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import org.fxutils.maskedtextfield.MaskTextField;
+import org.fxutils.maskedtextfield.MaskedTextField;
 
 import javax.rmi.CORBA.Util;
 
@@ -34,8 +38,8 @@ public class ClientePesquisaController extends UtilsController implements Initia
 	@FXML
 	private JFXTextField txPesquisa;
 	@FXML
-	private TableView<Cliente> tbPrincipal;
-	private ClientesImpl clientes;
+	private TableView<ClienteRegistrado> tbPrincipal;
+	private ClientesRegistradosImpl registrados;
 	private Stage stage;
 	public ClientePesquisaController(Stage stage) {
 		this.stage =stage;
@@ -46,9 +50,9 @@ public class ClientePesquisaController extends UtilsController implements Initia
 		tabela();
 		try {
 			super.loadFactory();
-			clientes = new ClientesImpl(super.getManager());
+			registrados = new ClientesRegistradosImpl(super.getManager());
 			tbPrincipal.getItems().clear();
-			tbPrincipal.getItems().addAll(clientes.getAll());
+			tbPrincipal.getItems().addAll(registrados.getAll());
 		}catch (Exception e) {
 			alert(AlertType.ERROR, "Erro", null, "Erro ao lista clientes", e, true);
 			e.printStackTrace();
@@ -57,7 +61,7 @@ public class ClientePesquisaController extends UtilsController implements Initia
 		}
 	}
 	
-	private	void abrirCadastro(Cliente cliente){
+	private	void abrirCadastro(ClienteRegistrado cliente){
 		try { 	
 			Stage stage = new Stage();
 		    final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ClienteCadastro.fxml"));
@@ -89,9 +93,9 @@ public class ClientePesquisaController extends UtilsController implements Initia
 		if (optional.get() == ButtonType.OK) {
 			try{
 				super.loadFactory();
-				clientes = new ClientesImpl(getManager());
-				Cliente cli = clientes.findById(cliente.getId().longValue());
-				clientes.remove(cli);
+				registrados = new ClientesRegistradosImpl(getManager());
+				ClienteRegistrado cli = registrados.findById(cliente.getId().longValue());
+				registrados.remove(cli);
 				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
 				return true;
 			}catch(Exception e){
@@ -107,10 +111,11 @@ public class ClientePesquisaController extends UtilsController implements Initia
 	private void filtrar() {
 		try {
 			super.loadFactory();
-			clientes = new ClientesImpl(super.getManager());
+			registrados = new ClientesRegistradosImpl(super.getManager());
 			tbPrincipal.getItems().clear();
-			List<Cliente> clienteList = clientes.filtrar(txPesquisa.getText().trim(),"nome");
+			List<ClienteRegistrado> clienteList = registrados.filtrar(txPesquisa.getText().trim(),"nome");
 			tbPrincipal.getItems().addAll(clienteList);
+			tbPrincipal.refresh();
 		}catch (Exception e) {
 			alert(AlertType.ERROR, "Erro", null, "Erro ao lista clientes", e, true);
 			e.printStackTrace();
@@ -124,7 +129,7 @@ public class ClientePesquisaController extends UtilsController implements Initia
 	}
 	@SuppressWarnings("unchecked")
 	private void tabela() {
-		TableColumn<Cliente, Number> columnId = new  TableColumn<>("*");
+		TableColumn<ClienteRegistrado, Number> columnId = new  TableColumn<>("*");
 		columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		columnId.setPrefWidth(40);
 //		columnId.setCellFactory((TableColumn<Cliente, PfPj> param) -> new TableCell<Cliente, PfPj>() {
@@ -139,54 +144,57 @@ public class ClientePesquisaController extends UtilsController implements Initia
 //				}
 //			}
 //		});
-		TableColumn<Cliente, Pessoa> columnNome = new  TableColumn<>("Nome");
-		columnNome.setCellValueFactory(new PropertyValueFactory<>("pessoa"));
+		TableColumn<ClienteRegistrado, String> columnNome = new  TableColumn<>("Nome");
+		columnNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
 		columnNome.setPrefWidth(250);
 		columnNome.setMaxWidth(320);
-		columnNome.setCellFactory((TableColumn<Cliente, Pessoa> param) -> new TableCell<Cliente, Pessoa>() {
-			@Override
-			protected void updateItem(Pessoa item, boolean empty) {
-				super.updateItem(item, empty);
-				if (item == null) {
-					setText(null);
-					setStyle("");
-				} else {
-					setText(item.getNome());
-				}
-			}
-		});
 
-		TableColumn<Cliente, Pessoa> colunaTelefone = new  TableColumn<>("Telefone");
-		colunaTelefone.setCellValueFactory(new PropertyValueFactory<>("pessoa"));
-		colunaTelefone.setCellFactory((TableColumn<Cliente, Pessoa> param) -> new TableCell<Cliente, Pessoa>() {
+		TableColumn<ClienteRegistrado, String> colunaTelefone = new  TableColumn<>("Telefone");
+		colunaTelefone.setCellValueFactory(new PropertyValueFactory<>("telefone"));
+		colunaTelefone.setCellFactory((TableColumn<ClienteRegistrado, String> param) -> new TableCell<ClienteRegistrado, String>() {
+			final MaskedTextField mask = new MaskedTextField();
 			@Override
-			protected void updateItem(Pessoa item, boolean empty) {
+			protected void updateItem(String item, boolean empty) {
 				super.updateItem(item, empty);
-				if (item == null) {
+				mask.setEditable(false);
+				mask.setMask("(##) ####-####");
+				if (item == null || item.equals("")) {
 					setText(null);
 					setStyle("");
+					setGraphic(null);
 				} else {
-					setText(item.getTelefone());
+					mask.setStyle("");
+					mask.setPlainText(item);
+					//if(!txPesquisa.getText().equals("")) mask.setStyle("-fx-text-fill: green");
+					setGraphic(mask);
+
 				}
 			}
 		});
-		TableColumn<Cliente, Pessoa> colunaCelular = new  TableColumn<>("Celular");
-		colunaCelular.setCellValueFactory(new PropertyValueFactory<>("pessoa"));
-		colunaCelular.setCellFactory((TableColumn<Cliente, Pessoa> param) -> new TableCell<Cliente, Pessoa>() {
+		TableColumn<ClienteRegistrado, String> colunaCelular = new  TableColumn<>("Celular");
+		colunaCelular.setCellValueFactory(new PropertyValueFactory<>("celular"));
+		colunaCelular.setCellFactory((TableColumn<ClienteRegistrado, String> param) -> new TableCell<ClienteRegistrado, String>() {
 			@Override
-			protected void updateItem(Pessoa item, boolean empty) {
+			protected void updateItem(String item, boolean empty) {
+				final MaskedTextField mask = new MaskedTextField();
+				mask.setEditable(false);
+				mask.setMask("(##) ####-####");
+
 				super.updateItem(item, empty);
-				if (item == null) {
+				if (item == null || item.equals("")) {
 					setText(null);
 					setStyle("");
+					setGraphic(null);
 				} else {
-					setText(item.getCelular());
-				}
+					mask.setStyle("");
+					mask.setPlainText(item);
+					//if(!txPesquisa.getText().equals("")) mask.setStyle("-fx-text-fill: green");
+					setGraphic(mask);				}
 			}
 		});
-		TableColumn<Cliente, Number> colunaEditar = new  TableColumn<>("");
+		TableColumn<ClienteRegistrado, Number> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
-		colunaEditar.setCellFactory(param -> new TableCell<Cliente,Number>(){
+		colunaEditar.setCellFactory(param -> new TableCell<ClienteRegistrado,Number>(){
 			JFXButton button = new JFXButton("Editar");
 			@Override
 			protected void updateItem(Number item, boolean empty) {
@@ -204,9 +212,9 @@ public class ClientePesquisaController extends UtilsController implements Initia
 				}
 			}
 		});
-		TableColumn<Cliente, Number> colunaExcluir = new  TableColumn<>("");
+		TableColumn<ClienteRegistrado, Number> colunaExcluir = new  TableColumn<>("");
 		colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
-		colunaExcluir.setCellFactory(param -> new TableCell<Cliente,Number>(){
+		colunaExcluir.setCellFactory(param -> new TableCell<ClienteRegistrado,Number>(){
 			JFXButton button = new JFXButton("Excluir");
 			@Override
 			protected void updateItem(Number item, boolean empty) {

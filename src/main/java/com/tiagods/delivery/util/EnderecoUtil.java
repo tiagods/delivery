@@ -1,7 +1,7 @@
 package com.tiagods.delivery.util;
 
+import com.tiagods.delivery.model.Cidade;
 import com.tiagods.delivery.model.Endereco;
-import com.tiagods.delivery.model.Estado;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,7 +73,7 @@ public class EnderecoUtil {
             endereco.setComplemento(payload.get("complemento").toString());
             endereco.setBairro(payload.get("bairro").toString());
             endereco.setLocalidade(payload.get("localidade").toString());
-            endereco.setUf(Estado.valueOf(payload.get("uf").toString()));
+            endereco.setUf(Cidade.Estado.valueOf(payload.get("uf").toString()));
             endereco.setUnidade(payload.get("unidade").toString());
             endereco.setIbge(payload.get("ibge").toString());
             endereco.setGia(payload.get("gia").toString());

@@ -61,16 +61,16 @@ public class MenuController extends UtilsController implements Initializable{
 	@FXML
     void cliente(ActionEvent event) {
     	try {
-			Stage primaryStage = new Stage();
+			Stage stage = new Stage();
         	//Icons estilo = Icons.getInstance();
             final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ClientePesquisa.fxml"));
             loader.setController(new ClientePesquisaController(stage));
             Parent root = loader.load();
             Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
-            primaryStage.setTitle("Pesquisa de Clientes");
+            stage.setScene(scene);
+            stage.setTitle("Pesquisa de Clientes");
             //stage.getIcons().add(new Image(estilo.getIcon().toString()));
-            primaryStage.show();
+            stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }

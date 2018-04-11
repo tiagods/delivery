@@ -5,7 +5,7 @@ import java.util.Calendar;
 
 import javax.persistence.*;
 
-
+@MappedSuperclass
 @Embeddable
 public class Pessoa implements Serializable{
 	/**

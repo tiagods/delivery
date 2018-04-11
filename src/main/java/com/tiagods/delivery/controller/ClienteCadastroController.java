@@ -7,7 +7,7 @@ import com.jfoenix.controls.JFXTextField;
 import com.tiagods.delivery.config.UsuarioLogado;
 import com.tiagods.delivery.model.*;
 import com.tiagods.delivery.repository.helper.CidadesImpl;
-import com.tiagods.delivery.repository.helper.ClientesImpl;
+import com.tiagods.delivery.repository.helper.ClientesRegistradosImpl;
 import com.tiagods.delivery.util.ComboBoxAutoCompleteUtil;
 import com.tiagods.delivery.util.EnderecoUtil;
 import javafx.beans.value.ChangeListener;
@@ -105,12 +105,12 @@ public class ClienteCadastroController extends UtilsController implements Initia
 	@FXML
     private JFXRadioButton rbPessoa;
 
-	private Cliente cliente = null;
 	private Stage stage;
 	private CidadesImpl cidades;
-	private ClientesImpl clientes;
+    private ClienteRegistrado cliente = null;
+    private ClientesRegistradosImpl clientes;
 
-	public ClienteCadastroController(Cliente cliente, Stage stage) {
+	public ClienteCadastroController(ClienteRegistrado cliente, Stage stage) {
 		this.stage = stage;
 		this.cliente= cliente;
 	}
@@ -208,10 +208,10 @@ public class ClienteCadastroController extends UtilsController implements Initia
         }
     }
 
-	void preencherFormulario(Cliente cliente) {
+	void preencherFormulario(ClienteRegistrado cliente) {
         txCodigo.setText(String.valueOf(cliente.getId()));
-        Cliente.ClienteTipo tipo = cliente.getTipo();
-        if(tipo.equals(Cliente.ClienteTipo.PESSOA)){
+        ClienteRegistrado.ClienteTipo tipo = cliente.getTipo();
+        if(tipo.equals(ClienteRegistrado.ClienteTipo.PESSOA)){
             rbPessoa.setSelected(true);
             PessoaFisica fisica = cliente.getFisico();
             txRG.setText(fisica.getRg());
@@ -226,42 +226,36 @@ public class ClienteCadastroController extends UtilsController implements Initia
             txIM.setText(juridica.getIm());
             txIE.setText(juridica.getIe());
         }
-        Pessoa pessoa = cliente.getPessoa();
-        txNome.setText(pessoa.getNome());
-        txEmail.setText(pessoa.getEmail());
-        txTelefone.setPlainText(pessoa.getTelefone());
-        txCelular.setPlainText(pessoa.getCelular());
-        txCEP.setPlainText(pessoa.getCep());
-        txLogradouro.setText(pessoa.getEndereco());
-        txNumero.setText(pessoa.getNumero());
-	    txBairro.setText(pessoa.getBairro());
-	    txComplemento.setText(pessoa.getComplemento());
-	    cbEstado.setValue(pessoa.getEstado());
-	    cbCidade.setValue(pessoa.getCidade());
+        txNome.setText(cliente.getNome());
+        txEmail.setText(cliente.getEmail());
+        txTelefone.setPlainText(cliente.getTelefone());
+        txCelular.setPlainText(cliente.getCelular());
+        txCEP.setPlainText(cliente.getCep());
+        txLogradouro.setText(cliente.getEndereco());
+        txNumero.setText(cliente.getNumero());
+	    txBairro.setText(cliente.getBairro());
+	    txComplemento.setText(cliente.getComplemento());
+	    cbEstado.setValue(cliente.getEstado());
+	    cbCidade.setValue(cliente.getCidade());
 	    this.cliente = cliente;
 	}
 	@FXML
 	void salvar(ActionEvent event) {
         try{
-            Pessoa pessoa = new Pessoa();
             if(txCodigo.getText().equals("")) {
-                cliente = new Cliente();
-                pessoa.setCriadoEm(Calendar.getInstance());
-                pessoa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+                cliente = new ClienteRegistrado();
+                cliente.setCriadoEm(Calendar.getInstance());
+                cliente.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
             }
-            else{
-                pessoa = cliente.getPessoa();
-
-            }
-            Cliente.ClienteTipo tipo = rbEmpresa.isSelected()?Cliente.ClienteTipo.EMPRESA:Cliente.ClienteTipo.PESSOA;
-            cliente.setTipo(tipo);
-            if(tipo.equals(Cliente.ClienteTipo.PESSOA)){
+            ClienteRegistrado.ClienteTipo tipo = rbEmpresa.isSelected() ? ClienteRegistrado.ClienteTipo.EMPRESA : ClienteRegistrado.ClienteTipo.PESSOA;
+            ((ClienteRegistrado)cliente).setTipo(tipo);
+            if(tipo.equals(ClienteRegistrado.ClienteTipo.PESSOA)){
                 PessoaFisica pessoaFisica = new PessoaFisica();
                 pessoaFisica.setRg(txRG.getText().trim());
                 pessoaFisica.setCpf(txCPF.getPlainText());
                 pessoaFisica.setAniversario(txDataNascimento.getPlainText());
-                cliente.setFisico(pessoaFisica);
-                cliente.setJuridico(null);
+                ((ClienteRegistrado)cliente).setFisico(pessoaFisica);
+                ((ClienteRegistrado)cliente).setJuridico(null);
             }
             else{
                 PessoaJuridica pessoaJuridica = new PessoaJuridica();
@@ -269,23 +263,22 @@ public class ClienteCadastroController extends UtilsController implements Initia
                 pessoaJuridica.setCnpj(txCnpj.getPlainText());
                 pessoaJuridica.setIe(txIE.getText());
                 pessoaJuridica.setIm(txIM.getText());
-                cliente.setJuridico(pessoaJuridica);
-                cliente.setFisico(null);
+                ((ClienteRegistrado)cliente).setJuridico(pessoaJuridica);
+                ((ClienteRegistrado)cliente).setFisico(null);
             }
-            pessoa.setNome(txNome.getText().trim());
-            pessoa.setEmail(txEmail.getText().trim());
-            pessoa.setTelefone(txTelefone.getPlainText());
-            pessoa.setCelular(txCelular.getPlainText());
-            pessoa.setCep(txCEP.getPlainText());
-            pessoa.setEndereco(txLogradouro.getText().trim());
-            pessoa.setNumero(txNumero.getText().trim());
-            pessoa.setBairro(txBairro.getText().trim());
-            pessoa.setComplemento(txComplemento.getText());
-            pessoa.setEstado(cbEstado.getValue());
-            pessoa.setCidade(cbCidade.getValue());
-            cliente.setPessoa(pessoa);
+            cliente.setNome(txNome.getText().trim());
+            cliente.setEmail(txEmail.getText().trim());
+            cliente.setTelefone(txTelefone.getPlainText());
+            cliente.setCelular(txCelular.getPlainText());
+            cliente.setCep(txCEP.getPlainText());
+            cliente.setEndereco(txLogradouro.getText().trim());
+            cliente.setNumero(txNumero.getText().trim());
+            cliente.setBairro(txBairro.getText().trim());
+            cliente.setComplemento(txComplemento.getText());
+            cliente.setEstado(cbEstado.getValue());
+            cliente.setCidade(cbCidade.getValue());
             super.loadFactory();
-            clientes = new ClientesImpl(getManager());
+            clientes = new ClientesRegistradosImpl(getManager());
             cliente = clientes.save(cliente);
             preencherFormulario(cliente);
             super.desbloquear(false, pnCadastro.getChildren());
