@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox layoutX="-2.0" layoutY="8.0" prefHeight="600.0" prefWidth="900.0">
          <children>
@@ -149,17 +149,17 @@
                   </Label>
                   <JFXComboBox fx:id="cbUnidade" layoutX="196.0" layoutY="115.0" prefHeight="26.0" prefWidth="154.0" />
                   <ImageView fx:id="photoView" fitHeight="150.0" fitWidth="200.0" layoutX="694.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
-                  <JFXButton layoutX="724.0" layoutY="166.0" onAction="#anexarFoto" text="Alterar" />
-                  <JFXButton layoutX="797.0" layoutY="166.0" onAction="#removerFoto" text="Remover" />
+                  <JFXButton layoutX="724.0" layoutY="166.0" onAction="#anexarFoto" text="Alterar" visible="false" />
+                  <JFXButton layoutX="797.0" layoutY="166.0" onAction="#removerFoto" text="Remover" visible="false" />
                </children>
             </AnchorPane>
             <HBox alignment="CENTER_RIGHT" prefHeight="78.0" prefWidth="901.0">
                <children>
-                  <JFXButton fx:id="btnSalvar" mnemonicParsing="false" onAction="#salvar" prefHeight="30.0" prefWidth="70.0" styleClass="btJFXDefault" text="Salvar">
+                  <JFXButton fx:id="btnSalvar" mnemonicParsing="false" onAction="#salvar" prefHeight="30.0" prefWidth="70.0" styleClass="btGreen" text="Salvar">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin></JFXButton>
-                  <JFXButton fx:id="btnSair" layoutX="830.0" layoutY="28.0" mnemonicParsing="false" onAction="#sair" prefHeight="30.0" prefWidth="70.0" styleClass="btJFXDefault" text="Sair" />
+                  <JFXButton fx:id="btnSair" layoutX="830.0" layoutY="28.0" mnemonicParsing="false" onAction="#sair" prefHeight="30.0" prefWidth="70.0" styleClass="btBlue" text="Sair" />
                </children>
             </HBox>
          </children>

@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 
-<AnchorPane fx:id="pnPrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="pnPrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox layoutX="-2.0" layoutY="8.0" prefHeight="600.0" prefWidth="400.0">
          <children>
@@ -49,11 +49,11 @@
             </AnchorPane>
             <HBox alignment="CENTER_RIGHT" prefHeight="66.0" prefWidth="400.0">
                <children>
-                  <JFXButton fx:id="btnSalvar" mnemonicParsing="false" onAction="#salvar" prefHeight="30.0" prefWidth="70.0" styleClass="btJFXDefault" text="Salvar">
+                  <JFXButton fx:id="btnSalvar" mnemonicParsing="false" onAction="#salvar" prefHeight="30.0" prefWidth="70.0" styleClass="btGreen" text="Salvar">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin></JFXButton>
-                  <JFXButton fx:id="btnSair" mnemonicParsing="false" onAction="#sair" prefHeight="30.0" prefWidth="70.0" styleClass="btJFXDefault" text="Sair">
+                  <JFXButton fx:id="btnSair" mnemonicParsing="false" onAction="#sair" prefHeight="30.0" prefWidth="70.0" styleClass="btBlue" text="Sair">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
