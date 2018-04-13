@@ -97,6 +97,7 @@ public class StartApplication extends Application {
             if (manager != null) manager.close();
         }
     }
+
     public static void main(String[] arg0) {
     	launch(arg0);
     }

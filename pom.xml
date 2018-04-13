@@ -27,21 +27,17 @@
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
 				<version>4.0.2</version>
-				<configuration>
-					<driver>org.postgresql.Driver</driver>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
-	<!-- JPA / Hibernate -->
+		<!-- JPA / Hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>${hibernate.version}</version>
 			<scope>compile</scope>
 		</dependency>
-
 		<!-- Hibernate - Java 8 support -->
         <dependency>
     		<groupId>org.hibernate</groupId>
@@ -52,7 +48,7 @@
 		<dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.1-901.jdbc3</version>
+            <version>9.1-901-1.jdbc4</version>
         </dependency>
         		<!-- Logging -->
 		<dependency>
@@ -85,8 +81,6 @@
 		    <groupId>org.fxutil.maskedtextfield</groupId>
 		    <artifactId>maskedtextfield</artifactId>
 		    <version>1.2</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/maskedtextfield-1.2.jar</systemPath>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.json/json -->
         <dependency>

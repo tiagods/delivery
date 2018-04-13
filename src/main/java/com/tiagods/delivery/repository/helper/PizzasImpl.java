@@ -19,9 +19,9 @@ public class PizzasImpl extends AbstractRepository<Pizza, Long> implements Pizza
     }
     @Override
     public Pizza save(Pizza e) {
-        getEntityManager().getTransaction().begin();
+        //getEntityManager().getTransaction().begin();
         Pizza v = super.save(e);
-        getEntityManager().getTransaction().commit();
+        //getEntityManager().getTransaction().commit();
         return v;
     }
 

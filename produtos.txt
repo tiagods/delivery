@@ -1,0 +1,21 @@
+Virado a Paulista	Refeições	14.50
+Contrafilé Siciliano	Refeições	17.50
+Carne de Panela ao molho-madeira	Refeições	18.00
+Strogonoff de Frango	Refeições	13.00
+Feijoada Completa	Refeições	23.00
+Macarrão Primavera com coxa de frango ao molho	Refeições	13.00
+Yakissoba Misto	Refeições	17.50
+Picadinho	Refeições	13.00
+Moqueca de peixe	Refeições	14.50
+Vaca Atolada	Refeições	13.00
+Coca cola 350 ml 	Refrigerantes	4.00
+Pepsi 350 ml	Refrigerantes	4.00
+Fanta 350 ml	Refrigerantes	4.00
+Dolly 350 ml	Refrigerantes	2.00
+Coca cola 600 ml	Refrigerantes	6.00
+Pepsi 600 ml	Refrigerantes	5.50
+Coca Cola 2.5L	Refrigerantes	10.00
+Coca Cola 2L	Refrigerantes	8.00
+Fanta 2L	Refrigerantes	8.00
+Dolly 2L	Refrigerantes	6.00
+Itubaína 	Refrigerantes	7.00

@@ -19,8 +19,9 @@ public class PedidoTaxa  implements AbstractEntity,Serializable{
     private Long id;
     private String nome;
     private BigDecimal valor;
-
+    @Transient
     Locale locale = new Locale("pt", "BR");
+    @Transient
     NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
     @Override
     public Number getId() {

@@ -228,8 +228,10 @@ public class EmpresaCadastroController extends UtilsController implements Initia
             super.loadFactory();
             empresas = new EmpresasImpl(getManager());
             empresa = empresas.save(empresa);
-            preencherFormulario(empresa);
+            alert(Alert.AlertType.INFORMATION,"Sucesso",null,
+                    "Salvo com sucesso",null,false);
             //super.desbloquear(false, pnCadastro.getChildren());
+            stage.close();
         }catch (PersistentObjectException e){
             alert(Alert.AlertType.ERROR,"Erro",null,
                     "Erro ao salvar o registro",e,true);

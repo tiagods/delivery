@@ -6,7 +6,6 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.tiagods.delivery.config.UsuarioLogado;
 import com.tiagods.delivery.model.Usuario;
 import com.tiagods.delivery.repository.helper.UsuariosImpl;
-import com.tiagods.delivery.util.ComboBoxAutoCompleteUtil;
 import com.tiagods.delivery.util.CriptografiaUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,9 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import sun.rmi.runtime.Log;
 
 import java.net.URL;
 import java.util.List;

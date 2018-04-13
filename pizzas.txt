@@ -1,0 +1,53 @@
+Atum	Pizzas	28.00
+Americana	Pizzas	28.00
+Africana	Pizzas	28.00
+Alho	Pizzas	28.00
+Bacon	Pizzas	27.00
+Batata Palha	Pizzas	30.00
+Bauru	Pizzas	27.00
+Baiana	Pizzas	26.00
+Brócolis 	Pizzas	28.00
+Brasileira	Pizzas	29.90
+Calabresa	Pizzas	24.00
+Caipira	Pizzas	29.00
+Carne Seca	Pizzas	30.00
+Champignon	Pizzas	27.00
+Catum	Pizzas	29.00
+Dois Queijos	Pizzas	27.00
+Dindi	Pizzas	32.00
+Escarola	Pizzas	26.00
+Executiva	Pizzas	31.00
+Frango c/ Catupiry	Pizzas	29.00
+Frangalho	Pizzas	33.00
+Franbatapalha	Pizzas	30.00
+Genova	Pizzas	31.00
+Galeto	Pizzas	29.00
+Ita	Pizzas	29.00
+Jardineira	Pizzas	30.00
+Jardim	Pizzas	30.00
+Lombo	Pizzas	24.00
+Lombo Especial	Pizzas	30.00
+Mona	Pizzas	25.00
+Mussarela	Pizzas	24.00
+Moda Raposão 	Pizzas	34.00
+Paulistana	Pizzas	29.00
+Maracatum	Pizzas	30.00
+Moda do Chefe	Pizzas	30.00
+Napolitana Especial	Pizzas	27.00
+Palmito	Pizzas	26.00
+Peito de Peru	Pizzas	31.00
+Peperone	Pizzas	30.00
+Portuguesa	Pizzas	29.99
+Portuguesa Simples	Pizzas	24.00
+Peruana	Pizzas	28.00
+Três Queijos	Pizzas	28.00
+Quatro Queijos	Pizzas	30.00
+Romana	Pizzas	28.00
+Salame Especial	Pizzas	31.00
+Toscana	Pizzas	27.00
+Banana 	Pizzas	28.00
+Banana Especial	Pizzas	28.00
+Brigadeiro	Pizzas	28.00
+Prestígio	Pizzas	28.00
+Romeu e Julieta	Pizzas	28.00
+Sensação	Pizzas	29.00
