@@ -39,13 +39,17 @@ public class ComboBoxAutoCompleteUtil<T> {
             filter = filter.substring(0, filter.length() - 1);
             cmb.getItems().setAll(originalItems);
         }
-        if (code == KeyCode.ESCAPE) {
-            filter = "";
+        if (code == KeyCode.ESCAPE ) {
+            if(filter.trim().length()>0)
+                filter += " ";
+            else
+                filter="";
         }
         if (filter.length() == 0) {
             filteredList = originalItems;
             cmb.getTooltip().hide();
-        } else {
+        }
+        else {
             Stream<T> itens = cmb.getItems().stream();
             String txtUsr = filter.toString().toLowerCase();
             itens.filter(el ->

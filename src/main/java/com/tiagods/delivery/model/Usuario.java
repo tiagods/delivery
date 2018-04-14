@@ -147,7 +147,7 @@ public class Usuario implements AbstractEntity, Serializable {
 
 	@Override
 	public String toString() {
-		return this.pessoa!=null?this.pessoa.getNome():"";
+		return this.login;
 	}
 	
 

@@ -72,7 +72,7 @@ public class LoginController extends UtilsController implements Initializable{
             return;
         } else {
             try {
-                loadFactory();
+                super.loadFactory();
                 usuarios = new UsuariosImpl(super.getManager());
                 Usuario usuario = usuarios.findByLoginAndSenha(
                         cbNome.getValue().getLogin(),
@@ -97,7 +97,7 @@ public class LoginController extends UtilsController implements Initializable{
                 super.alert(Alert.AlertType.ERROR,"Erro",null,"Falha ao buscar usuario",e,true);
                 e.printStackTrace();
             }finally {
-                close();
+                super.close();
             }
         }
     }

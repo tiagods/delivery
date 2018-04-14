@@ -122,14 +122,17 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
     private PedidosTaxasImpl pedidosTaxas;
     private Stage stage;
     private Cliente cliente;
+    private String telefone;
+
     Locale locale = new Locale("pt", "BR");
     NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
     private ClientesImpl clientes;
 
 
-    public PedidoDeliveryCadastroController(PedidoDelivery pedidoDelivery, Cliente cliente, Stage stage) {
+    public PedidoDeliveryCadastroController(PedidoDelivery pedidoDelivery, Cliente cliente, String telefone, Stage stage) {
         this.delivery= pedidoDelivery;
         this.cliente=cliente;
+        this.telefone=telefone;
         this.stage = stage;
     }
     @FXML

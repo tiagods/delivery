@@ -107,38 +107,10 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 		this.usuario=usuario;
 		this.primeiroUsuario=primeiroUsuario;
 	}
-	@FXML
-	void bucarCep(ActionEvent event){
-		try{
-            super.loadFactory();
-            EnderecoUtil util = EnderecoUtil.getInstance();
-			if(txCEP.getPlainText().trim().length()==8) {
-				Endereco endereco = util.pegarCEP(txCEP.getPlainText());
-				if(endereco!=null){
-                    txLogradouro.setText(endereco.getLogradouro());
-                    txNumero.setText("");
-                    txComplemento.setText(endereco.getComplemento());
-                    txBairro.setText(endereco.getBairro());
-                    cidades = new CidadesImpl(super.getManager());
-                    cbCidade.getItems().clear();
-                    cbCidade.getItems().addAll(cidades.findByEstado(endereco.getUf()));
-                    Cidade cidade = cidades.findByNome(endereco.getLocalidade());
-                    cbCidade.setValue(cidade);
-                    cbEstado.setValue(endereco.getUf());
-				}
-				else
-				    super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,
-                            "Verifique se o cep informado é valido ou se existe uma conexão com a internet",null,false);
-            }
-			else{
-				super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,"Verifique o cep informado",null,false);
-			}
-		}catch(Exception e){
-            super.alert(Alert.AlertType.ERROR,"Falha na conexão com o banco de dados",null,"Houve uma falha na conexão com o banco de dados",e,true);
-		}finally {
-		    super.close();
-		}
-	}
+    @FXML
+    void bucarCep(ActionEvent event){
+        bucarCep(txCEP,txLogradouro,txNumero,txComplemento,txBairro,cbCidade,cbEstado);
+    }
 	private void combos(){
         cidades = new CidadesImpl(getManager());
         Cidade cidade = cidades.findByNome("São Paulo");
@@ -149,7 +121,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
         cbEstado.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
-                    loadFactory();
+                    super.loadFactory(super.getManager());
                     cidades = new CidadesImpl(getManager());
                     cbCidade.getItems().clear();
                     List<Cidade> listCidades = cidades.findByEstado(newValue);
@@ -157,13 +129,15 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                     cbCidade.getSelectionModel().selectFirst();
                 } catch (Exception e) {
                 } finally {
-                    close();
+                    if(super.getManager().isOpen()) super.close();
                 }
             }
         });
+        new ComboBoxAutoCompleteUtil<>(cbCidade);
+
         cbNivel.getItems().addAll(Usuario.UsuarioNivel.values());
         cbNivel.setValue(Usuario.UsuarioNivel.ADMIN);
-        new ComboBoxAutoCompleteUtil<>(cbCidade);
+
     }
 
 	@Override
@@ -286,13 +260,14 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                             e.printStackTrace();
                         }
                     }
+                    alert(Alert.AlertType.INFORMATION,"Sucesso",null,
+                            "Salvo com sucesso",null,false);
                     stage.close();
                 } catch (Exception e) {
                     super.alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro do Usuario",e,true);
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
         } finally {
             super.close();
         }

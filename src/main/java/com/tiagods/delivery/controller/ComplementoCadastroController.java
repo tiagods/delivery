@@ -132,7 +132,8 @@ public class ComplementoCadastroController extends UtilsController implements In
             });
             complemento.setCategorias(produtoCategoriaSet);
             complementos.save(complemento);
-            //super.desbloquear(false, pnCadastro.getChildren());
+            alert(Alert.AlertType.INFORMATION,"Sucesso",null,
+                    "Salvo com sucesso",null,false);
             stage.close();
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR,

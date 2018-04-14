@@ -52,7 +52,7 @@ public class PedidoDeliveryPesquisaController extends UtilsController implements
 		try {
 			Stage stage = new Stage();
 		    final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PedidoDeliveryCadastro.fxml"));
-	        loader.setController(new PedidoDeliveryCadastroController(pedidoDelivery,null, stage));
+	        loader.setController(new PedidoDeliveryCadastroController(pedidoDelivery,null, "",stage));
 	        final Parent root = loader.load();
 	        final Scene scene = new Scene(root);
 	        stage.initModality(Modality.APPLICATION_MODAL);
@@ -152,6 +152,7 @@ public class PedidoDeliveryPesquisaController extends UtilsController implements
 					setGraphic(null);
 				}
 				else{
+					button.getStyleClass().add("btGreen");
 					button.setOnAction(event -> {
 						abrirCadastro(tbPrincipal.getItems().get(getIndex()));
 					});
@@ -172,6 +173,7 @@ public class PedidoDeliveryPesquisaController extends UtilsController implements
 					setGraphic(null);
 				}
 				else{
+					button.getStyleClass().add("btRed");
 					button.setOnAction(event -> {
 						boolean removed = excluir(tbPrincipal.getItems().get(getIndex()));
 						if(removed) tbPrincipal.getItems().remove(getIndex());

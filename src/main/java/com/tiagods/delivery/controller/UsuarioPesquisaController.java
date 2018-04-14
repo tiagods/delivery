@@ -159,6 +159,7 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
+					button.getStyleClass().add("btGreen");
 					button.setOnAction(event -> {
 						abrirCadastro(tbPrincipal.getItems().get(getIndex()));
 					});
@@ -179,6 +180,7 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
+					button.getStyleClass().add("btRed");
 					button.setOnAction(event -> {
 						boolean removed = excluir(tbPrincipal.getItems().get(getIndex()));
 						if(removed) tbPrincipal.getItems().remove(getIndex());

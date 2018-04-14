@@ -107,7 +107,7 @@
                   <JFXComboBox fx:id="cbCidade" layoutX="104.0" layoutY="396.0" prefHeight="26.0" prefWidth="290.0" />
                   <MaskedTextField fx:id="txTelefone" layoutX="16.0" layoutY="173.0" mask="(##) ####-####" prefHeight="26.0" prefWidth="110.0" />
                   <MaskedTextField fx:id="txCelular" layoutX="157.0" layoutY="173.0" mask="(##) #####-####" prefHeight="26.0" prefWidth="110.0" />
-                  <JFXButton layoutX="128.0" layoutY="263.0" mnemonicParsing="false" onAction="#bucarCep" prefHeight="30.0" prefWidth="73.0" styleClass="btJFXDefault" text="Buscar" />
+                  <JFXButton layoutX="128.0" layoutY="263.0" mnemonicParsing="false" onAction="#bucarCep" prefHeight="30.0" prefWidth="73.0" styleClass="btBlue" text="Buscar" />
                   <JFXTextField fx:id="txNumero" layoutX="291.0" layoutY="310.0" prefHeight="26.0" prefWidth="100.0" />
                   <Label layoutX="289.0" layoutY="293.0" prefHeight="17.0" prefWidth="76.0" text="Numero:">
                      <font>

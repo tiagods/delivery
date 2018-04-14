@@ -364,8 +364,9 @@ public class ProdutoCadastroController extends UtilsController implements Initia
                 pizzas = new PizzasImpl(super.getManager());
                 pizzas.save((Pizza)produto);
             }
+            alert(Alert.AlertType.INFORMATION,"Sucesso",null,
+                    "Salvo com sucesso",null,false);
             stage.close();
-            //super.desbloquear(false, pnCadastro.getChildren());
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR,
                     "Erro","Erro",

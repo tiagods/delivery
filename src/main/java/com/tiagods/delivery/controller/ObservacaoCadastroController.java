@@ -56,7 +56,6 @@ public class ObservacaoCadastroController extends UtilsController implements Ini
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        super.Initializer(new JFXButton(), new JFXButton(), btnSalvar, new JFXButton(), new JFXButton(),new JFXButton());
         combos();
         if(observacao.getId()!=null)
             preencherFormulario(observacao);
@@ -121,8 +120,9 @@ public class ObservacaoCadastroController extends UtilsController implements Ini
             });
             observacao.setCategorias(produtoCategoriaSet);
             observacoes.save(observacao);
+            alert(Alert.AlertType.INFORMATION,"Sucesso",null,
+                    "Salvo com sucesso",null,false);
             stage.close();
-            //super.desbloquear(false, pnCadastro.getChildren());
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR,
                     "Erro","Erro ao salvar o registro",

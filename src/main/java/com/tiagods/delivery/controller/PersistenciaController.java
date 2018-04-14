@@ -11,26 +11,24 @@ public class PersistenciaController {
 	private EntityManager entityManager;
     //private boolean ownsPersistenceContext;
     private static Logger log = LoggerFactory.getLogger(PersistenciaController.class);
-    protected void loadFactory() {
+    protected synchronized void loadFactory() {
     	loadFactory(null);
     }
-    protected void loadFactory(EntityManager entityManager) {
-    	if (entityManager == null) {
-            debug("Criando um contexto de persistencia (EntityManager).");
+    protected synchronized void loadFactory(EntityManager entityManager) {
+    	if (entityManager == null || !entityManager.isOpen()) {
+            debug("Nova persistencia");
             this.entityManager = JPAConfig.getInstance().createManager();
             //this.ownsPersistenceContext = true;
         } else {
-            debug("Utilizando contexto de persistencia (EntityManager) existente.");
+            debug("Utilizando persistencia");
             this.entityManager = entityManager;
             //this.ownsPersistenceContext = false;
         }
     }
-    public EntityManager getManager() {
+    public synchronized EntityManager getManager() {
 		return this.entityManager;
 	}
-    public void preparePersist() {
-    	this.entityManager.getTransaction().begin();;
-    }
+
     public void commit() {
     	this.entityManager.getTransaction().commit();
     }
@@ -38,7 +36,7 @@ public class PersistenciaController {
         //if (ownsPersistenceContext && getPersistenceContext().isOpen()) {
     	try{
 	    	if (getManager().isOpen()) {
-	        	debug("Fechando o contexto de persistencia (EntityManager).");
+	        	debug("Fechando Persistencia");
 	        	getManager().close();
 	        }
     	}catch (Exception e) {

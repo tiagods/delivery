@@ -14,10 +14,13 @@ import com.tiagods.delivery.util.EnderecoUtil;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -101,61 +104,12 @@ public class EmpresaCadastroController extends UtilsController implements Initia
 	}
 	@FXML
 	void bucarCep(ActionEvent event){
-		try{
-            super.loadFactory();
-            EnderecoUtil util = EnderecoUtil.getInstance();
-			if(txCEP.getPlainText().trim().length()==8) {
-				Endereco endereco = util.pegarCEP(txCEP.getPlainText());
-				if(endereco!=null){
-                    txLogradouro.setText(endereco.getLogradouro());
-                    txNumero.setText("");
-                    txComplemento.setText(endereco.getComplemento());
-                    txBairro.setText(endereco.getBairro());
-                    cidades = new CidadesImpl(super.getManager());
-                    cbCidade.getItems().clear();
-                    cbCidade.getItems().addAll(cidades.findByEstado(endereco.getUf()));
-                    Cidade cidade = cidades.findByNome(endereco.getLocalidade());
-                    cbCidade.setValue(cidade);
-                    cbEstado.setValue(endereco.getUf());
-				}
-				else
-				    super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,
-                            "Verifique se o cep informado é valido ou se existe uma conexão com a internet",null, false);
-            }
-			else{
-				super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,"Verifique o cep informado",null, false);
-			}
-		}catch(Exception e){
-            super.alert(Alert.AlertType.ERROR,"Falha na conexão com o banco de dados",null,
-                    "Houve uma falha na conexão com o banco de dados",e,true);
-		}finally {
-		    super.close();
-		}
+		bucarCep(txCEP,txLogradouro,txNumero,txComplemento,txBairro,cbCidade,cbEstado);
+
 	}
 	private void combos(){
-        cidades = new CidadesImpl(getManager());
-        Cidade cidade = cidades.findByNome("São Paulo");
-        cbCidade.getItems().setAll(cidades.findByEstado(Cidade.Estado.SP));
-        cbCidade.setValue(cidade);
-        cbEstado.getItems().addAll(Cidade.Estado.values());
-        cbEstado.setValue(Cidade.Estado.SP);
-        cbEstado.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                try {
-                    loadFactory();
-                    cidades = new CidadesImpl(getManager());
-                    cbCidade.getItems().clear();
-                    List<Cidade> listCidades = cidades.findByEstado(newValue);
-                    cbCidade.getItems().addAll(listCidades);
-                    cbCidade.getSelectionModel().selectFirst();
-                } catch (Exception e) {
-                } finally {
-                    close();
-                }
-            }
-        });
-        new ComboBoxAutoCompleteUtil<>(cbCidade);
-    }
+	    comboRegiao(cbCidade,cbEstado,getManager());
+	}
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
         try {
@@ -163,8 +117,8 @@ public class EmpresaCadastroController extends UtilsController implements Initia
             combos();
             empresas = new EmpresasImpl(getManager());
             empresa = empresas.findById(new Long(1));
-            if(empresa!=null)
-                preencherFormulario(empresa);
+
+            if(empresa!=null) preencherFormulario(empresa);
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR, "Erro", null,
                     "Falha ao listar os registros",e,true);
@@ -191,8 +145,8 @@ public class EmpresaCadastroController extends UtilsController implements Initia
         txNumero.setText(pessoa.getNumero());
 	    txBairro.setText(pessoa.getBairro());
 	    txComplemento.setText(pessoa.getComplemento());
-	    cbEstado.setValue(pessoa.getEstado());
-	    cbCidade.setValue(pessoa.getCidade());
+        cbEstado.setValue(pessoa.getEstado());
+        cbCidade.setValue(pessoa.getCidade());
 	    this.empresa = empresa;
 	}
 	@FXML

@@ -52,6 +52,8 @@ public class MenuController extends UtilsController implements Initializable{
                 }
             }
         }catch (Exception e){
+        }finally {
+	        super.close();
         }
 	}
 	@FXML
@@ -158,7 +160,7 @@ public class MenuController extends UtilsController implements Initializable{
 
     @FXML
     void sair(ActionEvent event) {
-        System.exit(0);
+	    System.exit(0);
     }
     @FXML
     void usuario(ActionEvent event) {

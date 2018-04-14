@@ -128,7 +128,6 @@ public abstract class Pedido implements AbstractEntity,Serializable{
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id);
     }
 }

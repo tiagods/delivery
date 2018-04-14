@@ -308,6 +308,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
+					button.getStyleClass().add("btGreen");
 					button.setOnAction(event -> {
 						long product = tbComplemento.getItems().get(getIndex()).getId().longValue();
 						try {
@@ -338,6 +339,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
+					button.getStyleClass().add("btRed");
 					button.setOnAction(event -> {
 						boolean removed = excluir(tbComplemento.getItems().get(getIndex()));
 						if(removed) tbComplemento.getItems().remove(getIndex());
@@ -373,6 +375,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
+					button.getStyleClass().add("btGreen");
 					button.setOnAction(event -> {
 						long product = tbObservacao.getItems().get(getIndex()).getId().longValue();
 						try {
@@ -403,6 +406,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
+					button.getStyleClass().add("btRed");
 					button.setOnAction(event -> {
 						boolean removed = excluir(tbObservacao.getItems().get(getIndex()));
 						if(removed) tbObservacao.getItems().remove(getIndex());
@@ -517,6 +521,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
+					button.getStyleClass().add("btGreen");
 					button.setOnAction(event -> {
 						long product = tbPizza.getItems().get(getIndex()).getId().longValue();
 						try {
@@ -547,6 +552,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
+					button.getStyleClass().add("btRed");
 					button.setOnAction(event -> {
 						boolean removed = excluir(tbPizza.getItems().get(getIndex()));
 						if(removed) tbPizza.getItems().remove(getIndex());
@@ -621,6 +627,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
+					button.getStyleClass().add("btGreen");
 					button.setOnAction(event -> {
 						long product = tbProduto.getItems().get(getIndex()).getId().longValue();
 						try {
@@ -651,6 +658,7 @@ public class ProdutoPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
+					button.getStyleClass().add("btRed");
 					button.setOnAction(event -> {
 						boolean removed = excluir(tbProduto.getItems().get(getIndex()));
 						if(removed) tbProduto.getItems().remove(getIndex());

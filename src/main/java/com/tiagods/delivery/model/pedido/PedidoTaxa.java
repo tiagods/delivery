@@ -19,10 +19,6 @@ public class PedidoTaxa  implements AbstractEntity,Serializable{
     private Long id;
     private String nome;
     private BigDecimal valor;
-    @Transient
-    Locale locale = new Locale("pt", "BR");
-    @Transient
-    NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
     @Override
     public Number getId() {
         return this.id;
@@ -50,6 +46,8 @@ public class PedidoTaxa  implements AbstractEntity,Serializable{
 
     @Override
     public String toString() {
+        Locale locale = new Locale("pt", "BR");
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
         return this.nome+" ("+currencyFormatter.format(valor.doubleValue())+")";
     }
 }
