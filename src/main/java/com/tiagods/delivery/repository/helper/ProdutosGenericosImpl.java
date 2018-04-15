@@ -22,9 +22,9 @@ public class ProdutosGenericosImpl extends AbstractRepository<ProdutoGenerico, L
     }
     @Override
     public ProdutoGenerico save(ProdutoGenerico e) {
-        //getEntityManager().getTransaction().begin();
+        getEntityManager().getTransaction().begin();
         ProdutoGenerico v = super.save(e);
-        //getEntityManager().getTransaction().commit();
+        getEntityManager().getTransaction().commit();
         return v;
     }
 

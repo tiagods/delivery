@@ -7,6 +7,7 @@ import com.jfoenix.controls.JFXTextField;
 import com.tiagods.delivery.config.UsuarioLogado;
 import com.tiagods.delivery.model.*;
 import com.tiagods.delivery.repository.helper.CidadesImpl;
+import com.tiagods.delivery.repository.helper.ClientesComunsImpl;
 import com.tiagods.delivery.repository.helper.ClientesRegistradosImpl;
 import com.tiagods.delivery.util.ComboBoxAutoCompleteUtil;
 import com.tiagods.delivery.util.EnderecoUtil;
@@ -107,10 +108,11 @@ public class ClienteCadastroController extends UtilsController implements Initia
 
 	private Stage stage;
 	private CidadesImpl cidades;
-    private ClienteRegistrado cliente = null;
-    private ClientesRegistradosImpl clientes;
+    private Cliente cliente = null;
+    private ClientesRegistradosImpl registrados;
+    private ClientesComunsImpl comuns;
 
-	public ClienteCadastroController(ClienteRegistrado cliente, Stage stage) {
+	public ClienteCadastroController(Cliente cliente, Stage stage) {
 		this.stage = stage;
 		this.cliente= cliente;
 	}
@@ -179,23 +181,26 @@ public class ClienteCadastroController extends UtilsController implements Initia
         }
     }
 
-	void preencherFormulario(ClienteRegistrado cliente) {
+	void preencherFormulario(Cliente cliente) {
         txCodigo.setText(String.valueOf(cliente.getId()));
-        ClienteRegistrado.ClienteTipo tipo = cliente.getTipo();
-        if(tipo.equals(ClienteRegistrado.ClienteTipo.PESSOA)){
-            rbPessoa.setSelected(true);
-            PessoaFisica fisica = cliente.getFisico();
-            txRG.setText(fisica.getRg());
-            txCPF.setPlainText(fisica.getCpf());
-            txDataNascimento.setPlainText(fisica.getAniversario());
-        }
-        else{
-            rbEmpresa.setSelected(true);
-            PessoaJuridica juridica = cliente.getJuridico();
-            txRazao.setText(juridica.getRazao());
-            txCnpj.setPlainText(juridica.getCnpj());
-            txIM.setText(juridica.getIm());
-            txIE.setText(juridica.getIe());
+
+        if(cliente instanceof ClienteRegistrado) {
+            ClienteRegistrado.ClienteTipo tipo = ((ClienteRegistrado)cliente).getTipo();
+            if (tipo.equals(ClienteRegistrado.ClienteTipo.PESSOA)) {
+                rbPessoa.setSelected(true);
+                PessoaFisica fisica = ((ClienteRegistrado)cliente).getFisico();
+                txRG.setText(fisica.getRg());
+                txCPF.setPlainText(fisica.getCpf());
+                txDataNascimento.setPlainText(fisica.getAniversario());
+            }
+            else{
+                rbEmpresa.setSelected(true);
+                PessoaJuridica juridica = ((ClienteRegistrado)cliente).getJuridico();
+                txRazao.setText(juridica.getRazao());
+                txCnpj.setPlainText(juridica.getCnpj());
+                txIM.setText(juridica.getIm());
+                txIE.setText(juridica.getIe());
+            }
         }
         txNome.setText(cliente.getNome());
         txEmail.setText(cliente.getEmail());
@@ -249,8 +254,9 @@ public class ClienteCadastroController extends UtilsController implements Initia
             cliente.setEstado(cbEstado.getValue());
             cliente.setCidade(cbCidade.getValue());
             super.loadFactory();
-            clientes = new ClientesRegistradosImpl(getManager());
-            cliente = clientes.save(cliente);
+
+            registrados = new ClientesRegistradosImpl(getManager());
+            cliente = registrados.save((ClienteRegistrado) cliente);
             preencherFormulario(cliente);
             alert(Alert.AlertType.INFORMATION,"Sucesso",null,
                     "Salvo com sucesso",null,false);

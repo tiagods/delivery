@@ -10,12 +10,9 @@ import com.tiagods.delivery.model.*;
 import com.tiagods.delivery.model.pedido.PedidoDelivery;
 import com.tiagods.delivery.model.pedido.PedidoProdutoItem;
 import com.tiagods.delivery.model.pedido.PedidoTaxa;
-import com.tiagods.delivery.model.produto.Pizza;
 import com.tiagods.delivery.repository.helper.*;
 import com.tiagods.delivery.util.ComboBoxAutoCompleteUtil;
 import com.tiagods.delivery.util.EnderecoUtil;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -124,9 +121,14 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
     private Cliente cliente;
     private String telefone;
 
+    private String NAOCADASTRADO= "Não Cadastrado";
+    private String CADASTRADO="Cadastrado";
+
     Locale locale = new Locale("pt", "BR");
     NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
     private ClientesImpl clientes;
+    private ClientesRegistradosImpl registrados;
+    private ClientesComunsImpl comuns;
 
 
     public PedidoDeliveryCadastroController(PedidoDelivery pedidoDelivery, Cliente cliente, String telefone, Stage stage) {
@@ -156,9 +158,8 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
                         List<Entregador> entregadorList = entregadores.getAll();
                         Entregador etemp = cbEntregador.getValue();
                         cbEntregador.getItems().clear();
-                        cbEntregador.getItems().setAll(entregadorList);
-                        if(etemp!=null)
-                            cbEntregador.setValue(etemp);
+                        cbEntregador.getItems().addAll(entregadorList);
+                        if(etemp!=null) cbEntregador.setValue(etemp);
                     }
                     else{
                         super.alert(Alert.AlertType.ERROR,"Duplicado",null,
@@ -173,21 +174,38 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
             }
         }
     }
-
+    void adicionarProduto(){
+        try {
+            Stage stage = new Stage();
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PedidoProdutoPesquisa.fxml"));
+            loader.setController(new PedidoProdutoPesquisaController(delivery,stage));
+            final Parent root = loader.load();
+            final Scene scene = new Scene(root);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            //stage.initStyle(StageStyle.UNDECORATED);
+            stage.setScene(scene);
+            stage.show();
+            stage.setOnHiding(event -> {
+                try{
+                    loadFactory();
+                    pedidos = new PedidosDeliveryImpl(getManager());
+                    delivery = pedidos.findById(delivery.getId());
+                    preencherFormulario(delivery);
+                    salvar();
+                }catch (Exception e){
+                    alert(Alert.AlertType.ERROR, "Erro", "Erro ao preencher formulario", "Falha preencher o Delivery",e,true);
+                }finally {
+                    if(getManager().isOpen())
+                        super.close();
+                }
+            });
+        }catch(IOException e) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", "Falha ao abrir cadastro do Delivery",e,true);
+        }
+    }
     @FXML
     void adicionarProduto(ActionEvent event) {
-        Produto produto = new Pizza();
-        produto.setNome("Calabresa");
-
-        PedidoProdutoItem item = new PedidoProdutoItem();
-
-        if(produto instanceof Pizza) {
-            item.setNome("Pizza " + produto.getNome());
-            item.setValor(new BigDecimal(18.00));
-            item.setQuantidade(2);
-        }
-        item.setProduto(produto);
-        tbPrincipal.getItems().add(item);
+        adicionarProduto();
     }
 
     @FXML
@@ -206,8 +224,8 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
                     cbCidade.getItems().clear();
                     cbCidade.getItems().addAll(cidades.findByEstado(endereco.getUf()));
                     Cidade cidade = cidades.findByNome(endereco.getLocalidade());
-                    cbCidade.setValue(cidade);
                     cbEstado.setValue(endereco.getUf());
+                    cbCidade.setValue(cidade);
                 }
                 else
                     super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,
@@ -245,12 +263,17 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
         try{
             super.loadFactory();
             clientes = new ClientesImpl(super.getManager());
-            Cliente c = clientes.procurarTelefone(txTelefoneBusca.getText());
-            if(c!=null){
-                preencherEndereco(c);
+            cliente = clientes.procurarTelefone(txTelefoneBusca.getText());
+            if(cliente!=null){
+                preencherEndereco(cliente);
+
+                delivery.setCliente(cliente);
+                pedidos = new PedidosDeliveryImpl(super.getManager());
+                delivery = pedidos.save(delivery);
+                preencherFormulario(delivery);
             }
             else{
-                txContato.setText("Não Cadastrado");
+                txContato.setText(NAOCADASTRADO);
                 txContato.setStyle("-fx-text-fill: red;");
             }
         }catch (Exception e){
@@ -300,12 +323,10 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
 
         pedidosTaxas = new PedidosTaxasImpl(super.getManager());
 
-        cbTaxa.getItems().add(null);
         cbTaxa.getItems().addAll(pedidosTaxas.getAll());
         cbTaxa.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue!=oldValue){
-                txTaxa.setText(currencyFormatter.format(cbTaxa.getValue().getValor()));
-                salvar();
+            if(newValue!=null && newValue!=oldValue){
+                txTaxa.setText(currencyFormatter.format(cbTaxa.getValue().getValor().doubleValue()));
             }
         });
     }
@@ -384,11 +405,11 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
     void preencherEndereco(Cliente cliente){
         txTelefoneBusca.setText(cliente.getTelefone());
         if (cliente instanceof ClienteRegistrado) {
-            txContato.setText("Cadastrado");
-            txContato.setStyle("-fx-text-fill: blue;");
+            txContato.setText(CADASTRADO);
+            txContato.setStyle("-fx-text-fill: write; -fx-background-color:green;");
         } else {
-            txContato.setText("Não Cadastrado");
-            txContato.setStyle("-fx-text-fill: red;");
+            txContato.setText(NAOCADASTRADO);
+            txContato.setStyle("-fx-text-fill: write; -fx-background-color:red;");
         }
         txTelefone.setText(cliente.getTelefone());
         txCelular.setText(cliente.getCelular());
@@ -425,10 +446,111 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
         txSubTotal.setText(currencyFormatter.format(delivery.getSubTotal().doubleValue()));
         txDesconto.setText(currencyFormatter.format(delivery.getDesconto().doubleValue()));
         txServico.setText(currencyFormatter.format(delivery.getServico().doubleValue()));
+        txTaxa.setText(currencyFormatter.format(delivery.getValorTaxa().doubleValue()));
         cbTaxa.setValue(delivery.getTaxa());
         txTotal.setText(currencyFormatter.format(delivery.getTotal().doubleValue()));
 
     }
+    private Cliente receberEndereco(Cliente cliente) {
+        cliente.setTelefone(txTelefone.getText());
+        cliente.setCelular(txCelular.getText());
+        cliente.setCep(txCEP.getPlainText());
+        cliente.setEndereco(txLogradouro.getText());
+        cliente.setNumero(txNumero.getText());
+        cliente.setBairro(txBairro.getText());
+        cliente.setComplemento(txComplemento.getText());
+        cliente.setEstado(cbEstado.getValue());
+        cliente.setCidade(cbCidade.getValue());
+
+        if (cliente instanceof ClienteRegistrado){
+            registrados = new ClientesRegistradosImpl(getManager());
+            registrados.save((ClienteRegistrado)cliente);
+        }
+        else{
+            comuns = new ClientesComunsImpl(getManager());
+            comuns.save((ClienteComum)cliente);
+        }
+        return cliente;
+
+    }
+    public boolean salvar(){
+        //tabela
+        Set<PedidoProdutoItem> produtoItems = new HashSet<>();
+        produtoItems.addAll(tbPrincipal.getItems());
+        delivery.setProdutos(produtoItems);
+
+        delivery.setEntregador(cbEntregador.getValue());
+        if(tgIniciado.isSelected())
+            delivery.setStatus(PedidoDelivery.PedidoStatus.INICIADO);
+        else if(tgEspera.isSelected())
+            delivery.setStatus(PedidoDelivery.PedidoStatus.AGUARDANDO);
+        else if(tgAndamento.isSelected())
+            delivery.setStatus(PedidoDelivery.PedidoStatus.ANDAMENTO);
+        else {
+            delivery.setStatus(PedidoDelivery.PedidoStatus.ENTREGUE);
+            if(delivery.getFimEntrega()==null) delivery.setFimEntrega(Calendar.getInstance());
+        }
+        BigDecimal subSaldo = produtoItems.stream()
+                .map(item-> item.getTotal())
+                .reduce(BigDecimal.ZERO,BigDecimal::add);
+        delivery.setSubTotal(subSaldo);
+        if(cbTaxa.getValue()==null || cbTaxa.getValue().getId().longValue()==-1){
+            delivery.setTaxa(cbTaxa.getValue());
+        }
+        else delivery.setTaxa(null);
+        try{
+            loadFactory(getManager());
+            if(cliente==null && txContato.getText().equals(NAOCADASTRADO)){
+                cliente = new ClienteComum();
+                cliente = receberEndereco((ClienteComum)cliente);
+                delivery.setCliente(cliente);
+            }
+            else if(txContato.getText().equals(CADASTRADO)){
+                cliente = receberEndereco((ClienteRegistrado)cliente);
+            }
+            //primeiro aplico o desconto, e depois soma o total com as taxas e servicos
+            double desconto=currencyFormatter.parse(txDesconto.getText()).doubleValue();
+            double servico=currencyFormatter.parse(txServico.getText()).doubleValue();
+            double taxa=currencyFormatter.parse(txTaxa.getText()).doubleValue();
+            double total = (subSaldo.doubleValue()-desconto)+servico+taxa;
+            delivery.setDesconto(new BigDecimal(desconto));
+            delivery.setServico(new BigDecimal(servico));
+            delivery.setValorTaxa(new BigDecimal(taxa));
+            delivery.setTotal(new BigDecimal(total));
+
+            pedidos = new PedidosDeliveryImpl(getManager());
+            this.delivery = pedidos.save(delivery);
+            preencherFormulario(this.delivery);
+            return true;
+        }catch (Exception e){
+            super.alert(Alert.AlertType.ERROR,"Erro", null, "Erro ao salvar", e, true);
+            return false;
+        }finally {
+            close();
+        }
+
+    }
+    @FXML
+    void salvar(ActionEvent event){
+        if(delivery.getCliente()==null || txTelefoneBusca.getText().trim().length()<10
+                ||txTelefoneBusca.getText().trim().length()>11) {
+            alert(Alert.AlertType.ERROR,"Erro", null,
+                    "Nenhum cliente foi informado\n" +
+                            "Preencha o campo telefone e em Buscar ou informe um telefone correto:", null, false);
+        }
+       else if(salvar())
+            super.alert(Alert.AlertType.INFORMATION,"Sucesso", null, "Salvo com sucesso!", null, false);
+    }
+    @FXML
+    void sair(ActionEvent event) {
+        stage.close();
+    }
+
+    @FXML
+    void servico(ActionEvent event) {
+        taxaServicoDesconto();
+    }
+
     void tabela(){
         TableColumn<PedidoProdutoItem, Number> columnId = new  TableColumn<>("*");
         columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -505,6 +627,7 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
                     setGraphic(null);
                 }
                 else{
+                    button.getStyleClass().add("btGreen");
                     button.setOnAction(event -> {
                         //abrirCadastro(tbPrincipal.getItems().get(getIndex()));
                     });
@@ -525,6 +648,7 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
                     setGraphic(null);
                 }
                 else{
+                    button.getStyleClass().add("btRed");
                     button.setOnAction(event -> {
                         tbPrincipal.getItems().remove(getIndex());
                         salvar();
@@ -538,53 +662,6 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
         tbPrincipal.setFixedCellSize(50);
     }
 
-    public void salvar(){
-        if(cliente==null){
-            //super.alert(Alert.AlertType.ERROR, "Erro",null,"");
-            return;
-        }
-        //tabela
-        Set<PedidoProdutoItem> produtoItems = new HashSet<>();
-        produtoItems.addAll(tbPrincipal.getItems());
-        delivery.setProdutos(produtoItems);
-
-        delivery.setEntregador(cbEntregador.getValue());
-        if(tgIniciado.isSelected())
-            delivery.setStatus(PedidoDelivery.PedidoStatus.INICIADO);
-        else if(tgEspera.isSelected())
-            delivery.setStatus(PedidoDelivery.PedidoStatus.AGUARDANDO);
-        else if(tgAndamento.isSelected())
-            delivery.setStatus(PedidoDelivery.PedidoStatus.ANDAMENTO);
-        else delivery.setStatus(PedidoDelivery.PedidoStatus.ENTREGUE);
-
-        BigDecimal subSaldo = produtoItems.stream()
-                .map(item-> item.getTotal())
-                .reduce(BigDecimal.ZERO,BigDecimal::add);
-        delivery.setSubTotal(subSaldo);
-        if(cbTaxa.getValue()==null || cbTaxa.getValue().getId().longValue()==-1){
-            delivery.setTaxa(cbTaxa.getValue());
-        }
-        try{
-            super.loadFactory();
-            pedidos = new PedidosDeliveryImpl(super.getManager());
-            this.delivery = pedidos.save(delivery);
-            preencherFormulario(this.delivery);
-        }catch (Exception e){
-            super.alert(Alert.AlertType.ERROR,"Erro", null, "Erro ao salvar", e, true);
-        }finally {
-            super.close();
-        }
-
-    }
-    @FXML
-    void sair(ActionEvent event) {
-        stage.close();
-    }
-
-    @FXML
-    void servico(ActionEvent event) {
-        taxaServicoDesconto();
-    }
 
     void taxaServicoDesconto(){
         try {

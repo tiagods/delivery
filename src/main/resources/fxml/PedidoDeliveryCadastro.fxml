@@ -16,7 +16,7 @@
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 <?import org.fxutils.maskedtextfield.MaskedTextField?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane prefHeight="80.0" prefWidth="700.0">
          <children>
@@ -57,14 +57,14 @@
                                  <children>
                                     <Label minWidth="65.0" prefHeight="30.0" text="Telefone:" />
                                     <MaskTextField fx:id="txTelefoneBusca" mask="N!" prefWidth="125.0" />
-                                    <JFXButton onAction="#buscarClienteTelefone" prefHeight="30.0" text="Buscar" />
+                                    <JFXButton onAction="#buscarClienteTelefone" prefHeight="30.0" styleClass="btBlue" text="Buscar" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="0.0">
                                  <children>
                                     <Label minWidth="65.0" prefHeight="30.0" text="Contato:" />
-                                    <JFXTextField fx:id="txContato" prefWidth="125.0" />
-                                    <JFXButton onAction="#buscarCliente" prefHeight="30.0" text="Buscar" />
+                                    <JFXTextField fx:id="txContato" editable="false" prefWidth="125.0" />
+                                    <JFXButton onAction="#buscarCliente" prefHeight="30.0" styleClass="btBlue" text="Buscar" />
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="110.0" prefHeight="100.0" prefWidth="0.0">
@@ -79,7 +79,7 @@
                                  <children>
                                     <Label minWidth="65.0" prefHeight="30.0" text="CEP:" />
                                     <MaskedTextField fx:id="txCEP" mask="#####-###" prefHeight="26.0" prefWidth="125.0" />
-                                    <JFXButton onAction="#buscarCep" prefHeight="30.0" text="Buscar" />
+                                    <JFXButton onAction="#buscarCep" prefHeight="30.0" styleClass="btBlue" text="Buscar" />
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="55.0" prefHeight="100.0" prefWidth="0.0">
@@ -114,7 +114,7 @@
                      <children>
                         <ButtonBar layoutX="10.0" layoutY="242.0" prefHeight="40.0" prefWidth="200.0">
                            <buttons>
-                              <JFXButton onAction="#adicionarProduto" text="Adicionar" />
+                              <JFXButton onAction="#adicionarProduto" styleClass="btGreen" text="Adicionar Produto" />
                            </buttons>
                         </ButtonBar>
                         <TableView fx:id="tbPrincipal" prefHeight="265.0" prefWidth="480.0" />
@@ -227,9 +227,10 @@
                   </HBox>
                   <ButtonBar prefHeight="40.0" prefWidth="200.0">
                     <buttons>
-                        <JFXButton onAction="#pagamento" text="Pagamento" />
-                        <JFXButton onAction="#excluir" text="Excluir" />
-                        <JFXButton onAction="#sair" text="Voltar" />
+                        <JFXButton onAction="#pagamento" styleClass="btGreen" text="Pagamento" />
+                        <JFXButton layoutX="735.0" layoutY="19.0" onAction="#salvar" styleClass="btGreen" text="Salvar" />
+                        <JFXButton onAction="#excluir" styleClass="btRed" text="Excluir" />
+                        <JFXButton onAction="#sair" styleClass="btBlue" text="Voltar" />
                     </buttons>
                   </ButtonBar>
                </children>

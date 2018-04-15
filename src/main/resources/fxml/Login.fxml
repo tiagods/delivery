@@ -13,13 +13,13 @@
    <bottom>
         <AnchorPane prefHeight="400.0" prefWidth="301.0" BorderPane.alignment="CENTER">
             <children>
-            <JFXComboBox fx:id="cbNome" layoutX="86.0" layoutY="248.0" prefHeight="28.0" prefWidth="244.0">
+            <JFXComboBox fx:id="cbNome" focusTraversable="false" layoutX="86.0" layoutY="248.0" prefHeight="28.0" prefWidth="244.0">
             </JFXComboBox>
             <JFXPasswordField fx:id="txSenha" layoutX="86.0" layoutY="284.0" onKeyPressed="#enterAcionado" prefHeight="28.0" prefWidth="244.0" promptText="Senha">
                <font>
                   <Font size="14.0" />
                </font></JFXPasswordField>
-            <JFXButton fx:id="btnEntrar" buttonType="RAISED" layoutX="119.0" layoutY="340.0" onAction="#entrar" prefWidth="80.0" styleClass="btGreen" text="Entrar">
+            <JFXButton fx:id="btnEntrar" buttonType="RAISED" layoutX="119.0" layoutY="340.0" onAction="#entrar" prefWidth="80.0" styleClass="btBlue" text="Entrar">
                <font>
                   <Font size="14.0" />
                </font>
@@ -29,7 +29,7 @@
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <ImageView fitHeight="98.0" fitWidth="110.0" layoutX="145.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="98.0" fitWidth="110.0" layoutX="159.0" layoutY="151.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@imagens/user.png" />
                </image>

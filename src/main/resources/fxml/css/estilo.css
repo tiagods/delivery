@@ -4,6 +4,12 @@
     -fx-background-color: rgb(247, 126, 39);
     -fx-text-fill: WHITE;
 }
+.btYellow{
+    -fx-font-size: 12px;
+    -jfx-button-type: RAISED;
+    -fx-background-color: rgb(244, 206, 66);
+    -fx-text-fill: WHITE;
+}
 .btBlue{
     -fx-font-size: 12px;
     -jfx-button-type: RAISED;
@@ -41,6 +47,12 @@
     -fx-text-fill: WHITE;
 }
 .btRed:hover{
+    -fx-font-size: 11px;
+    -jfx-button-type: RAISED;
+    -fx-background-color: rgb(255,102,70);
+    -fx-text-fill: WHITE;
+}
+.btYellow:hover{
     -fx-font-size: 11px;
     -jfx-button-type: RAISED;
     -fx-background-color: rgb(255,102,70);

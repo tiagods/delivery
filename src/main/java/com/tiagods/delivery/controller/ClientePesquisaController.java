@@ -7,10 +7,12 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import com.tiagods.delivery.model.Cliente;
 
 import com.tiagods.delivery.model.ClienteRegistrado;
+import com.tiagods.delivery.repository.helper.ClientesComunsImpl;
 import com.tiagods.delivery.repository.helper.ClientesImpl;
 import com.tiagods.delivery.repository.helper.ClientesRegistradosImpl;
 import javafx.event.ActionEvent;
@@ -38,8 +40,14 @@ public class ClientePesquisaController extends UtilsController implements Initia
 	@FXML
 	private JFXTextField txPesquisa;
 	@FXML
-	private TableView<ClienteRegistrado> tbPrincipal;
+	private TableView<Cliente> tbPrincipal;
+	@FXML
+	private JFXComboBox<String> cbStatus;
+
 	private ClientesRegistradosImpl registrados;
+	private ClientesComunsImpl comuns;
+	private ClientesImpl geral;
+
 	private Stage stage;
 	public ClientePesquisaController(Stage stage) {
 		this.stage =stage;
@@ -50,9 +58,9 @@ public class ClientePesquisaController extends UtilsController implements Initia
 		tabela();
 		try {
 			super.loadFactory();
-			registrados = new ClientesRegistradosImpl(super.getManager());
+			geral = new ClientesImpl(super.getManager());
 			tbPrincipal.getItems().clear();
-			tbPrincipal.getItems().addAll(registrados.getAll());
+			tbPrincipal.getItems().addAll(geral.getAll());
 		}catch (Exception e) {
 			alert(AlertType.ERROR, "Erro", null, "Erro ao lista clientes", e, true);
 			e.printStackTrace();
@@ -61,7 +69,7 @@ public class ClientePesquisaController extends UtilsController implements Initia
 		}
 	}
 	
-	private	void abrirCadastro(ClienteRegistrado cliente){
+	private	void abrirCadastro(Cliente cliente){
 		try { 	
 			Stage stage = new Stage();
 		    final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ClienteCadastro.fxml"));
@@ -129,7 +137,7 @@ public class ClientePesquisaController extends UtilsController implements Initia
 	}
 	@SuppressWarnings("unchecked")
 	private void tabela() {
-		TableColumn<ClienteRegistrado, Number> columnId = new  TableColumn<>("*");
+		TableColumn<Cliente, Number> columnId = new  TableColumn<>("*");
 		columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		columnId.setPrefWidth(40);
 //		columnId.setCellFactory((TableColumn<Cliente, PfPj> param) -> new TableCell<Cliente, PfPj>() {
@@ -144,14 +152,14 @@ public class ClientePesquisaController extends UtilsController implements Initia
 //				}
 //			}
 //		});
-		TableColumn<ClienteRegistrado, String> columnNome = new  TableColumn<>("Nome");
+		TableColumn<Cliente, String> columnNome = new  TableColumn<>("Nome");
 		columnNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
 		columnNome.setPrefWidth(250);
 		columnNome.setMaxWidth(320);
 
-		TableColumn<ClienteRegistrado, String> colunaTelefone = new  TableColumn<>("Telefone");
+		TableColumn<Cliente, String> colunaTelefone = new  TableColumn<>("Telefone");
 		colunaTelefone.setCellValueFactory(new PropertyValueFactory<>("telefone"));
-		colunaTelefone.setCellFactory((TableColumn<ClienteRegistrado, String> param) -> new TableCell<ClienteRegistrado, String>() {
+		colunaTelefone.setCellFactory((TableColumn<Cliente, String> param) -> new TableCell<Cliente, String>() {
 			final MaskedTextField mask = new MaskedTextField();
 			@Override
 			protected void updateItem(String item, boolean empty) {
@@ -171,9 +179,9 @@ public class ClientePesquisaController extends UtilsController implements Initia
 				}
 			}
 		});
-		TableColumn<ClienteRegistrado, String> colunaCelular = new  TableColumn<>("Celular");
+		TableColumn<Cliente, String> colunaCelular = new  TableColumn<>("Celular");
 		colunaCelular.setCellValueFactory(new PropertyValueFactory<>("celular"));
-		colunaCelular.setCellFactory((TableColumn<ClienteRegistrado, String> param) -> new TableCell<ClienteRegistrado, String>() {
+		colunaCelular.setCellFactory((TableColumn<Cliente, String> param) -> new TableCell<Cliente, String>() {
 			@Override
 			protected void updateItem(String item, boolean empty) {
 				final MaskedTextField mask = new MaskedTextField();
@@ -192,9 +200,9 @@ public class ClientePesquisaController extends UtilsController implements Initia
 					setGraphic(mask);				}
 			}
 		});
-		TableColumn<ClienteRegistrado, Number> colunaEditar = new  TableColumn<>("");
+		TableColumn<Cliente, Number> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
-		colunaEditar.setCellFactory(param -> new TableCell<ClienteRegistrado,Number>(){
+		colunaEditar.setCellFactory(param -> new TableCell<Cliente,Number>(){
 			JFXButton button = new JFXButton("Editar");
 			@Override
 			protected void updateItem(Number item, boolean empty) {
@@ -205,6 +213,7 @@ public class ClientePesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
+                    button.getStyleClass().add("btGreen");
 					button.setOnAction(event -> {
 						abrirCadastro(tbPrincipal.getItems().get(getIndex()));
                     });
@@ -212,9 +221,9 @@ public class ClientePesquisaController extends UtilsController implements Initia
 				}
 			}
 		});
-		TableColumn<ClienteRegistrado, Number> colunaExcluir = new  TableColumn<>("");
+		TableColumn<Cliente, Number> colunaExcluir = new  TableColumn<>("");
 		colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
-		colunaExcluir.setCellFactory(param -> new TableCell<ClienteRegistrado,Number>(){
+		colunaExcluir.setCellFactory(param -> new TableCell<Cliente,Number>(){
 			JFXButton button = new JFXButton("Excluir");
 			@Override
 			protected void updateItem(Number item, boolean empty) {
@@ -225,6 +234,7 @@ public class ClientePesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
+				    button.getStyleClass().add("btRed");
 					button.setOnAction(event -> {
 						boolean removed = excluir(tbPrincipal.getItems().get(getIndex()));
 						if(removed) tbPrincipal.getItems().remove(getIndex());

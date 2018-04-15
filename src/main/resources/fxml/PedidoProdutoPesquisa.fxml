@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -9,16 +8,19 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox layoutX="-2.0" layoutY="8.0" prefHeight="590.0" prefWidth="900.0">
+      <VBox layoutX="-2.0" layoutY="8.0" prefHeight="589.0" prefWidth="900.0">
          <children>
             <AnchorPane prefHeight="123.0" prefWidth="900.0">
                <children>
-                  <JFXTextField fx:id="txPesquisa" layoutX="17.0" layoutY="18.0" onKeyTyped="#pesquisar" prefHeight="26.0" prefWidth="197.0" promptText="Digite um texto para pesquisar" />
+                  <JFXTextField fx:id="txPesquisa" layoutX="14.0" layoutY="12.0" onKeyTyped="#pesquisar" prefHeight="26.0" prefWidth="197.0" promptText="Digite um texto para pesquisar" />
                   <JFXButton layoutX="658.0" layoutY="14.0" onAction="#cadastrar" prefHeight="32.0" prefWidth="114.0" styleClass="btGreen" text="Novo" />
                   <JFXButton layoutX="772.0" layoutY="14.0" onAction="#sair" prefHeight="32.0" prefWidth="114.0" styleClass="btBlue" text="Sair" />
-                  <JFXComboBox fx:id="cbStatus" layoutX="254.0" layoutY="18.0" prefHeight="26.0" prefWidth="210.0" />
                </children></AnchorPane>
-            <TableView fx:id="tbPrincipal" prefHeight="371.0" prefWidth="900.0" VBox.vgrow="ALWAYS" />
+            <AnchorPane fx:id="pnTabelas" prefHeight="451.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <TableView fx:id="tbPrincipal" prefHeight="371.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
          </children>
       </VBox>
    </children>

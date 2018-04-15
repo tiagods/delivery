@@ -290,6 +290,11 @@ public class ProdutoCadastroController extends UtilsController implements Initia
 
     @FXML
     void salvar(ActionEvent event) {
+        if(cbCategoria.getValue()==null){
+            alert(Alert.AlertType.ERROR,"Erro",null,
+                    "A categoria é obrigatória",null,false);
+            return;
+        }
         try {
             super.loadFactory();
             if(!txCodigo.getText().equals(""))

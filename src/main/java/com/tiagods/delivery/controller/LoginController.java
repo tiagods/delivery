@@ -46,6 +46,8 @@ public class LoginController extends UtilsController implements Initializable{
             List<Usuario> contas = usuarios.filtrar("", 1, "pessoa.nome");
             cbNome.getItems().addAll(contas);
             cbNome.getSelectionModel().selectFirst();
+            txSenha.setFocusTraversable(true);
+            txSenha.requestFocus();
         }catch(Exception e) {
             super.alert(Alert.AlertType.ERROR,"Login",null,"Erro ao listar Logins",e,true);
         }finally {

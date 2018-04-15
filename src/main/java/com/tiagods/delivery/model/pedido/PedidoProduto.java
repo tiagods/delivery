@@ -1,5 +1,6 @@
 package com.tiagods.delivery.model.pedido;
 
+import com.tiagods.delivery.model.AbstractEntity;
 import com.tiagods.delivery.model.Pedido;
 import com.tiagods.delivery.model.Produto;
 import com.tiagods.delivery.model.Usuario;
@@ -8,9 +9,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
-
+@MappedSuperclass
 @Embeddable
-public abstract class PedidoProduto implements Serializable {
+public abstract  class PedidoProduto  implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "data_criacao")
     private Calendar criadoEm;
@@ -22,12 +23,15 @@ public abstract class PedidoProduto implements Serializable {
     @JoinColumn(name = "produto_id")
     private Produto produto;
     private int quantidade;
-    private BigDecimal valor;
-    private BigDecimal total;
+    private BigDecimal valor = new BigDecimal(0.00);
+    private BigDecimal total = new BigDecimal(0.00);
     @ManyToOne
-    @JoinColumn(name = "pedido_id")
     private Pedido pedido;
 
+    @PrePersist @PreUpdate
+    void recalcular(){
+        this.total=new BigDecimal(valor.doubleValue()*quantidade);
+    }
     public String getNome() {
         return nome;
     }
@@ -50,7 +54,6 @@ public abstract class PedidoProduto implements Serializable {
 
     public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
-        this.total = BigDecimal.valueOf(this.quantidade*this.valor.doubleValue());
     }
 
     public BigDecimal getValor() {
@@ -59,7 +62,6 @@ public abstract class PedidoProduto implements Serializable {
 
     public void setValor(BigDecimal valor) {
         this.valor = valor;
-        this.total = BigDecimal.valueOf(this.quantidade*this.valor.doubleValue());
     }
 
     public BigDecimal getTotal() {return total;}

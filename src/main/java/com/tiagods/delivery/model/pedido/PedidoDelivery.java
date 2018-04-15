@@ -2,6 +2,7 @@ package com.tiagods.delivery.model.pedido;
 
 import com.tiagods.delivery.model.Entregador;
 import com.tiagods.delivery.model.Pedido;
+import javafx.scene.paint.Color;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -11,12 +12,23 @@ import java.util.Calendar;
 @DiscriminatorValue(value = "delivery")
 public class PedidoDelivery extends Pedido {
     public enum PedidoStatus {
-        INICIADO("Iniciado"), AGUARDANDO("Aguardardando"), ANDAMENTO("Em Andamento"), ENTREGUE("Entregue");
+        INICIADO("Iniciado", "btBlue",Color.BLUE), AGUARDANDO("Aguardando","btYellow",Color.YELLOW),
+        ANDAMENTO("Em Andamento","btRed",Color.RED), ENTREGUE("Entregue","btGreen",Color.GREEN);
         private String descricao;
-        PedidoStatus(String descricao){this.descricao = descricao;}
+        private String style;
+        private Color color;
+        PedidoStatus(String descricao,String style,Color color){this.descricao = descricao;this.style=style;this.color=color;}
         public String getDescricao() {
             return descricao;
         }
+        public Color getColor() {
+            return color;
+        }
+
+        public String getStyle() {
+            return style;
+        }
+
         @Override
         public String toString() {
             return super.toString();

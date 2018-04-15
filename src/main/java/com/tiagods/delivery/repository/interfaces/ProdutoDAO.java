@@ -10,4 +10,5 @@ public interface ProdutoDAO {
     List<Produto> getAll();
     Produto findById(Long id);
     List<Produto> findByNome(String nome);
+    List<Produto> findByNomeOrCategoria(String nome);
 }

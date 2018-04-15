@@ -18,5 +18,5 @@ public class UsuarioLogado {
         return usuario;
     }
 
-    public void setUsuario(Usuario usuario) { usuario = usuario;}
+    public void setUsuario(Usuario usuario) { this.usuario = usuario;}
 }
