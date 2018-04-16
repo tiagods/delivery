@@ -11,12 +11,8 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import com.tiagods.delivery.model.Cliente;
 
-import com.tiagods.delivery.model.ClienteRegistrado;
-import com.tiagods.delivery.repository.helper.ClientesComunsImpl;
 import com.tiagods.delivery.repository.helper.ClientesImpl;
-import com.tiagods.delivery.repository.helper.ClientesRegistradosImpl;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -26,15 +22,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import javafx.util.Callback;
-import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
-
-import javax.rmi.CORBA.Util;
 
 public class ClientePesquisaController extends UtilsController implements Initializable{
 	@FXML
@@ -44,9 +34,7 @@ public class ClientePesquisaController extends UtilsController implements Initia
 	@FXML
 	private JFXComboBox<String> cbStatus;
 
-	private ClientesRegistradosImpl registrados;
-	private ClientesComunsImpl comuns;
-	private ClientesImpl geral;
+	private ClientesImpl clientes;
 
 	private Stage stage;
 	public ClientePesquisaController(Stage stage) {
@@ -58,9 +46,9 @@ public class ClientePesquisaController extends UtilsController implements Initia
 		tabela();
 		try {
 			super.loadFactory();
-			geral = new ClientesImpl(super.getManager());
+			clientes = new ClientesImpl(super.getManager());
 			tbPrincipal.getItems().clear();
-			tbPrincipal.getItems().addAll(geral.getAll());
+			tbPrincipal.getItems().addAll(clientes.getAll());
 		}catch (Exception e) {
 			alert(AlertType.ERROR, "Erro", null, "Erro ao lista clientes", e, true);
 			e.printStackTrace();
@@ -101,9 +89,9 @@ public class ClientePesquisaController extends UtilsController implements Initia
 		if (optional.get() == ButtonType.OK) {
 			try{
 				super.loadFactory();
-				registrados = new ClientesRegistradosImpl(getManager());
-				ClienteRegistrado cli = registrados.findById(cliente.getId().longValue());
-				registrados.remove(cli);
+				clientes = new ClientesImpl(getManager());
+				Cliente cli = clientes.findById(cliente.getId().longValue());
+				clientes.remove(cli);
 				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
 				return true;
 			}catch(Exception e){
@@ -119,9 +107,9 @@ public class ClientePesquisaController extends UtilsController implements Initia
 	private void filtrar() {
 		try {
 			super.loadFactory();
-			registrados = new ClientesRegistradosImpl(super.getManager());
+			clientes = new ClientesImpl(super.getManager());
 			tbPrincipal.getItems().clear();
-			List<ClienteRegistrado> clienteList = registrados.filtrar(txPesquisa.getText().trim(),"nome");
+			List<Cliente> clienteList = clientes.filtrar(txPesquisa.getText().trim(),"nome");
 			tbPrincipal.getItems().addAll(clienteList);
 			tbPrincipal.refresh();
 		}catch (Exception e) {

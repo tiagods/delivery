@@ -1,6 +1,7 @@
 package com.tiagods.delivery.repository.helper;
 
 import com.tiagods.delivery.model.Observacao;
+import com.tiagods.delivery.model.ProdutoCategoria;
 import com.tiagods.delivery.repository.AbstractRepository;
 import com.tiagods.delivery.repository.interfaces.ObservacaoDAO;
 import org.hibernate.Criteria;
@@ -54,6 +55,14 @@ public class ObservacaoImpl extends AbstractRepository<Observacao, Long> impleme
     @Override
     public List<Observacao> getAll() {
         Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Observacao.class);
+        criteria.addOrder(Order.asc("nome"));
+        return criteria.list();
+    }
+    @Override
+    public List<Observacao> findByCategoria(ProdutoCategoria categoria){
+        Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Observacao.class);
+        criteria.createAlias("categorias","cat");
+        criteria.add(Restrictions.eq("cat", categoria));
         criteria.addOrder(Order.asc("nome"));
         return criteria.list();
     }

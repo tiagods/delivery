@@ -2,6 +2,8 @@ package com.tiagods.delivery.repository.helper;
 
 
 import com.tiagods.delivery.model.Complemento;
+import com.tiagods.delivery.model.Observacao;
+import com.tiagods.delivery.model.ProdutoCategoria;
 import com.tiagods.delivery.repository.AbstractRepository;
 import com.tiagods.delivery.repository.interfaces.ComplementoDAO;
 import org.hibernate.Criteria;
@@ -54,6 +56,14 @@ public class ComplementosImpl extends AbstractRepository<Complemento, Long> impl
     @Override
     public List<Complemento> getAll() {
         Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Complemento.class);
+        criteria.addOrder(Order.asc("nome"));
+        return criteria.list();
+    }
+    @Override
+    public List<Complemento> findByCategoria(ProdutoCategoria categoria) {
+        Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Complemento.class);
+        criteria.createAlias("categorias", "cat");
+        criteria.add(Restrictions.eq("cat", categoria));
         criteria.addOrder(Order.asc("nome"));
         return criteria.list();
     }

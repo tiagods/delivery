@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox layoutX="283.0" layoutY="109.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane prefHeight="25.0" prefWidth="600.0" />
+            <HBox prefHeight="253.0" prefWidth="600.0">
+               <children>
+                  <VBox prefHeight="100.0" prefWidth="260.0">
+                     <children>
+                        <FlowPane prefHeight="200.0" prefWidth="200.0" />
+                        <FlowPane layoutX="10.0" layoutY="10.0" prefHeight="72.0" prefWidth="184.0" />
+                     </children>
+                  </VBox>
+                  <TableView prefHeight="100.0" prefWidth="344.0" />
+               </children>
+            </HBox>
+            <HBox prefHeight="119.0" prefWidth="600.0">
+               <children>
+                  <VBox prefHeight="100.0" prefWidth="600.0">
+                     <children>
+                        <HBox prefHeight="150.0" prefWidth="200.0">
+                           <children>
+                              <ButtonBar prefHeight="50.0" prefWidth="600.0">
+                                 <buttons>
+                                    <Label text="Total:">
+                                       <font>
+                                          <Font size="26.0" />
+                                       </font></Label>
+                                    <Label layoutX="25.0" layoutY="52.0" prefHeight="31.0" prefWidth="120.0" text="R$ 0,00">
+                                       <font>
+                                          <Font size="26.0" />
+                                       </font></Label>
+                                 </buttons>
+                              </ButtonBar>
+                           </children></HBox>
+                        <HBox layoutX="10.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0">
+                           <children>
+                              <ButtonBar prefHeight="40.0" prefWidth="600.0">
+                                 <buttons>
+                                    <Label text="A Pagar:" textFill="#f20202">
+                                       <font>
+                                          <Font size="26.0" />
+                                       </font></Label>
+                                    <Label layoutX="25.0" layoutY="52.0" prefHeight="31.0" prefWidth="120.0" text="R$ 0,00" textFill="#f20202">
+                                       <font>
+                                          <Font size="26.0" />
+                                       </font></Label>
+                                 </buttons>
+                              </ButtonBar>
+                           </children>
+                        </HBox>
+                        <HBox layoutX="10.0" layoutY="60.0" prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <ButtonBar prefHeight="40.0" prefWidth="600.0">
+                                 <buttons>
+                                    <JFXButton styleClass="btGreen" text="Concluir" />
+                                    <JFXButton layoutX="125.0" layoutY="14.0" styleClass="btBlue" text="Voltar" />
+                                 </buttons>
+                              </ButtonBar>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

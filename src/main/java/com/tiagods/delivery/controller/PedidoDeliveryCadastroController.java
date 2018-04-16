@@ -123,12 +123,11 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
 
     private String NAOCADASTRADO= "Não Cadastrado";
     private String CADASTRADO="Cadastrado";
+    private String NAOPROMOCIONAL="Não Promocional";
 
     Locale locale = new Locale("pt", "BR");
     NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
     private ClientesImpl clientes;
-    private ClientesRegistradosImpl registrados;
-    private ClientesComunsImpl comuns;
 
 
     public PedidoDeliveryCadastroController(PedidoDelivery pedidoDelivery, Cliente cliente, String telefone, Stage stage) {
@@ -404,13 +403,39 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
     }
     void preencherEndereco(Cliente cliente){
         txTelefoneBusca.setText(cliente.getTelefone());
-        if (cliente instanceof ClienteRegistrado) {
-            txContato.setText(CADASTRADO);
-            txContato.setStyle("-fx-text-fill: write; -fx-background-color:green;");
-        } else {
+
+        String text="";
+        String style="";
+        if (cliente.getTipo().equals(Cliente.ClienteTipo.EMPRESA)) {
+            PessoaJuridica juridica = cliente.getJuridico();
+            if(juridica.getCnpj().length()==13) {
+                text=(CADASTRADO);
+                style=("-fx-text-fill: write; -fx-background-color:green;");
+            }
+            else{
+                text=(NAOPROMOCIONAL);
+                style=("-fx-text-fill: write; -fx-background-color:orange;");
+            }
+        }
+        else if(cliente.getTipo().equals(Cliente.ClienteTipo.PESSOA)){
+            PessoaFisica fisica = cliente.getFisico();
+            if(fisica.getCpf().length()==11 || fisica.getRg().trim().length()>0){
+                text=(CADASTRADO);
+                style=("-fx-text-fill: write; -fx-background-color:green;");
+
+            }
+            else{
+                text=(NAOPROMOCIONAL);
+                style=("-fx-text-fill: write; -fx-background-color:orange;");
+            }
+        }
+        else {
             txContato.setText(NAOCADASTRADO);
             txContato.setStyle("-fx-text-fill: write; -fx-background-color:red;");
         }
+        txContato.setStyle(style);
+        txContato.setText(text);
+
         txTelefone.setText(cliente.getTelefone());
         txCelular.setText(cliente.getCelular());
         txCEP.setPlainText(cliente.getCep());
@@ -451,7 +476,7 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
         txTotal.setText(currencyFormatter.format(delivery.getTotal().doubleValue()));
 
     }
-    private Cliente receberEndereco(Cliente cliente) {
+    private Cliente atualizaEndereco(Cliente cliente) {
         cliente.setTelefone(txTelefone.getText());
         cliente.setCelular(txCelular.getText());
         cliente.setCep(txCEP.getPlainText());
@@ -461,15 +486,8 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
         cliente.setComplemento(txComplemento.getText());
         cliente.setEstado(cbEstado.getValue());
         cliente.setCidade(cbCidade.getValue());
-
-        if (cliente instanceof ClienteRegistrado){
-            registrados = new ClientesRegistradosImpl(getManager());
-            registrados.save((ClienteRegistrado)cliente);
-        }
-        else{
-            comuns = new ClientesComunsImpl(getManager());
-            comuns.save((ClienteComum)cliente);
-        }
+        clientes = new ClientesImpl(getManager());
+        cliente = clientes.save(cliente);
         return cliente;
 
     }
@@ -501,12 +519,12 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
         try{
             loadFactory(getManager());
             if(cliente==null && txContato.getText().equals(NAOCADASTRADO)){
-                cliente = new ClienteComum();
-                cliente = receberEndereco((ClienteComum)cliente);
+                cliente = new Cliente();
+                cliente = atualizaEndereco(cliente);
                 delivery.setCliente(cliente);
             }
             else if(txContato.getText().equals(CADASTRADO)){
-                cliente = receberEndereco((ClienteRegistrado)cliente);
+                cliente = atualizaEndereco(cliente);
             }
             //primeiro aplico o desconto, e depois soma o total com as taxas e servicos
             double desconto=currencyFormatter.parse(txDesconto.getText()).doubleValue();

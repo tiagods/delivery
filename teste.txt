@@ -1,0 +1,58 @@
+==========================================
+              Nome da empresa              
+===========================================
+********** NAO E DOCUMENTO FISCAL *********
+===========================================
+PRODUTO      QTDE      VALOR UN.      VALOR
+Pizza Calabresa    4    R$30,00  R$120,00
+===========================================
+   INFORMACOES PARA FECHAMENTO DE CONTA    
+===========================================
+ GARCOM  CONTA.DIV.  VAL.PESS. COVER  DESC.
+  Fabio               R$12,00  R$10,00   R$2,00
+===========================================
+SubTotal                            120,00
+                   ------------------------
+Total                                140,00
+===========================================
+       MENSAGEM DA EMPRESA VAI AQUI        
+   INFORMACOES PARA FECHAMENTO DE CONTA    
+
+
+
+
+
+
+
+
+
+
+==========================================
+              Nome da empresa              
+===========================================
+********** NAO E DOCUMENTO FISCAL *********
+===========================================
+PRODUTO      QTDE      VALOR UN.      VALOR
+Pizza Calabresa    4    R$30,00  R$120,00
+===========================================
+   INFORMACOES PARA FECHAMENTO DE CONTA    
+===========================================
+ GARCOM  CONTA.DIV.  VAL.PESS. COVER  DESC.
+  Fabio               R$12,00  R$10,00   R$2,00
+===========================================
+SubTotal                            120,00
+                   ------------------------
+Total                                140,00
+===========================================
+       MENSAGEM DA EMPRESA VAI AQUI        
+   INFORMACOES PARA FECHAMENTO DE CONTA    
+
+
+
+
+
+
+
+
+
+
