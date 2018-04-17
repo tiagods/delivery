@@ -62,7 +62,7 @@ public class ObservacaoImpl extends AbstractRepository<Observacao, Long> impleme
     public List<Observacao> findByCategoria(ProdutoCategoria categoria){
         Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Observacao.class);
         criteria.createAlias("categorias","cat");
-        criteria.add(Restrictions.eq("cat", categoria));
+        criteria.add(Restrictions.eq("cat.id", categoria.getId()));
         criteria.addOrder(Order.asc("nome"));
         return criteria.list();
     }

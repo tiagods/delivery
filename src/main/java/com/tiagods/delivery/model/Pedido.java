@@ -32,6 +32,7 @@ public abstract class Pedido implements AbstractEntity,Serializable{
     private BigDecimal desconto = new BigDecimal(0.00);
     private BigDecimal servico = new BigDecimal(0.00);
     private BigDecimal valorPago = new BigDecimal(0.00);
+    private boolean pago=false;
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "pedido_id")
     private Set<PedidoProdutoItem> produtos = new HashSet<>();
@@ -125,6 +126,14 @@ public abstract class Pedido implements AbstractEntity,Serializable{
 
     public void setValorPago(BigDecimal valorPago) {
         this.valorPago = valorPago;
+    }
+
+    public boolean isPago() {
+        return pago;
+    }
+
+    public void setPago(boolean pago) {
+        this.pago = pago;
     }
 
     @Override

@@ -4,8 +4,11 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 import com.tiagods.delivery.config.UsuarioLogado;
+import com.tiagods.delivery.controller.pedido.PedidoItemAcoObsCadastroController;
+import com.tiagods.delivery.controller.pedido.PedidoItemPizzaAcoObsCadastroController;
 import com.tiagods.delivery.model.*;
 import com.tiagods.delivery.model.pedido.PedidoDelivery;
+import com.tiagods.delivery.model.pedido.PedidoProduto;
 import com.tiagods.delivery.model.pedido.PedidoProdutoItem;
 import com.tiagods.delivery.model.produto.Pizza;
 import com.tiagods.delivery.model.produto.ProdutoGenerico;
@@ -102,6 +105,28 @@ public class PedidoProdutoPesquisaController extends UtilsController implements 
 	private void cadastrar(ActionEvent event) {
 
     }
+	void editarProduto(PedidoProdutoItem item){
+		try {
+			Stage stage = new Stage();
+			FXMLLoader loader = null;
+			if(item.getProduto() instanceof Pizza) {
+				loader = new FXMLLoader(getClass().getResource("/fxml/ProdutoPedidoItemPizza.fxml"));
+				loader.setController(new PedidoItemPizzaAcoObsCadastroController(item,stage));
+			}
+			else {
+				loader = new FXMLLoader(getClass().getResource("/fxml/ProdutoPedidoItem.fxml"));
+				loader.setController(new PedidoItemAcoObsCadastroController(item,stage));
+			}
+			final Parent root = loader.load();
+			final Scene scene = new Scene(root);
+			stage.initModality(Modality.APPLICATION_MODAL);
+			//stage.initStyle(StageStyle.UNDECORATED);
+			stage.setScene(scene);
+			stage.show();
+		}catch(IOException e) {
+			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", "Falha ao abrir cadastro do Delivery",e,true);
+		}
+	}
 	private void filtrar() {
 		try {
 			tbPrincipal.getItems().clear();
@@ -153,6 +178,8 @@ public class PedidoProdutoPesquisaController extends UtilsController implements 
 				}
 			}
 		});
+		colunaCusto.setPrefWidth(100);
+
 		TableColumn<Produto, BigDecimal> colunaValor = new  TableColumn<>("Valor");
 		colunaValor.setCellValueFactory(new PropertyValueFactory<>("venda"));
 		colunaValor.setCellFactory(param -> new TableCell<Produto,BigDecimal>(){
@@ -170,6 +197,7 @@ public class PedidoProdutoPesquisaController extends UtilsController implements 
 				}
 			}
 		});
+		colunaValor.setPrefWidth(100);
 		TableColumn<Produto, ProdutoCategoria> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("categoria"));
 		colunaEditar.setCellFactory(param -> new TableCell<Produto,ProdutoCategoria>(){
@@ -195,6 +223,7 @@ public class PedidoProdutoPesquisaController extends UtilsController implements 
 				}
 			}
 		});
+		colunaEditar.setPrefWidth(100);
 		TableColumn<Produto, Number> colunaExcluir = new  TableColumn<>("");
 		colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaExcluir.setCellFactory(param -> new TableCell<Produto,Number>(){
@@ -208,10 +237,13 @@ public class PedidoProdutoPesquisaController extends UtilsController implements 
 					setGraphic(null);
 				}
 				else{
+					Produto p = tbPrincipal.getItems().get(getIndex());
 					button.getStyleClass().add("btGreen");
 					button.setOnAction(event -> {
-						//boolean removed = excluir(tbProduto.getItems().get(getIndex()));
-						//if(removed) tbPrincipal.getItems().remove(getIndex());
+						PedidoProdutoItem produtoItem = salvarProdutoDiretoNoPedido(p);
+						if(produtoItem!=null){
+							editarProduto(produtoItem);
+						}
 					});
 					setGraphic(button);
 				}
@@ -220,7 +252,7 @@ public class PedidoProdutoPesquisaController extends UtilsController implements 
 		tbPrincipal.getColumns().addAll(columnCategoria,columnNome,colunaCusto,colunaValor,colunaEditar,colunaExcluir);
 		tbPrincipal.setTableMenuButtonVisible(true);
 	}
-	void salvarProdutoDiretoNoPedido(Produto p){
+	PedidoProdutoItem salvarProdutoDiretoNoPedido(Produto p){
 		PedidoProdutoItem produtoItem = new PedidoProdutoItem();
 		produtoItem.setCriadoEm(Calendar.getInstance());
 		produtoItem.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
@@ -235,12 +267,15 @@ public class PedidoProdutoPesquisaController extends UtilsController implements 
 			items.save(produtoItem);
 			alert(AlertType.INFORMATION,"Sucesso",null,
 					"Adicionado com sucesso!",null,false);
+			return produtoItem;
 		}catch (Exception e){
 			alert(AlertType.ERROR, "Erro", null, "Erro ao adicionar produto", e, true);
+			return null;
 		}finally {
 			close();
 		}
 	}
+
 
 	@FXML
 	void sair(ActionEvent event){

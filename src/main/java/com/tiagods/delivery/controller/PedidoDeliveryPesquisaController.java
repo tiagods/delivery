@@ -151,6 +151,8 @@ public class PedidoDeliveryPesquisaController extends UtilsController implements
 				}
 			}
 		});
+		colunaData.setPrefWidth(120);
+
 		TableColumn<PedidoDelivery, Cliente> colunaCliente = new  TableColumn<>("Cliente");
 		colunaCliente.setCellValueFactory(new PropertyValueFactory<>("cliente"));
 		colunaCliente.setCellFactory(param -> new TableCell<PedidoDelivery,Cliente>(){
@@ -294,12 +296,12 @@ public class PedidoDeliveryPesquisaController extends UtilsController implements
 			}
 		});
 
-		TableColumn<PedidoDelivery, Number> colunaPagamento = new  TableColumn<>("Situação");
-		colunaPagamento.setCellValueFactory(new PropertyValueFactory<>("id"));
-		colunaPagamento.setCellFactory(param -> new TableCell<PedidoDelivery,Number>(){
+		TableColumn<PedidoDelivery, Boolean> colunaPagamento = new  TableColumn<>("Situação");
+		colunaPagamento.setCellValueFactory(new PropertyValueFactory<>("pago"));
+		colunaPagamento.setCellFactory(param -> new TableCell<PedidoDelivery,Boolean>(){
 			JFXRadioButton rb = new JFXRadioButton("");
 			@Override
-			protected void updateItem(Number item, boolean empty) {
+			protected void updateItem(Boolean item, boolean empty) {
 				super.updateItem(item, empty);
 				if(item==null){
 					setStyle("");
@@ -311,20 +313,19 @@ public class PedidoDeliveryPesquisaController extends UtilsController implements
 					rb.selectedProperty().addListener((observable, oldValue, newValue) -> {
                         rb.setSelected(true);
                     });
-					PedidoDelivery p = tbPrincipal.getItems().get(getIndex());
-					double total = p.getTotal().doubleValue();
-					double pago = p.getValorPago().doubleValue();
-					if(total==0 || total>pago){
-						rb.setSelectedColor(Color.RED);
-						rb.setText("Pendente");
-					}else{
+					if(item){
 						rb.setSelectedColor(Color.GREEN);
 						rb.setText("Pago");
+					}
+					else{
+						rb.setSelectedColor(Color.RED);
+						rb.setText("Pendente");
 					}
 					setGraphic(rb);
 				}
 			}
 		});
+		colunaPagamento.setPrefWidth(120);
 
 		TableColumn<PedidoDelivery, Number> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));

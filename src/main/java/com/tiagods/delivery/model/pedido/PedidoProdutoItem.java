@@ -17,17 +17,17 @@ public class PedidoProdutoItem extends PedidoProduto implements AbstractEntity,S
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="ped_pro_item_complemento",
             joinColumns = { @JoinColumn(name = "ped_prod_item_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "complemento_id", referencedColumnName = "id") })
     private Set<Complemento> complementos = new HashSet<>();
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="ped_pro_item_observacao",
             joinColumns = { @JoinColumn(name = "ped_prod_item_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "observacao_id", referencedColumnName = "id") })
     private Set<Observacao> observacoes = new HashSet<>();
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "ped_prod_item_id")
     private Set<PedidoProdutoItemAdicional> produtoItemAdicional = new HashSet();
     @Override

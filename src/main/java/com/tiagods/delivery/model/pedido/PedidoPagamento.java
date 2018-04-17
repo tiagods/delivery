@@ -3,6 +3,7 @@ package com.tiagods.delivery.model.pedido;
 import com.tiagods.delivery.model.AbstractEntity;
 import com.tiagods.delivery.model.pagamento.CartaoBandeira;
 import com.tiagods.delivery.model.pagamento.ModalidadePagamento;
+import com.tiagods.delivery.model.pagamento.ValeBandeira;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,7 +21,9 @@ public class PedidoPagamento implements AbstractEntity, Serializable{
     @Column(name = "tipo_pagamento")
     private ModalidadePagamento modalidadePagamento;
     @Enumerated(value = EnumType.STRING)
-    private CartaoBandeira bandeira;
+    private CartaoBandeira cartaoBandeira;
+    @Enumerated(value = EnumType.STRING)
+    private ValeBandeira valeBandeira;
     @Override
     public Long getId() {
         return id;
@@ -48,7 +51,30 @@ public class PedidoPagamento implements AbstractEntity, Serializable{
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id);
+    }
+
+    public ModalidadePagamento getModalidadePagamento() {
+        return modalidadePagamento;
+    }
+
+    public void setModalidadePagamento(ModalidadePagamento modalidadePagamento) {
+        this.modalidadePagamento = modalidadePagamento;
+    }
+
+    public CartaoBandeira getCartaoBandeira() {
+        return cartaoBandeira;
+    }
+
+    public void setCartaoBandeira(CartaoBandeira cartaoBandeira) {
+        this.cartaoBandeira = cartaoBandeira;
+    }
+
+    public ValeBandeira getValeBandeira() {
+        return valeBandeira;
+    }
+
+    public void setValeBandeira(ValeBandeira valeBandeira) {
+        this.valeBandeira = valeBandeira;
     }
 }

@@ -1,7 +1,6 @@
 package com.tiagods.delivery.controller.pedido;
 
 import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXRadioButton;
 import com.tiagods.delivery.controller.UtilsController;
 import com.tiagods.delivery.model.Complemento;
 import com.tiagods.delivery.model.Observacao;
@@ -26,7 +25,7 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.util.*;
 
-public class PedidoItemAcoObsCadastroController extends UtilsController implements Initializable {
+public class PedidoItemPizzaAcoObsCadastroController extends UtilsController implements Initializable{
     @FXML
     private ListView<JFXCheckBox> lvComplemento;
     @FXML
@@ -41,7 +40,7 @@ public class PedidoItemAcoObsCadastroController extends UtilsController implemen
     private PedidosProdutosItensAddImpl itemsAdd;
     private PedidosProdutosItensImpl items;
 
-    public PedidoItemAcoObsCadastroController(PedidoProduto pedidoProduto,Stage stage){
+    public PedidoItemPizzaAcoObsCadastroController(PedidoProduto pedidoProduto,Stage stage){
         this.pedidoProduto=pedidoProduto;
         this.stage=stage;
     }
@@ -63,6 +62,7 @@ public class PedidoItemAcoObsCadastroController extends UtilsController implemen
                 complementoSet= ((PedidoProdutoItemAdicional)pedidoProduto).getComplementos();
                 observacaosSet= ((PedidoProdutoItemAdicional) pedidoProduto).getObservacoes();
             }
+            observacaosSet.forEach(System.out::println);
 
             ProdutoCategoria categoria = pedidoProduto.getProduto().getCategoria();
             List<Complemento> complementoList = complementos.findByCategoria(categoria);

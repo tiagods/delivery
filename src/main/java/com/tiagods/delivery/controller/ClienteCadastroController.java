@@ -185,7 +185,10 @@ public class ClienteCadastroController extends UtilsController implements Initia
         txCodigo.setText(String.valueOf(cliente.getId()));
 
         Cliente.ClienteTipo tipo = cliente.getTipo();
-        if (tipo.equals(Cliente.ClienteTipo.PESSOA)) {
+        if(tipo == null){
+            rbPessoa.setSelected(true);
+        }
+        else if (tipo.equals(Cliente.ClienteTipo.PESSOA)) {
             rbPessoa.setSelected(true);
             PessoaFisica fisica = cliente.getFisico();
             txRG.setText(fisica.getRg());

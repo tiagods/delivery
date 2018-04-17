@@ -16,12 +16,12 @@ public class PedidoProdutoItemAdicional extends PedidoProduto implements Abstrac
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="ped_pro_item_add_complemento",
             joinColumns = { @JoinColumn(name = "per_prod_item_add_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "complemento_id", referencedColumnName = "id") })
     private Set<Complemento> complementos = new HashSet<>();
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="ped_pro_item_add_observacao",
             joinColumns = { @JoinColumn(name = "per_prod_item_add_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "observacao_id", referencedColumnName = "id") })

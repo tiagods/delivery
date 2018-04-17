@@ -4,6 +4,7 @@
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXToggleButton?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableView?>
@@ -16,7 +17,7 @@
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 <?import org.fxutils.maskedtextfield.MaskedTextField?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane prefHeight="80.0" prefWidth="700.0">
          <children>
@@ -49,43 +50,52 @@
          <children>
             <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <TitledPane collapsible="false" prefHeight="305.0" prefWidth="388.0" text="Endereço de Entrega">
+                  <TitledPane collapsible="false" prefHeight="305.0" prefWidth="344.0" text="Endereço de Entrega">
                      <content>
                         <VBox prefHeight="278.0" prefWidth="419.0">
                            <children>
                               <HBox prefHeight="100.0" prefWidth="0.0">
                                  <children>
                                     <Label minWidth="65.0" prefHeight="30.0" text="Telefone:" />
-                                    <MaskTextField fx:id="txTelefoneBusca" mask="N!" prefWidth="125.0" />
+                                    <MaskTextField fx:id="txTelefoneBusca" mask="N!" prefHeight="26.0" prefWidth="98.0" promptText="99999999999">
+                                       <HBox.margin>
+                                          <Insets right="10.0" />
+                                       </HBox.margin></MaskTextField>
                                     <JFXButton onAction="#buscarClienteTelefone" prefHeight="30.0" styleClass="btBlue" text="Buscar" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="0.0">
                                  <children>
                                     <Label minWidth="65.0" prefHeight="30.0" text="Contato:" />
-                                    <JFXTextField fx:id="txContato" editable="false" prefWidth="125.0" />
-                                    <JFXButton onAction="#buscarCliente" prefHeight="30.0" styleClass="btBlue" text="Buscar" />
+                                    <Label fx:id="txContato" prefHeight="30.0" prefWidth="150.0">
+                                       <HBox.margin>
+                                          <Insets right="10.0" />
+                                       </HBox.margin></Label>
+                                    <JFXButton onAction="#buscarCliente" prefHeight="30.0" styleClass="btBlue" text="Editar" />
                                  </children>
                               </HBox>
-                              <HBox layoutX="10.0" layoutY="110.0" prefHeight="100.0" prefWidth="0.0">
+                              <HBox layoutX="10.0" layoutY="110.0" prefHeight="100.0" prefWidth="329.0">
                                  <children>
                                     <Label minWidth="65.0" prefHeight="30.0" text="Telefone:" />
-                                    <JFXTextField fx:id="txTelefone" prefHeight="26.0" prefWidth="120.0" />
+                                    <JFXTextField fx:id="txTelefone" prefHeight="26.0" prefWidth="100.0" />
                                     <Label layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="60.0" text="Celular:" />
-                                    <JFXTextField fx:id="txCelular" layoutX="71.0" layoutY="10.0" prefHeight="26.0" prefWidth="120.0" />
+                                    <JFXTextField fx:id="txCelular" layoutX="71.0" layoutY="10.0" prefHeight="26.0" prefWidth="100.0" />
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="124.0" prefHeight="100.0" prefWidth="0.0">
                                  <children>
                                     <Label minWidth="65.0" prefHeight="30.0" text="CEP:" />
-                                    <MaskedTextField fx:id="txCEP" mask="#####-###" prefHeight="26.0" prefWidth="125.0" />
+                                    <MaskedTextField fx:id="txCEP" mask="#####-###" prefHeight="26.0" prefWidth="100.0">
+                                       <HBox.margin>
+                                          <Insets right="10.0" />
+                                       </HBox.margin></MaskedTextField>
                                     <JFXButton onAction="#buscarCep" prefHeight="30.0" styleClass="btBlue" text="Buscar" />
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="55.0" prefHeight="100.0" prefWidth="0.0">
                                  <children>
                                     <Label minWidth="65.0" prefHeight="30.0" text="Rua:" />
-                                    <JFXTextField fx:id="txLogradouro" prefWidth="200.0" />
+                                    <JFXTextField fx:id="txLogradouro" prefWidth="150.0" />
                                     <Label layoutX="10.0" layoutY="10.0" prefHeight="30.0" text="Nº:" />
                                     <JFXTextField fx:id="txNumero" layoutX="40.0" layoutY="10.0" prefHeight="26.0" prefWidth="50.0" />
                                  </children>
@@ -95,7 +105,7 @@
                                     <Label minWidth="65.0" prefHeight="30.0" text="Bairro" />
                                     <JFXTextField fx:id="txBairro" prefWidth="150.0" />
                                     <Label layoutX="10.0" layoutY="10.0" prefHeight="30.0" text="Compl:" />
-                                    <JFXTextField fx:id="txComplemento" layoutX="50.0" layoutY="10.0" prefHeight="26.0" prefWidth="90.0" />
+                                    <JFXTextField fx:id="txComplemento" layoutX="50.0" layoutY="10.0" prefHeight="26.0" prefWidth="50.0" />
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="200.0" prefHeight="100.0" prefWidth="0.0">
@@ -110,7 +120,7 @@
                         </VBox>
                      </content>
                   </TitledPane>
-                  <VBox prefHeight="308.0" prefWidth="612.0">
+                  <VBox prefHeight="308.0" prefWidth="656.0">
                      <children>
                         <ButtonBar layoutX="10.0" layoutY="242.0" prefHeight="40.0" prefWidth="200.0">
                            <buttons>
@@ -177,7 +187,7 @@
                                  <children>
                                     <ButtonBar prefHeight="40.0" prefWidth="580.0">
                                        <buttons>
-                                          <JFXButton onAction="#desconto" prefHeight="26.0" prefWidth="214.0" text="Desconto" />
+                                          <JFXButton onAction="#desconto" prefHeight="26.0" prefWidth="225.0" styleClass="btBlue" text="Desconto" />
                                           <Label fx:id="txDesconto" maxWidth="90.0" text="R$ 0,00" />
                                        </buttons>
                                     </ButtonBar>
@@ -187,7 +197,7 @@
                                  <children>
                                     <ButtonBar prefHeight="40.0" prefWidth="580.0">
                                        <buttons>
-                                          <JFXButton onAction="#servico" prefHeight="26.0" prefWidth="225.0" text="Serviço" />
+                                          <JFXButton onAction="#servico" prefHeight="26.0" prefWidth="225.0" styleClass="btBlue" text="Serviço" />
                                           <Label fx:id="txServico" maxWidth="90.0" text="R$ 0,00" />
                                        </buttons>
                                     </ButtonBar>
@@ -227,7 +237,7 @@
                   </HBox>
                   <ButtonBar prefHeight="40.0" prefWidth="200.0">
                     <buttons>
-                        <JFXButton onAction="#pagamento" styleClass="btGreen" text="Pagamento" />
+                        <JFXButton onAction="#pagamento" styleClass="btBlue" text="Pagamento" />
                         <JFXButton layoutX="735.0" layoutY="19.0" onAction="#salvar" styleClass="btGreen" text="Salvar" />
                         <JFXButton onAction="#excluir" styleClass="btRed" text="Excluir" />
                         <JFXButton onAction="#sair" styleClass="btBlue" text="Voltar" />

@@ -39,6 +39,7 @@ public class PedidoPagamentoTaxaDescontoController extends UtilsController imple
     public void initialize(URL location, ResourceBundle resources) {
         txDesconto.setText(pedido.getDesconto().toString().replace(".",","));
         txServico.setText(pedido.getServico().toString().replace(".",","));
+
         if(pedido instanceof PedidoDelivery)
             txTaxaEntrega.setText(((PedidoDelivery) pedido).getValorTaxa().toString().replace(".",","));
         else

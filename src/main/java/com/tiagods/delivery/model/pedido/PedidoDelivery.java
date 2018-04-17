@@ -47,6 +47,8 @@ public class PedidoDelivery extends Pedido {
     private PedidoTaxa taxa;
     @Column(name = "valor_taxa")
     private BigDecimal valorTaxa;
+    @Column(name = "fone_origem")
+    private String foneOrigem;
 
     public Entregador getEntregador() {
         return entregador;
@@ -85,5 +87,13 @@ public class PedidoDelivery extends Pedido {
 
     public void setValorTaxa(BigDecimal valorTaxa) {
         this.valorTaxa = valorTaxa;
+    }
+
+    public String getFoneOrigem() {
+        return foneOrigem;
+    }
+
+    public void setFoneOrigem(String foneOrigem) {
+        this.foneOrigem = foneOrigem;
     }
 }

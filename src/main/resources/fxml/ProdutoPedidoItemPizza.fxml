@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="800.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="400.0" prefWidth="800.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox prefHeight="400.0" prefWidth="800.0">
          <children>
@@ -31,8 +31,11 @@
                   <VBox layoutX="245.0" layoutY="10.0" prefHeight="330.0" prefWidth="300.0">
                      <children>
                         <Label alignment="CENTER" prefHeight="16.0" prefWidth="299.0" text="Pizza Meio a Meio" />
-                        <TableView fx:id="tbPizzas" prefHeight="290.0" prefWidth="289.0" />
-                        <ButtonBar prefHeight="40.0" prefWidth="200.0" />
+                        <ButtonBar prefHeight="40.0" prefWidth="200.0">
+                           <buttons>
+                              <JFXButton onAction="#sair" styleClass="btGreen" text="Adicionar" />
+                           </buttons></ButtonBar>
+                        <TableView fx:id="tbPizzas" prefHeight="242.0" prefWidth="300.0" />
                      </children>
                   </VBox>
                </children>

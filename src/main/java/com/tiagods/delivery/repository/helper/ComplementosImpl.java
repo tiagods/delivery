@@ -63,7 +63,7 @@ public class ComplementosImpl extends AbstractRepository<Complemento, Long> impl
     public List<Complemento> findByCategoria(ProdutoCategoria categoria) {
         Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Complemento.class);
         criteria.createAlias("categorias", "cat");
-        criteria.add(Restrictions.eq("cat", categoria));
+        criteria.add(Restrictions.eq("cat.id", categoria.getId()));
         criteria.addOrder(Order.asc("nome"));
         return criteria.list();
     }
