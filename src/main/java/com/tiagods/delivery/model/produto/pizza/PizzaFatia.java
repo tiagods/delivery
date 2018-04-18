@@ -33,4 +33,9 @@ public class PizzaFatia {
 	public void setVendaFatia(BigDecimal vendaFatia) {
 		this.vendaFatia = vendaFatia;
 	}
+
+	@Override
+	public String toString() {
+		return "Fatia";
+	}
 }

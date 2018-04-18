@@ -4,6 +4,7 @@ import com.tiagods.delivery.model.AbstractEntity;
 import com.tiagods.delivery.model.Pedido;
 import com.tiagods.delivery.model.Produto;
 import com.tiagods.delivery.model.Usuario;
+import com.tiagods.delivery.model.produto.pizza.PizzaTipo;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,20 +19,23 @@ public abstract  class PedidoProduto  implements Serializable {
     @ManyToOne
     @JoinColumn(name = "criado_por_id")
     private Usuario criadoPor;
-    private String nome;
     @ManyToOne
     @JoinColumn(name = "produto_id")
     private Produto produto;
-    private int quantidade;
+    private String nome;
+    @Enumerated(value = EnumType.STRING)
+    private PizzaTipo pizzaVendida;
     private BigDecimal valor = new BigDecimal(0.00);
+    private int quantidade;
     private BigDecimal total = new BigDecimal(0.00);
-    @ManyToOne
-    private Pedido pedido;
 
     @PrePersist @PreUpdate
     void recalcular(){
         this.total=new BigDecimal(valor.doubleValue()*quantidade);
     }
+    @ManyToOne
+    private Pedido pedido;
+
     public String getNome() {
         return nome;
     }
@@ -48,14 +52,6 @@ public abstract  class PedidoProduto  implements Serializable {
         this.produto = produto;
     }
 
-    public int getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
-    }
-
     public BigDecimal getValor() {
         return valor;
     }
@@ -63,10 +59,6 @@ public abstract  class PedidoProduto  implements Serializable {
     public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
-
-    public BigDecimal getTotal() {return total;}
-
-    public void setTotal(BigDecimal total) {this.total = total;}
 
     public Pedido getPedido() {
         return pedido;
@@ -90,5 +82,29 @@ public abstract  class PedidoProduto  implements Serializable {
 
     public void setCriadoPor(Usuario criadoPor) {
         this.criadoPor = criadoPor;
+    }
+
+    public PizzaTipo getPizzaVendida() {
+        return pizzaVendida;
+    }
+
+    public void setPizzaVendida(PizzaTipo pizzaVendida) {
+        this.pizzaVendida = pizzaVendida;
+    }
+
+    public int getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
 }

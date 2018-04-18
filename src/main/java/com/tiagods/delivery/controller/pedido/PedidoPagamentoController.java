@@ -74,7 +74,7 @@ public class PedidoPagamentoController extends UtilsController implements Initia
             double total = currencyFormatter.parse(txTotal.getText()).doubleValue();
             double apagar = total - pag.doubleValue();
             txAPagar.setText(currencyFormatter.format(apagar));
-            return apagar;
+            return new BigDecimal(String.format("%.2f", apagar).replace(",", ".")).doubleValue();
         }catch (ParseException e){
             super.alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao receber valor total",e,true);
             return 0;
@@ -192,7 +192,6 @@ public class PedidoPagamentoController extends UtilsController implements Initia
                     (new BigDecimal(
                             pedido.getTotal().doubleValue()-devendo)
                     ));
-
             if(pedido instanceof PedidoDelivery){
                 pedidosDelivery = new PedidosDeliveryImpl(super.getManager());
                 pedido.setPagamentos(pagamentoSet);

@@ -18,7 +18,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
@@ -28,17 +30,16 @@ import java.util.*;
 
 public class PedidoItemAcoObsCadastroController extends UtilsController implements Initializable {
     @FXML
-    private ListView<JFXCheckBox> lvComplemento;
+    private ListView<Object> lvComplemento;
     @FXML
-    private ListView<JFXCheckBox> lvObservacao;
+    private ListView<Object> lvObservacao;
+
     Locale locale = new Locale("pt", "BR");
     NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
-
     private Stage stage;
     private PedidoProduto pedidoProduto;
     private ComplementosImpl complementos;
     private ObservacaoImpl observacao;
-    private PedidosProdutosItensAddImpl itemsAdd;
     private PedidosProdutosItensImpl items;
 
     public PedidoItemAcoObsCadastroController(PedidoProduto pedidoProduto,Stage stage){
@@ -73,14 +74,24 @@ public class PedidoItemAcoObsCadastroController extends UtilsController implemen
                 if(complementoSet.contains(c)) ck.setSelected(true);
                 ck.selectedProperty().addListener(new CliqueGeral());
                 lvComplemento.getItems().add(ck);
-            };
+            }
             for(Observacao c : observacaoList){
                 JFXCheckBox ck = new JFXCheckBox(c.getNome());
                 ck.setId(""+c.getId());
                 if(observacaosSet.contains(c)) ck.setSelected(true);
                 ck.selectedProperty().addListener(new CliqueGeral());
                 lvObservacao.getItems().add(ck);
-            };
+            }
+            Label label = new Label();
+            label.setAlignment(Pos.CENTER);
+            if(lvComplemento.getItems().size()==0){
+                label.setText("Nenhum complemento");
+                lvComplemento.getItems().add(label);
+            }
+            if(lvObservacao.getItems().size()==0){
+                label.setText("Nenhuma observação");
+                lvObservacao.getItems().add(label);
+            }
 
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR,"Erro",null,
@@ -100,18 +111,17 @@ public class PedidoItemAcoObsCadastroController extends UtilsController implemen
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             Set<Complemento> comList = new HashSet<>();
             lvComplemento.getItems().forEach(c->{
-                if(c instanceof JFXCheckBox && c.isSelected()){
+                if(c instanceof JFXCheckBox && ((JFXCheckBox)c).isSelected()){
                     Complemento com = new Complemento();
-                    com.setId(Long.parseLong(c.getId()));
+                    com.setId(Long.parseLong(((JFXCheckBox)c).getId()));
                     comList.add(com);
                 }
             });
-
             Set<Observacao> obsList = new HashSet<>();
             lvObservacao.getItems().forEach(c->{
-                if(c instanceof JFXCheckBox && c.isSelected()){
+                if(c instanceof JFXCheckBox && ((JFXCheckBox)c).isSelected()){
                     Observacao obs = new Observacao();
-                    obs.setId(Long.parseLong(c.getId()));
+                    obs.setId(Long.parseLong(((JFXCheckBox)c).getId()));
                     obsList.add(obs);
                 }
             });
@@ -121,13 +131,8 @@ public class PedidoItemAcoObsCadastroController extends UtilsController implemen
                     items = new PedidosProdutosItensImpl(getManager());
                     ((PedidoProdutoItem) pedidoProduto).setComplementos(comList);
                     ((PedidoProdutoItem) pedidoProduto).setObservacoes(obsList);
+
                     items.save((PedidoProdutoItem) pedidoProduto);
-                }
-                else if(pedidoProduto instanceof PedidoProdutoItemAdicional){
-                    itemsAdd = new PedidosProdutosItensAddImpl(getManager());
-                    ((PedidoProdutoItemAdicional) pedidoProduto).setComplementos(comList);
-                    ((PedidoProdutoItemAdicional) pedidoProduto).setObservacoes(obsList);
-                    itemsAdd.save((PedidoProdutoItemAdicional) pedidoProduto);
                 }
             }catch (Exception e){
                 alert(Alert.AlertType.ERROR,"Erro",null,

@@ -33,4 +33,6 @@ public class PizzaPequena {
 	public void setVendaPequeno(BigDecimal vendaPequeno) {
 		this.vendaPequeno = vendaPequeno;
 	}
+
+
 }

@@ -33,4 +33,10 @@ public class PizzaGrande {
 	public void setVendaGrande(BigDecimal vendaGrande) {
 		this.vendaGrande = vendaGrande;
 	}
+
+	@Override
+	public String toString() {
+		return "Grande";
+	}
+
 }

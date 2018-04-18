@@ -216,7 +216,8 @@ public class PedidoProdutoPesquisaController extends UtilsController implements 
 					if(!item.getNome().equals("Pizzas")) {
 						button.getStyleClass().add("btBlue");
 						button.setOnAction(event -> {
-							salvarProdutoDiretoNoPedido(p);
+							if(p instanceof ProdutoGenerico)
+								salvarProdutoDiretoNoPedido((ProdutoGenerico)p);
 						});
 						setGraphic(button);
 					}
@@ -240,10 +241,16 @@ public class PedidoProdutoPesquisaController extends UtilsController implements 
 					Produto p = tbPrincipal.getItems().get(getIndex());
 					button.getStyleClass().add("btGreen");
 					button.setOnAction(event -> {
-						PedidoProdutoItem produtoItem = salvarProdutoDiretoNoPedido(p);
-						if(produtoItem!=null){
-							editarProduto(produtoItem);
-						}
+						PedidoProdutoItem produtoItem = new PedidoProdutoItem();
+						produtoItem.setCriadoEm(Calendar.getInstance());
+						produtoItem.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+						produtoItem.setQuantidade(1);
+						if(p instanceof ProdutoGenerico)
+							produtoItem.setValor(((ProdutoGenerico) p).getVenda());
+						produtoItem.setNome(p.getNome());
+						produtoItem.setProduto(p);
+						produtoItem.setPedido(pedido);
+						editarProduto(produtoItem);
 					});
 					setGraphic(button);
 				}
@@ -252,7 +259,7 @@ public class PedidoProdutoPesquisaController extends UtilsController implements 
 		tbPrincipal.getColumns().addAll(columnCategoria,columnNome,colunaCusto,colunaValor,colunaEditar,colunaExcluir);
 		tbPrincipal.setTableMenuButtonVisible(true);
 	}
-	PedidoProdutoItem salvarProdutoDiretoNoPedido(Produto p){
+	PedidoProdutoItem salvarProdutoDiretoNoPedido(ProdutoGenerico p){
 		PedidoProdutoItem produtoItem = new PedidoProdutoItem();
 		produtoItem.setCriadoEm(Calendar.getInstance());
 		produtoItem.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
@@ -260,8 +267,8 @@ public class PedidoProdutoPesquisaController extends UtilsController implements 
 		produtoItem.setValor(((ProdutoGenerico) p).getVenda());
 		produtoItem.setNome(p.getNome());
 		produtoItem.setProduto(p);
+		produtoItem.setPedido(pedido);
 		try{
-			produtoItem.setPedido(pedido);
 			super.loadFactory();
 			PedidosProdutosItensImpl items = new PedidosProdutosItensImpl(getManager());
 			items.save(produtoItem);
