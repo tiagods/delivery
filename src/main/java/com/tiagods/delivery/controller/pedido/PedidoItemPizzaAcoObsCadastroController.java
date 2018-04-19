@@ -8,18 +8,17 @@ import com.tiagods.delivery.config.UsuarioLogado;
 import com.tiagods.delivery.controller.UtilsController;
 import com.tiagods.delivery.model.Complemento;
 import com.tiagods.delivery.model.Observacao;
-import com.tiagods.delivery.model.Produto;
 import com.tiagods.delivery.model.ProdutoCategoria;
-import com.tiagods.delivery.model.pedido.PedidoProduto;
 import com.tiagods.delivery.model.pedido.PedidoProdutoItem;
 import com.tiagods.delivery.model.pedido.PedidoProdutoItemAdicional;
 import com.tiagods.delivery.model.produto.Pizza;
-import com.tiagods.delivery.model.produto.ProdutoGenerico;
 import com.tiagods.delivery.model.produto.pizza.PizzaTipo;
-import com.tiagods.delivery.repository.helper.*;
+import com.tiagods.delivery.repository.helper.ComplementosImpl;
+import com.tiagods.delivery.repository.helper.ObservacaoImpl;
+import com.tiagods.delivery.repository.helper.PedidosProdutosItensImpl;
+import com.tiagods.delivery.repository.helper.PizzasImpl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,15 +26,16 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PedidoItemPizzaAcoObsCadastroController extends UtilsController implements Initializable{
     @FXML
@@ -63,11 +63,13 @@ public class PedidoItemPizzaAcoObsCadastroController extends UtilsController imp
     private Stage stage;
     private PedidoProdutoItem pedidoProduto;
 
+    List<Complemento> complementoList = new ArrayList<>();
+    List<Observacao> observacaoList = new ArrayList<>();
+
     public PedidoItemPizzaAcoObsCadastroController(PedidoProdutoItem pedidoProduto,Stage stage){
         this.pedidoProduto=pedidoProduto;
         this.stage=stage;
     }
-
     @FXML
     void adicionarPizza(ActionEvent event) {
         if(cbPizzas.getValue()!=null || receberSelecionado()!=null){
@@ -75,6 +77,9 @@ public class PedidoItemPizzaAcoObsCadastroController extends UtilsController imp
             item.setCriadoEm(Calendar.getInstance());
             item.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
             item.setPedido(this.pedidoProduto.getPedido());
+            item.setPizzaVendida(receberSelecionado());
+            item.setQuantidade(pedidoProduto.getQuantidade());
+
             Pizza pizza = cbPizzas.getValue();
             item.setProduto(pizza);
 
@@ -91,6 +96,19 @@ public class PedidoItemPizzaAcoObsCadastroController extends UtilsController imp
             item.setValor(valor);
 
             tbPizzas.getItems().add(item);
+
+            /*
+            double adicionais = tbPizzas.getItems().stream().map(m->
+                    m.getComplementos()
+                            .stream()
+                            .map(Complemento::getValor)
+                            .mapToDouble(BigDecimal::doubleValue)
+                            .sum())
+                    .mapToDouble(Double::doubleValue).sum();
+            */
+            //item.setValorExtra(new BigDecimal(adicionais));
+
+            item.setNome(pizza.getNome());
             salvar();
         }
     }
@@ -107,7 +125,7 @@ public class PedidoItemPizzaAcoObsCadastroController extends UtilsController imp
         radio.setId(""+tipo.getCodigo());
         radio.setText(tipo+" ("+currencyFormatter.format(preco.doubleValue())+")");
         radio.setDisable(!habilitado);
-        if(pizzaVendida!=null)
+        if(pizzaVendida!=null && pizzaVendida.equals(tipo))
             radio.setSelected(true);
         group.getToggles().add(radio);
         radio.selectedProperty().addListener(new CliqueRadio());
@@ -117,7 +135,8 @@ public class PedidoItemPizzaAcoObsCadastroController extends UtilsController imp
 
     }
     private void inicializarComboBox() throws Exception{
-        pizzas = new PizzasImpl(getManager());
+        loadFactory(super.getManager());
+        pizzas = new PizzasImpl(super.getManager());
         cbPizzas.getItems().clear();
         List<Pizza> lista = pizzas.filtrarPorTamanho(receberSelecionado());
         cbPizzas.setConverter(new StringConverter<Pizza>() {
@@ -154,8 +173,8 @@ public class PedidoItemPizzaAcoObsCadastroController extends UtilsController imp
             Set<Observacao> observacaosSet = pedidoProduto.getObservacoes();
 
             ProdutoCategoria categoria = pedidoProduto.getProduto().getCategoria();
-            List<Complemento> complementoList = complementos.findByCategoria(categoria);
-            List<Observacao> observacaoList = observacao.findByCategoria(categoria);
+            complementoList = complementos.findByCategoria(categoria);
+            observacaoList = observacao.findByCategoria(categoria);
 
             for(Complemento c : complementoList){
                 JFXCheckBox ck = new JFXCheckBox(c.getNome()+" - ("+currencyFormatter.format(c.getValor())+")");
@@ -298,28 +317,79 @@ public class PedidoItemPizzaAcoObsCadastroController extends UtilsController imp
         Set<Complemento> comList = new HashSet<>();
         lvComplemento.getItems().forEach(c->{
             if(c instanceof JFXCheckBox && ((JFXCheckBox)c).isSelected()){
-                Complemento com = new Complemento();
-                com.setId(Long.parseLong(((JFXCheckBox)c).getId()));
-                comList.add(com);
+                long id = Long.parseLong(((JFXCheckBox)c).getId());
+                Optional<Complemento> com = complementoList.stream().filter(f->f.getId().longValue()==id).findFirst();
+                comList.add(com.get());
             }
         });
         Set<Observacao> obsList = new HashSet<>();
         lvObservacao.getItems().forEach(c->{
             if(c instanceof JFXCheckBox && ((JFXCheckBox)c).isSelected()){
-                Observacao obs = new Observacao();
-                obs.setId(Long.parseLong(((JFXCheckBox)c).getId()));
-                obsList.add(obs);
+                long id = Long.parseLong(((JFXCheckBox)c).getId());
+                Optional<Observacao> obs = observacaoList.stream().filter(f->f.getId().longValue()==id).findFirst();
+                obsList.add(obs.get());
             }
         });
+        Set<PedidoProdutoItemAdicional> itemAdicionalSet = new HashSet<>();
+        //renomeando item_add
+            tbPizzas.getItems().forEach(t->{
+                String complementoName = t.getComplementos().stream()
+                        .map(Complemento::getNome)
+                        .collect(Collectors.joining(" +"));
+                String observacaoName = t.getObservacoes().stream()
+                        .map(Observacao::getNome)
+                        .collect(Collectors.joining(" +"));
+                t.setNome("Pizza "+t.getProduto().getNome()+
+                        (complementoName.trim().length()==0?"":(" +"+complementoName))
+                        +(observacaoName.trim().length()==0?"":(" +"+observacaoName))
+                );
+                double adicionais = t.getComplementos().stream()
+                        .map(Complemento::getValor)
+                        .mapToDouble(BigDecimal::doubleValue).sum();
+                t.setValorExtra(new BigDecimal(adicionais));
+                itemAdicionalSet.add(t);
+            });
+
+        pedidoProduto.setNome("Pizza "+receberSelecionado()+" "+pedidoProduto.getProduto().getNome()
+                +itemAdicionalSet.forEach(c->c.getNome());
+
+        double adicionais = comList.stream()
+                .map(Complemento::getValor)
+                .mapToDouble(BigDecimal::doubleValue).sum();
+        pedidoProduto.setValorExtra(new BigDecimal(adicionais));
+        Optional<PedidoProdutoItemAdicional> maior = itemAdicionalSet
+                .stream()
+                .max(Comparator.comparing(PedidoProdutoItemAdicional::getValor));
         try{
             loadFactory();
+
             if(pedidoProduto instanceof PedidoProdutoItem) {
                 items = new PedidosProdutosItensImpl(getManager());
+                if(maior.isPresent()){
+                    if(pedidoProduto.getValor().compareTo(maior.get().getValor())==-1){
+                        pedidoProduto.setValor(maior.get().getValor());
+                    }
+                }
                 pedidoProduto.setComplementos(comList);
                 pedidoProduto.setObservacoes(obsList);
 
-                Set<PedidoProdutoItemAdicional> itemAdicionalSet = new HashSet<>();
-                itemAdicionalSet.addAll(tbPizzas.getItems());
+                PizzaTipo tipo = receberSelecionado();
+                pedidoProduto.setPizzaVendida(tipo);
+
+                Pizza pizza = (Pizza)pedidoProduto.getProduto();
+
+                if(tipo.equals(PizzaTipo.FATIA)){
+                    pedidoProduto.setValor(pizza.getFatia().getVendaFatia());
+                }
+                else if(tipo.equals(PizzaTipo.PEQUENA)){
+                    pedidoProduto.setValor(pizza.getPequena().getVendaPequeno());
+                }
+                else if(tipo.equals(PizzaTipo.MEDIA)){
+                    pedidoProduto.setValor(pizza.getMedia().getVendaMedia());
+                }
+                else if(tipo.equals(PizzaTipo.GRANDE)){
+                    pedidoProduto.setValor(pizza.getGrande().getVendaGrande());
+                }
                 pedidoProduto.setProdutoItemAdicional(itemAdicionalSet);
                 pedidoProduto = items.save(pedidoProduto);
 
@@ -333,9 +403,6 @@ public class PedidoItemPizzaAcoObsCadastroController extends UtilsController imp
             close();
         }
     }
-
-
-
     private class CliqueGeral implements ChangeListener {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
@@ -346,8 +413,7 @@ public class PedidoItemPizzaAcoObsCadastroController extends UtilsController imp
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             try {
-                loadFactory();
-                inicializarComboBox();
+                salvar();
             }catch (Exception e){
                 alert(Alert.AlertType.ERROR,"Erro",null,
                         "Erro ao listas pizzas",e,true);

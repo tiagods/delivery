@@ -10,9 +10,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
+
 @MappedSuperclass
 @Embeddable
-public abstract  class PedidoProduto  implements Serializable {
+public abstract class PedidoProduto  implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "data_criacao")
     private Calendar criadoEm;
@@ -26,12 +27,13 @@ public abstract  class PedidoProduto  implements Serializable {
     @Enumerated(value = EnumType.STRING)
     private PizzaTipo pizzaVendida;
     private BigDecimal valor = new BigDecimal(0.00);
+    private BigDecimal valorExtra = new BigDecimal(0.00);
     private int quantidade;
     private BigDecimal total = new BigDecimal(0.00);
 
     @PrePersist @PreUpdate
     void recalcular(){
-        this.total=new BigDecimal(valor.doubleValue()*quantidade);
+        this.total=new BigDecimal((valor.doubleValue()+valorExtra.doubleValue())*quantidade);
     }
     @ManyToOne
     private Pedido pedido;
@@ -98,6 +100,14 @@ public abstract  class PedidoProduto  implements Serializable {
 
     public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
+    }
+
+    public BigDecimal getValorExtra() {
+        return valorExtra;
+    }
+
+    public void setValorExtra(BigDecimal valorExtra) {
+        this.valorExtra = valorExtra;
     }
 
     public BigDecimal getTotal() {

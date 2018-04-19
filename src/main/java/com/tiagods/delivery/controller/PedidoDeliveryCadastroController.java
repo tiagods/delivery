@@ -574,6 +574,19 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
         return cliente;
 
     }
+    private boolean removerItem(PedidoProdutoItem item){
+        try{
+            super.loadFactory();
+            itens = new PedidosProdutosItensImpl(super.getManager());
+            item = itens.findById(item.getId());
+            itens.remove(item);
+            return true;
+        }catch (Exception e){
+            super.alert(Alert.AlertType.ERROR,"Erro",null,"Falha ao excluir o item", e, true);
+            return false;
+        }
+    }
+
     public boolean salvar(){
         //tabela
         Set<PedidoProdutoItem> produtoItems = new HashSet<>();
@@ -774,6 +787,21 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
                 }
             }
         });
+        TableColumn<PedidoProdutoItem, BigDecimal> colunaAdd = new  TableColumn<>("Adicional");
+        colunaAdd.setCellValueFactory(new PropertyValueFactory<>("valorExtra"));
+        colunaAdd.setCellFactory(param -> new TableCell<PedidoProdutoItem,BigDecimal>(){
+            @Override
+            protected void updateItem(BigDecimal item, boolean empty) {
+                super.updateItem(item, empty);
+                if(item==null){
+                    setStyle("");
+                    setText("");
+                }
+                else{
+                    setText(currencyFormatter.format(item.doubleValue()));
+                }
+            }
+        });
         TableColumn<PedidoProdutoItem, BigDecimal> colunaTotal = new  TableColumn<>("Total");
         colunaTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
         colunaTotal.setCellFactory(param -> new TableCell<PedidoProdutoItem,BigDecimal>(){
@@ -829,14 +857,17 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
                 else{
                     button.getStyleClass().add("btRed");
                     button.setOnAction(event -> {
-                        tbPrincipal.getItems().remove(getIndex());
-                        salvar();
+                        PedidoProdutoItem produtoItem = tbPrincipal.getItems().get(getIndex());
+                        if(removerItem(produtoItem)) {
+                            tbPrincipal.getItems().remove(getIndex());
+                            salvar();
+                        }
                     });
                     setGraphic(button);
                 }
             }
         });
-        tbPrincipal.getColumns().addAll(columnQtd,colunaNome,colunaValor,colunaTotal,colunaEditar,colunaExcluir);
+        tbPrincipal.getColumns().addAll(columnQtd,colunaNome,colunaValor,colunaAdd,colunaTotal,colunaEditar,colunaExcluir);
         tbPrincipal.setTableMenuButtonVisible(true);
         tbPrincipal.setFixedCellSize(80);
     }

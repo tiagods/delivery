@@ -68,11 +68,13 @@ public class PedidoPagamentoController extends UtilsController implements Initia
     }
     private double aPagar(){
         try {
-            BigDecimal pag = tbPrincipal.getItems().stream()
-                    .map(item -> item.getValor())
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            double pag = tbPrincipal.getItems().stream().map(PedidoPagamento::getValor).mapToDouble(BigDecimal::doubleValue).sum();
+
+            //            BigDecimal pag = tbPrincipal.getItems().stream()
+//                    .map(item -> item.getValor())
+//                    .reduce(BigDecimal.ZERO, BigDecimal::add);
             double total = currencyFormatter.parse(txTotal.getText()).doubleValue();
-            double apagar = total - pag.doubleValue();
+            double apagar = total - pag;
             txAPagar.setText(currencyFormatter.format(apagar));
             return new BigDecimal(String.format("%.2f", apagar).replace(",", ".")).doubleValue();
         }catch (ParseException e){

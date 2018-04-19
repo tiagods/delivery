@@ -24,9 +24,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
+import java.math.BigDecimal;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PedidoItemAcoObsCadastroController extends UtilsController implements Initializable {
     @FXML
@@ -41,6 +43,10 @@ public class PedidoItemAcoObsCadastroController extends UtilsController implemen
     private ComplementosImpl complementos;
     private ObservacaoImpl observacao;
     private PedidosProdutosItensImpl items;
+    private PedidosProdutosItensAddImpl itemsAdd;
+
+    List<Complemento> complementoList = new ArrayList<>();
+    List<Observacao> observacaoList = new ArrayList<>();
 
     public PedidoItemAcoObsCadastroController(PedidoProduto pedidoProduto,Stage stage){
         this.pedidoProduto=pedidoProduto;
@@ -66,8 +72,8 @@ public class PedidoItemAcoObsCadastroController extends UtilsController implemen
             }
 
             ProdutoCategoria categoria = pedidoProduto.getProduto().getCategoria();
-            List<Complemento> complementoList = complementos.findByCategoria(categoria);
-            List<Observacao> observacaoList = observacao.findByCategoria(categoria);
+            complementoList = complementos.findByCategoria(categoria);
+            observacaoList = observacao.findByCategoria(categoria);
             for(Complemento c : complementoList){
                 JFXCheckBox ck = new JFXCheckBox(c.getNome()+" - ("+currencyFormatter.format(c.getValor())+")");
                 ck.setId(""+c.getId());
@@ -112,27 +118,48 @@ public class PedidoItemAcoObsCadastroController extends UtilsController implemen
             Set<Complemento> comList = new HashSet<>();
             lvComplemento.getItems().forEach(c->{
                 if(c instanceof JFXCheckBox && ((JFXCheckBox)c).isSelected()){
-                    Complemento com = new Complemento();
-                    com.setId(Long.parseLong(((JFXCheckBox)c).getId()));
-                    comList.add(com);
+                    long id = Long.parseLong(((JFXCheckBox)c).getId());
+                    Optional<Complemento> com = complementoList.stream().filter(f->f.getId().longValue()==id).findFirst();
+                    comList.add(com.get());
                 }
             });
             Set<Observacao> obsList = new HashSet<>();
             lvObservacao.getItems().forEach(c->{
                 if(c instanceof JFXCheckBox && ((JFXCheckBox)c).isSelected()){
-                    Observacao obs = new Observacao();
-                    obs.setId(Long.parseLong(((JFXCheckBox)c).getId()));
-                    obsList.add(obs);
+                    long id = Long.parseLong(((JFXCheckBox)c).getId());
+                    Optional<Observacao> obs = observacaoList.stream().filter(f->f.getId().longValue()==id).findFirst();
+                    obsList.add(obs.get());
                 }
             });
             try{
                 loadFactory();
+                String complementoName = comList.stream()
+                        .map(Complemento::getNome)
+                        .collect(Collectors.joining(" +"));
+                String observacaoName = obsList.stream()
+                        .map(Observacao::getNome)
+                        .collect(Collectors.joining(" +"));
+                pedidoProduto.setNome(pedidoProduto.getProduto().getNome()
+                        +(complementoName.trim().length()==0?"":(" +"+complementoName))
+                        +(observacaoName.trim().length()==0?"":(" +"+observacaoName))
+                );
+
+                double adicionais = comList.stream()
+                        .map(Complemento::getValor)
+                        .mapToDouble(BigDecimal::doubleValue).sum();
+                pedidoProduto.setValorExtra(new BigDecimal(adicionais));
+
                 if(pedidoProduto instanceof PedidoProdutoItem) {
                     items = new PedidosProdutosItensImpl(getManager());
                     ((PedidoProdutoItem) pedidoProduto).setComplementos(comList);
                     ((PedidoProdutoItem) pedidoProduto).setObservacoes(obsList);
-
                     items.save((PedidoProdutoItem) pedidoProduto);
+                }
+                else if(pedidoProduto instanceof PedidoProdutoItemAdicional){
+                    itemsAdd = new PedidosProdutosItensAddImpl(getManager());
+                    ((PedidoProdutoItemAdicional) pedidoProduto).setComplementos(comList);
+                    ((PedidoProdutoItemAdicional) pedidoProduto).setObservacoes(obsList);
+                    itemsAdd.save((PedidoProdutoItemAdicional) pedidoProduto);
                 }
             }catch (Exception e){
                 alert(Alert.AlertType.ERROR,"Erro",null,

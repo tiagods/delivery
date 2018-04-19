@@ -245,6 +245,7 @@ public class PedidoProdutoPesquisaController extends UtilsController implements 
 						produtoItem.setCriadoEm(Calendar.getInstance());
 						produtoItem.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 						produtoItem.setQuantidade(1);
+						produtoItem.setValorExtra(new BigDecimal(0.00));
 						if(p instanceof ProdutoGenerico)
 							produtoItem.setValor(((ProdutoGenerico) p).getVenda());
 						produtoItem.setNome(p.getNome());
@@ -264,7 +265,8 @@ public class PedidoProdutoPesquisaController extends UtilsController implements 
 		produtoItem.setCriadoEm(Calendar.getInstance());
 		produtoItem.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 		produtoItem.setQuantidade(1);
-		produtoItem.setValor(((ProdutoGenerico) p).getVenda());
+		produtoItem.setValor(p.getVenda());
+		produtoItem.setValorExtra(new BigDecimal(0.00));
 		produtoItem.setNome(p.getNome());
 		produtoItem.setProduto(p);
 		produtoItem.setPedido(pedido);

@@ -37,11 +37,12 @@ public class PedidoPagamentoTaxaDescontoController extends UtilsController imple
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        txDesconto.setText(pedido.getDesconto().toString().replace(".",","));
-        txServico.setText(pedido.getServico().toString().replace(".",","));
-
+        txDesconto.setText(String.valueOf(pedido.getDesconto().doubleValue()).replace(".",","));
+        txServico.setText(String.valueOf(pedido.getServico().doubleValue()).replace(".",","));
+        txTaxaEntrega.setText("0,00");
         if(pedido instanceof PedidoDelivery)
-            txTaxaEntrega.setText(((PedidoDelivery) pedido).getValorTaxa().toString().replace(".",","));
+            txTaxaEntrega.setText(
+                    String.valueOf(((PedidoDelivery) pedido).getValorTaxa().doubleValue()).replace(".",","));
         else
             txTaxaEntrega.setDisable(true);
     }
@@ -59,13 +60,21 @@ public class PedidoPagamentoTaxaDescontoController extends UtilsController imple
             super.alert(Alert.AlertType.ERROR,"Erro", null, "Serviço incorreto!", null, false);
             return;
         }
+        double desconto = 0;
+        double servico = 0;
+        double taxa = 0;
+
+        try {
+            desconto = Double.parseDouble(txDesconto.getText().replace(",",".").trim());
+            servico = Double.parseDouble(txServico.getText().replace(",",".").trim());
+            taxa = Double.parseDouble(txTaxaEntrega.getText().replace(",",".").trim());
+        } catch (NumberFormatException e) {
+            super.alert(Alert.AlertType.ERROR,"Erro",null,
+                    "Erro ao salvar o registro", null, false);
+            return;
+        }
         try{
             super.loadFactory();
-
-            double desconto = Double.parseDouble(txDesconto.getText().replace(",",".").trim());
-            double servico = Double.parseDouble(txServico.getText().replace(",",".").trim());
-            double taxa = Double.parseDouble(txTaxaEntrega.getText().replace(",",".").trim());
-
             pedido.setDesconto(new BigDecimal(desconto));
             pedido.setServico(new BigDecimal(servico));
             double subTotal = pedido.getSubTotal().doubleValue();
@@ -75,7 +84,8 @@ public class PedidoPagamentoTaxaDescontoController extends UtilsController imple
 
             if(pedido instanceof PedidoDelivery) {
                 PedidosDeliveryImpl pedidosDelivery = new PedidosDeliveryImpl(super.getManager());
-                ((PedidoDelivery) pedido).setValorTaxa(new BigDecimal(taxa));
+                if(!txTaxaEntrega.isDisable())
+                    ((PedidoDelivery) pedido).setValorTaxa(new BigDecimal(taxa));
                 total = total + taxa;
                 if(taxa!=0.00) ((PedidoDelivery) pedido).setTaxa(null);
                 pedido.setTotal(new BigDecimal(total));
