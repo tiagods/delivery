@@ -15,6 +15,7 @@ import com.tiagods.delivery.model.pedido.PedidoPagamento;
 import com.tiagods.delivery.model.pedido.PedidoProduto;
 import com.tiagods.delivery.repository.helper.PedidosCaixaImpl;
 import com.tiagods.delivery.repository.helper.PedidosDeliveryImpl;
+import com.tiagods.delivery.repository.helper.PedidosPagamentosImpl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -62,6 +63,7 @@ public class PedidoPagamentoController extends UtilsController implements Initia
     private Pedido pedido;
     private PedidosDeliveryImpl pedidosDelivery;
     private PedidosCaixaImpl pedidosCaixa;
+    private PedidosPagamentosImpl pagamentos;
     public PedidoPagamentoController(Pedido pedido, Stage stage){
         this.stage=stage;
         this.pedido=pedido;
@@ -206,7 +208,7 @@ public class PedidoPagamentoController extends UtilsController implements Initia
             txValor.setText(String.valueOf(devendo).replace(".",","));
             tbPrincipal.getItems().clear();
             tbPrincipal.getItems().addAll(pedido.getPagamentos());
-
+            super.alert(Alert.AlertType.INFORMATION,"Sucesso", null, "Salvo com sucesso!", null, false);
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR, "Erro",null,"Erro ao salvar os pagamentos", e,true);
         }finally {
@@ -281,7 +283,18 @@ public class PedidoPagamentoController extends UtilsController implements Initia
                 else{
                     button.getStyleClass().add("btRed");
                     button.setOnAction(event -> {
-                        tbPrincipal.getItems().remove(getIndex());
+                        try{
+                            loadFactory();
+                            PedidoPagamento p = tbPrincipal.getItems().get(getIndex());
+                            pagamentos = new PedidosPagamentosImpl(getManager());
+                            p = pagamentos.findById(p.getId());
+                            pagamentos.remove(p);
+                            tbPrincipal.getItems().remove(getIndex());
+                        }catch (Exception e){
+                            alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao remover pagamento",e,true);
+                        }finally {
+                            close();
+                        }
                         salvar();
                     });
                     setGraphic(button);

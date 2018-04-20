@@ -17,6 +17,8 @@ import com.tiagods.delivery.model.produto.Pizza;
 import com.tiagods.delivery.repository.helper.*;
 import com.tiagods.delivery.util.ComboBoxAutoCompleteUtil;
 import com.tiagods.delivery.util.EnderecoUtil;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -152,6 +154,7 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
             }
             else{
                 try{
+                    Entregador etemp = cbEntregador.getValue();
                     super.loadFactory();
                     entregadores = new EntregadoresImpl(super.getManager());
                     Entregador entregador = entregadores.findByNome(result.get().trim());
@@ -159,12 +162,12 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
                         Entregador en = new Entregador();
                         en.setNome(result.get().trim());
                         en.setAtivo(true);
-                        entregadores.save(en);
-                        List<Entregador> entregadorList = entregadores.getAll();
-                        Entregador etemp = cbEntregador.getValue();
+                        en = entregadores.save(en);
                         cbEntregador.getItems().clear();
-                        cbEntregador.getItems().setAll(entregadorList);
+                        final List<Entregador> lista = entregadores.getAll();
+                        cbEntregador.getItems().addAll(lista);
                         if(etemp!=null) cbEntregador.setValue(etemp);
+                        new ComboBoxAutoCompleteUtil<>(cbEntregador);
                     }
                     else{
                         super.alert(Alert.AlertType.ERROR,"Duplicado",null,
@@ -270,36 +273,7 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
 
     @FXML
     void buscarCep(ActionEvent event) {
-        try{
-            super.loadFactory();
-            EnderecoUtil util = EnderecoUtil.getInstance();
-            if(txCEP.getPlainText().trim().length()==8) {
-                Endereco endereco = util.pegarCEP(txCEP.getPlainText());
-                if(endereco!=null){
-                    txLogradouro.setText(endereco.getLogradouro());
-                    txNumero.setText("");
-                    txComplemento.setText(endereco.getComplemento());
-                    txBairro.setText(endereco.getBairro());
-                    cidades = new CidadesImpl(super.getManager());
-                    cbCidade.getItems().clear();
-                    cbCidade.getItems().addAll(cidades.findByEstado(endereco.getUf()));
-                    Cidade cidade = cidades.findByNome(endereco.getLocalidade());
-                    cbEstado.setValue(endereco.getUf());
-                    cbCidade.setValue(cidade);
-                }
-                else
-                    super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,
-                            "Verifique se o cep informado é valido ou se existe uma conexão com a internet",null,false);
-            }
-            else{
-                super.alert(Alert.AlertType.WARNING,"CEP Invalido",null,"Verifique o cep informado",null,false);
-            }
-        }catch(Exception e){
-            super.alert(Alert.AlertType.ERROR,"Falha na conexão com o banco de dados",null,
-                    "Houve uma falha na conexão com o banco de dados",e,true);
-        }finally {
-            super.close();
-        }
+        bucarCep(txCEP,txLogradouro,txNumero,txComplemento,txBairro,cbCidade,cbEstado);
     }
 
     @FXML
@@ -352,28 +326,7 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
         group.getToggles().addAll(tgIniciado,tgEspera,tgAndamento,tgEntregue);
         tgIniciado.setSelected(true);
 
-        cidades = new CidadesImpl(getManager());
-        Cidade cidade = cidades.findByNome("São Paulo");
-        cbCidade.getItems().setAll(cidades.findByEstado(Cidade.Estado.SP));
-        cbCidade.setValue(cidade);
-        cbEstado.getItems().addAll(Cidade.Estado.values());
-        cbEstado.setValue(Cidade.Estado.SP);
-        cbEstado.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                try {
-                    loadFactory();
-                    cidades = new CidadesImpl(getManager());
-                    cbCidade.getItems().clear();
-                    List<Cidade> listCidades = cidades.findByEstado(newValue);
-                    cbCidade.getItems().addAll(listCidades);
-                    cbCidade.getSelectionModel().selectFirst();
-                } catch (Exception e) {
-                } finally {
-                    close();
-                }
-            }
-        });
-        new ComboBoxAutoCompleteUtil<>(cbCidade);
+        comboRegiao(cbCidade,cbEstado,getManager());
 
         entregadores = new EntregadoresImpl(super.getManager());
         cbEntregador.getItems().addAll(entregadores.filtrarAtivos());
@@ -464,6 +417,7 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
             alert(Alert.AlertType.ERROR, "Erro", null, "Nenhum valor a pagar", null,false);
         }
         else{
+
             try {
                 Stage stage = new Stage();
                 final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PedidoPagamento.fxml"));
@@ -474,6 +428,20 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
                 //stage.initStyle(StageStyle.UNDECORATED);
                 stage.setScene(scene);
                 stage.show();
+                stage.setOnHiding(event1-> {
+                    try{
+                        loadFactory();
+                        pedidos = new PedidosDeliveryImpl(getManager());
+                        delivery = pedidos.findById(delivery.getId());
+                        preencherFormulario(delivery);
+                        salvar();
+                    }catch (Exception e){
+                        alert(Alert.AlertType.ERROR, "Erro", "Erro ao preencher formulario", "Falha preencher o Delivery",e,true);
+                    }finally {
+                        if(getManager().isOpen())
+                            super.close();
+                    }
+                });
             }catch(IOException e) {
                 e.printStackTrace();
                 alert(Alert.AlertType.ERROR, "Erro", null, "Erro ao abrir o cadastro", e,true);
@@ -690,10 +658,6 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
     }
 
     void tabela(){
-        TableColumn<PedidoProdutoItem, Number> columnId = new  TableColumn<>("*");
-        columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        columnId.setPrefWidth(60);
-
         TableColumn<PedidoProdutoItem, Number> columnQtd = new  TableColumn<>("Qtde");
         columnQtd.setCellValueFactory(new PropertyValueFactory<>("quantidade"));
         columnQtd.setCellFactory(param -> new TableCell<PedidoProdutoItem,Number>(){
@@ -747,7 +711,6 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
             }
         });
         columnQtd.setPrefWidth(60);
-
         TableColumn<PedidoProdutoItem, String> colunaNome = new  TableColumn<>("Nome");
         colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
         colunaNome.setCellFactory(param -> new TableCell<PedidoProdutoItem,String>(){
@@ -768,8 +731,8 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
                 }
             }
         });
-        colunaNome.setMinWidth(150);
-        colunaNome.setMaxWidth(320);
+        colunaNome.setMinWidth(300);
+        colunaNome.setMaxWidth(400);
 
 
         TableColumn<PedidoProdutoItem, BigDecimal> colunaValor = new  TableColumn<>("Unit.");

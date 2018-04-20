@@ -112,29 +112,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
         bucarCep(txCEP,txLogradouro,txNumero,txComplemento,txBairro,cbCidade,cbEstado);
     }
 	private void combos(){
-        cidades = new CidadesImpl(getManager());
-        Cidade cidade = cidades.findByNome("São Paulo");
-        cbCidade.getItems().setAll(cidades.findByEstado(Cidade.Estado.SP));
-        cbCidade.setValue(cidade);
-        cbEstado.getItems().addAll(Cidade.Estado.values());
-        cbEstado.setValue(Cidade.Estado.SP);
-        cbEstado.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                try {
-                    super.loadFactory(super.getManager());
-                    cidades = new CidadesImpl(getManager());
-                    cbCidade.getItems().clear();
-                    List<Cidade> listCidades = cidades.findByEstado(newValue);
-                    cbCidade.getItems().addAll(listCidades);
-                    cbCidade.getSelectionModel().selectFirst();
-                } catch (Exception e) {
-                } finally {
-                    if(super.getManager().isOpen()) super.close();
-                }
-            }
-        });
-        new ComboBoxAutoCompleteUtil<>(cbCidade);
-
+        comboRegiao(cbCidade,cbEstado,getManager());
         cbNivel.getItems().addAll(Usuario.UsuarioNivel.values());
         cbNivel.setValue(Usuario.UsuarioNivel.ADMIN);
 

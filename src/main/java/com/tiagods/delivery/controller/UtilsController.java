@@ -138,8 +138,9 @@ public abstract class UtilsController extends PersistenciaController{
 					cbEstado.setValue(endereco.getUf());
 					cbCidade.getItems().addAll(cidadeList);
 					cbCidade.setValue(cidade);
-
+					new ComboBoxAutoCompleteUtil<>(cbCidade);
 					habilidarFiltroCidade = true;
+
 				}
 				else
 					alert(Alert.AlertType.WARNING,"CEP Invalido",null,

@@ -126,44 +126,20 @@ public class ClienteCadastroController extends UtilsController implements Initia
         pnPessoaJuridica.setVisible(false);
         rbPessoa.setSelected(true);
         pnPessoaFisica.setVisible(true);
-        ChangeListener selecao = new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                if (rbEmpresa.isSelected()) {
-                    pnPessoaJuridica.setVisible(true);
-                    pnPessoaFisica.setVisible(false);
-                }
-                else {
-                    pnPessoaFisica.setVisible(true);
-                    pnPessoaJuridica.setVisible(false);
-                }
+        ChangeListener selecao = (observable, oldValue, newValue) -> {
+            if (rbEmpresa.isSelected()) {
+                pnPessoaJuridica.setVisible(true);
+                pnPessoaFisica.setVisible(false);
+            }
+            else {
+                pnPessoaFisica.setVisible(true);
+                pnPessoaJuridica.setVisible(false);
             }
         };
 	    rbPessoa.selectedProperty().addListener(selecao);
 	    rbEmpresa.selectedProperty().addListener(selecao);
 
-        cidades = new CidadesImpl(getManager());
-        Cidade cidade = cidades.findByNome("São Paulo");
-        cbCidade.getItems().setAll(cidades.findByEstado(Cidade.Estado.SP));
-        cbCidade.setValue(cidade);
-        cbEstado.getItems().addAll(Cidade.Estado.values());
-        cbEstado.setValue(Cidade.Estado.SP);
-        cbEstado.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                try {
-                    super.loadFactory(super.getManager());
-                    cidades = new CidadesImpl(getManager());
-                    cbCidade.getItems().clear();
-                    List<Cidade> listCidades = cidades.findByEstado(newValue);
-                    cbCidade.getItems().addAll(listCidades);
-                    cbCidade.getSelectionModel().selectFirst();
-                } catch (Exception e) {
-                } finally {
-                    if(super.getManager().isOpen()) super.close();
-                }
-            }
-        });
-        new ComboBoxAutoCompleteUtil<>(cbCidade);
+        comboRegiao(cbCidade,cbEstado,getManager());
     }
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

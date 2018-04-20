@@ -153,6 +153,12 @@ public class PedidoItemAcoObsCadastroController extends UtilsController implemen
                     items = new PedidosProdutosItensImpl(getManager());
                     ((PedidoProdutoItem) pedidoProduto).setComplementos(comList);
                     ((PedidoProdutoItem) pedidoProduto).setObservacoes(obsList);
+
+                    double taxas = ((PedidoProdutoItem) pedidoProduto).getProdutoItemAdicional().stream()
+                            .map(PedidoProdutoItemAdicional::getValorExtra)
+                            .mapToDouble(BigDecimal::doubleValue).sum();
+                    pedidoProduto.setValorExtra(new BigDecimal(adicionais+taxas));
+
                     items.save((PedidoProdutoItem) pedidoProduto);
                 }
                 else if(pedidoProduto instanceof PedidoProdutoItemAdicional){

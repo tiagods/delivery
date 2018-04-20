@@ -17,9 +17,9 @@
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 <?import org.fxutils.maskedtextfield.MaskedTextField?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1100.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <AnchorPane prefHeight="80.0" prefWidth="700.0">
+      <AnchorPane prefHeight="80.0" prefWidth="1100.0">
          <children>
             <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
@@ -57,7 +57,7 @@
                               <HBox prefHeight="100.0" prefWidth="0.0">
                                  <children>
                                     <Label minWidth="65.0" prefHeight="30.0" text="Telefone:" />
-                                    <MaskTextField fx:id="txTelefoneBusca" mask="N!" prefHeight="26.0" prefWidth="98.0" promptText="99999999999">
+                                    <MaskTextField fx:id="txTelefoneBusca" mask="N!" prefHeight="26.0" prefWidth="98.0">
                                        <HBox.margin>
                                           <Insets right="10.0" />
                                        </HBox.margin></MaskTextField>
@@ -120,7 +120,7 @@
                         </VBox>
                      </content>
                   </TitledPane>
-                  <VBox prefHeight="308.0" prefWidth="656.0">
+                  <VBox prefHeight="308.0" prefWidth="756.0">
                      <children>
                         <ButtonBar layoutX="10.0" layoutY="242.0" prefHeight="40.0" prefWidth="200.0">
                            <buttons>
@@ -148,7 +148,7 @@
                                        <children>
                                           <Label minWidth="80.0" text="Entregador:" />
                                           <JFXComboBox fx:id="cbEntregador" prefHeight="26.0" prefWidth="200.0" />
-                                          <JFXButton onAction="#adicionarEntregador" text="+" />
+                                          <JFXButton onAction="#adicionarEntregador" styleClass="btBlue" text="+" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -163,18 +163,18 @@
                               </VBox>
                            </children>
                         </VBox>
-                        <VBox prefHeight="230.0" prefWidth="580.0">
+                        <VBox prefHeight="230.0" prefWidth="680.0">
                            <children>
                               <HBox prefHeight="70.0" prefWidth="394.0">
                                  <children>
-                                    <ButtonBar prefHeight="40.0" prefWidth="580.0">
+                                    <ButtonBar prefHeight="40.0" prefWidth="680.0">
                                        <buttons>
                                           <Label alignment="CENTER" prefHeight="20.0" prefWidth="237.0" text="SubTotal:">
                                              <font>
                                                 <Font name="System Bold Italic" size="16.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="txSubTotal" maxWidth="100.0" text="R$ 0,00">
+                                          <Label fx:id="txSubTotal" alignment="CENTER" maxWidth="150.0" text="R$ 0,00">
                                              <font>
                                                 <Font name="System Bold Italic" size="16.0" />
                                              </font>
@@ -185,44 +185,44 @@
                               </HBox>
                               <HBox prefHeight="70.0" prefWidth="394.0">
                                  <children>
-                                    <ButtonBar prefHeight="40.0" prefWidth="580.0">
+                                    <ButtonBar prefHeight="40.0" prefWidth="680.0">
                                        <buttons>
-                                          <JFXButton onAction="#desconto" prefHeight="26.0" prefWidth="225.0" styleClass="btBlue" text="Desconto" />
-                                          <Label fx:id="txDesconto" maxWidth="90.0" text="R$ 0,00" />
+                                          <JFXButton onAction="#desconto" prefHeight="26.0" prefWidth="225.0" text="Desconto" />
+                                          <Label fx:id="txDesconto" alignment="CENTER" maxWidth="150.0" text="R$ 0,00" />
                                        </buttons>
                                     </ButtonBar>
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="60.0" prefHeight="70.0" prefWidth="394.0">
                                  <children>
-                                    <ButtonBar prefHeight="40.0" prefWidth="580.0">
+                                    <ButtonBar prefHeight="40.0" prefWidth="680.0">
                                        <buttons>
-                                          <JFXButton onAction="#servico" prefHeight="26.0" prefWidth="225.0" styleClass="btBlue" text="Serviço" />
-                                          <Label fx:id="txServico" maxWidth="90.0" text="R$ 0,00" />
+                                          <JFXButton onAction="#servico" prefHeight="26.0" prefWidth="225.0" text="Serviço" />
+                                          <Label fx:id="txServico" alignment="CENTER" maxWidth="150.0" text="R$ 0,00" />
                                        </buttons>
                                     </ButtonBar>
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="90.0" prefHeight="70.0" prefWidth="394.0">
                                  <children>
-                                    <ButtonBar prefHeight="40.0" prefWidth="580.0">
+                                    <ButtonBar prefHeight="40.0" prefWidth="680.0">
                                        <buttons>
                                           <JFXComboBox fx:id="cbTaxa" prefHeight="26.0" prefWidth="216.0" />
-                                          <Label fx:id="txTaxa" maxWidth="90.0" text="R$ 0,00" />
+                                          <Label fx:id="txTaxa" alignment="CENTER" maxWidth="150.0" text="R$ 0,00" />
                                        </buttons>
                                     </ButtonBar>
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0">
                                  <children>
-                                    <ButtonBar prefHeight="50.0" prefWidth="580.0">
+                                    <ButtonBar prefHeight="50.0" prefWidth="680.0">
                                        <buttons>
                                           <Label alignment="CENTER" prefHeight="21.0" prefWidth="204.0" text="Total:">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="txTotal" maxWidth="100.0" text="R$ 0,00">
+                                          <Label fx:id="txTotal" alignment="CENTER" maxWidth="150.0" text="R$ 0,00">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>

@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 public class TestarStreams {
     public static void main(String[] args){
 
-        BigDecimal bigDecimal = new BigDecimal(10.00);
+        BigDecimal bigDecimal = new BigDecimal(1.00);
         BigDecimal bigDecimal1 = new BigDecimal(3.00);
-
+        System.out.println(bigDecimal.compareTo(bigDecimal1));
         PaiStream paiStream = new PaiStream();
         paiStream.setMinhaStreams(getStream());
 
@@ -26,7 +26,6 @@ public class TestarStreams {
                         .map(MinhaStream::getDecimal)
                         .mapToDouble(BigDecimal::doubleValue).sum())
                 .collect(Collectors.toSet());
-
         double resultado = result.stream().mapToDouble(Double::doubleValue).sum();
 
         System.out.println(resultado);

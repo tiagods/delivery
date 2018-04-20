@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.fxutils.maskedtextfield.MaskTextField;
 
@@ -20,13 +21,13 @@ import java.util.ResourceBundle;
 
 public class PedidoPagamentoTaxaDescontoController extends UtilsController implements Initializable {
     @FXML
-    private MaskTextField txDesconto;
+    private TextField txDesconto;
 
     @FXML
-    private MaskTextField txServico;
+    private TextField txServico;
 
     @FXML
-    private MaskTextField txTaxaEntrega;
+    private TextField txTaxaEntrega;
 
     private Stage stage;
     private Pedido pedido;
@@ -70,7 +71,7 @@ public class PedidoPagamentoTaxaDescontoController extends UtilsController imple
             taxa = Double.parseDouble(txTaxaEntrega.getText().replace(",",".").trim());
         } catch (NumberFormatException e) {
             super.alert(Alert.AlertType.ERROR,"Erro",null,
-                    "Erro ao salvar o registro", null, false);
+                    "Verifique os valores informados", null, false);
             return;
         }
         try{
