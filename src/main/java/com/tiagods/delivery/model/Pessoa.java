@@ -12,15 +12,15 @@ public class Pessoa implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String nome;
-	private String email;
-	private String telefone;
-	private String celular;
-	private String cep;
-	private String endereco;
-	private String numero;
-	private String bairro;
-	private String complemento;
+	private String nome="";
+	private String email="";
+	private String telefone="";
+	private String celular="";
+	private String cep="";
+	private String endereco="";
+	private String numero="";
+	private String bairro="";
+	private String complemento="";
 	@ManyToOne
 	@JoinColumn(name="cidade_id")
 	private Cidade cidade;

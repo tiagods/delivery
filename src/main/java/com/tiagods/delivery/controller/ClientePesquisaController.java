@@ -226,6 +226,7 @@ public class ClientePesquisaController extends UtilsController implements Initia
 					button.setOnAction(event -> {
 						boolean removed = excluir(tbPrincipal.getItems().get(getIndex()));
 						if(removed) tbPrincipal.getItems().remove(getIndex());
+						tbPrincipal.refresh();
 					});
 					setGraphic(button);
 				}

@@ -309,6 +309,14 @@ public class PedidoDeliveryCadastroController extends UtilsController implements
             else{
                 txContato.setText(NAOCADASTRADO);
                 txContato.setStyle("-fx-text-fill: red;");
+
+                txTelefone.setText("");
+                txCelular.setText("");
+                txCEP.setPlainText("");
+                txLogradouro.setText("");
+                txNumero.setText("");
+                txBairro.setText("");
+                txComplemento.setText("");
             }
         }catch (Exception e){
             super.alert(Alert.AlertType.ERROR,"Erro", null,"Erro ao pesquisar cliente",e,true);

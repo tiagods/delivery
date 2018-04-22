@@ -61,7 +61,7 @@
                                        <HBox.margin>
                                           <Insets right="10.0" />
                                        </HBox.margin></MaskTextField>
-                                    <JFXButton onAction="#buscarClienteTelefone" prefHeight="30.0" styleClass="btBlue" text="Buscar" />
+                                    <JFXButton buttonType="RAISED" graphicTextGap="0.0" onAction="#buscarClienteTelefone" prefHeight="30.0" ripplerFill="#795050" styleClass="btBlue" text="Buscar" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="0.0">
@@ -187,7 +187,7 @@
                                  <children>
                                     <ButtonBar prefHeight="40.0" prefWidth="680.0">
                                        <buttons>
-                                          <JFXButton onAction="#desconto" prefHeight="26.0" prefWidth="225.0" text="Desconto" />
+                                          <JFXButton onAction="#desconto" prefHeight="26.0" prefWidth="225.0" styleClass="btBlue" text="Desconto" />
                                           <Label fx:id="txDesconto" alignment="CENTER" maxWidth="150.0" text="R$ 0,00" />
                                        </buttons>
                                     </ButtonBar>
@@ -197,7 +197,7 @@
                                  <children>
                                     <ButtonBar prefHeight="40.0" prefWidth="680.0">
                                        <buttons>
-                                          <JFXButton onAction="#servico" prefHeight="26.0" prefWidth="225.0" text="Serviço" />
+                                          <JFXButton onAction="#servico" prefHeight="26.0" prefWidth="225.0" styleClass="btBlue" text="Serviço" />
                                           <Label fx:id="txServico" alignment="CENTER" maxWidth="150.0" text="R$ 0,00" />
                                        </buttons>
                                     </ButtonBar>

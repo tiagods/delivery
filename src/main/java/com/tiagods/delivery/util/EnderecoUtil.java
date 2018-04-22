@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.Normalizer;
 
 public class EnderecoUtil {
     private static EnderecoUtil instance;
@@ -52,7 +53,7 @@ public class EnderecoUtil {
             URL url = url = new URL(urli);
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream is = new BufferedInputStream(urlConnection.getInputStream());
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is,"utf8"),8192);
             StringBuilder linhas = new StringBuilder(is.available());
             reader.lines().forEach(i -> linhas.append(i.trim()));
             JSONObject json = new JSONObject(linhas.toString());
@@ -73,6 +74,7 @@ public class EnderecoUtil {
             endereco.setComplemento(payload.get("complemento").toString());
             endereco.setBairro(payload.get("bairro").toString());
             endereco.setLocalidade(payload.get("localidade").toString());
+            //endereco.setLocalidade(removeAccents(payload.get("localidade").toString()));
             endereco.setUf(Cidade.Estado.valueOf(payload.get("uf").toString()));
             endereco.setUnidade(payload.get("unidade").toString());
             endereco.setIbge(payload.get("ibge").toString());
@@ -81,5 +83,10 @@ public class EnderecoUtil {
         }catch (JSONException e){
             return null;
         }
+    }
+    public static String removeAccents(String str) {
+        str = Normalizer.normalize(str, Normalizer.Form.NFD);
+        str = str.replaceAll("[^\\p{ASCII}]", "");
+        return str;
     }
 }
