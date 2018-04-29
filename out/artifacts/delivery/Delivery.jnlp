@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="Delivery.jar" size="384127" download="eager" />
+    <jar href="Delivery.jar" size="384119" download="eager" />
     <jar href="Delivery_Homologacao.jar" size="383813" download="eager" />
     <jar href="lib/antlr-2.7.7.jar" size="445288" download="eager" />
     <jar href="lib/classmate-1.3.0.jar" size="64110" download="eager" />
